@@ -695,6 +695,18 @@
         </Group>
         <Group>
           <GroupName>peripheral</GroupName>
+          <Files>
+            <File>
+              <FileName>moto.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\moto.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\motor.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>user_include</GroupName>

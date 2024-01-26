@@ -1,1 +1,0 @@
-"..\user\src\main.c" XSMALL INTR2 BROWSE INCDIR(..\driver\include;..\peripheral\header;..\user\include) DEBUG PRINT(.\List\main.lst) OBJECT(.\List\main.obj)

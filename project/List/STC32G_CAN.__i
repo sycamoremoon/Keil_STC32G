@@ -1,1 +1,0 @@
-"..\driver\src\STC32G_CAN.c" XSMALL INTR2 BROWSE INCDIR(..\driver\include;..\peripheral\header;..\user\include) DEBUG PRINT(.\Listings\STC32G_CAN.lst) OBJECT(.\Listings\STC32G_CAN.obj)
