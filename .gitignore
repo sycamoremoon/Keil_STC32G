@@ -1,5 +1,6 @@
 # This will ignore listing documents
-project/List/
+project/List/*
 
 #But save .hex
+
 !project/List/*.hex
