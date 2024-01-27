@@ -1,0 +1,74 @@
+C251 COMPILER V5.60.0,  main                                                               27/01/24  11:12:03  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\List\main.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\user\src\main.c XSMALL INTR2 BROWSE INCDIR(..\driver\include;..\p
+                    -eripheral\header;..\user\include) DEBUG PRINT(.\List\main.lst) OBJECT(.\List\main.obj) 
+
+stmt  level    source
+
+    1          #include "config.h"
+    2          //char *USER_DEVICEDESC = NULL;
+    3          //char *USER_PRODUCTDESC = NULL;
+    4          //char *USER_STCISPCMD = "@STCISP#";                      //设置自动复位到ISP区的用户接口命令
+    5          int main(void)
+    6          {
+    7   1              WTST = 0;               //设置程序指令延时参数，赋值为0可将CPU执行指令的速度设置为最快
+    8   1              EAXSFR();               //扩展SFR(XFR)访问使能 
+    9   1              CKCON = 0;      //提高访问XRAM速度
+   10   1              
+   11   1              /******************************************************************/
+   12   1              //初始化
+   13   1      //      EAXFR = 1;      
+   14   1      //      usb_init();
+   15   1      //      EA =1;
+   16   1              
+   17   1              
+   18   1              //初始化结束
+   19   1              /******************************************************************/
+   20   1      
+   21   1              
+   22   1              P2_MODE_IO_PU(GPIO_Pin_All);            //P6 设置为准双向口
+   23   1              /******************************************************************/
+   24   1              //主循环
+   25   1              while(1)
+   26   1              {
+   27   2                      delay_ms(250);
+   28   2      
+   29   2                      P2=0;
+   30   2                      P31=0;
+   31   2                      P32=0;
+   32   2                      
+   33   2              }
+   34   1      }
+   35          
+   36          
+   37          
+   38          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        31     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+C251 COMPILER V5.60.0,  main                                                               27/01/24  11:12:03  PAGE 2   
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

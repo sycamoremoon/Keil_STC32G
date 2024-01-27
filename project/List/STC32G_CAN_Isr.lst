@@ -1,0 +1,202 @@
+C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     25/01/24  22:28:44  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_CAN_Isr
+OBJECT MODULE PLACED IN .\Objects\STC32G_CAN_Isr.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\driver\isr\STC32G_CAN_Isr.c XSMALL INTR2 BROWSE INCDIR(..\driver\
+                    -include;..\peripheral\header;..\user\include) DEBUG PRINT(.\Listings\STC32G_CAN_Isr.lst) OBJECT(.\Objects\STC32G_CAN_Isr
+                    -.obj) 
+
+stmt  level    source
+
+    1          /*---------------------------------------------------------------------*/
+    2          /* --- STC MCU Limited ------------------------------------------------*/
+    3          /* --- STC 1T Series MCU Demo Programme -------------------------------*/
+    4          /* --- Mobile: (86)13922805190 ----------------------------------------*/
+    5          /* --- Fax: 86-0513-55012956,55012947,55012969 ------------------------*/
+    6          /* --- Tel: 86-0513-55012928,55012929,55012966 ------------------------*/
+    7          /* --- Web: www.STCAI.com ---------------------------------------------*/
+    8          /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
+    9          /* --- BBS: www.STCAIMCU.com  -----------------------------------------*/
+   10          /* --- QQ:  800003751 -------------------------------------------------*/
+   11          /* 如果要在程序中使用此代码,请在程序中注明使用了STC的资料及程序            */
+   12          /*---------------------------------------------------------------------*/
+   13          
+   14          #include        "STC32G_CAN.h"
+   15          
+   16          bit B_Can1Send;     //CAN1 发送完成标志
+   17          bit B_Can2Send;     //CAN2 发送完成标志
+   18          bit B_Can1Read;     //CAN1 收到数据标志
+   19          bit B_Can2Read;     //CAN2 收到数据标志
+   20          
+   21          //========================================================================
+   22          // 函数: CAN1_ISR_Handler
+   23          // 描述: CAN1中断函数.
+   24          // 参数: none.
+   25          // 返回: none.
+   26          // 版本: V1.0, 2022-03-27
+   27          //========================================================================
+   28          void CAN1_ISR_Handler (void) interrupt CAN1_VECTOR
+   29          {
+   30   1              u8 isr;
+   31   1              u8 store;
+   32   1              u8 arTemp;
+   33   1      
+   34   1              arTemp = CANAR;     //先CANAR现场保存，避免主循环里写完 CANAR 后产生中断，在中断里修改了 CANAR 内容
+   35   1              store = AUXR2;      //后AUXR2现场保存
+   36   1              
+   37   1              AUXR2 &= ~0x08;         //选择CAN1模块
+   38   1              isr = CanReadReg(ISR);
+   39   1      
+   40   1              if((isr & 0x04) == 0x04)  //TI
+   41   1              {
+   42   2                      CANAR = ISR;
+   43   2                      CANDR = 0x04;    //CLR FLAG
+   44   2              
+   45   2              B_Can1Send = 0;
+   46   2        }     
+   47   1              if((isr & 0x08) == 0x08)  //RI
+   48   1              {
+   49   2                      CANAR = ISR;
+   50   2                      CANDR = 0x08;    //CLR FLAG
+   51   2              
+   52   2                      B_Can1Read = 1;
+   53   2              }
+   54   1      
+   55   1              if((isr & 0x40) == 0x40)  //ALI
+   56   1              {
+   57   2                      CANAR = ISR;
+C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     25/01/24  22:28:44  PAGE 2   
+
+   58   2                      CANDR = 0x40;    //CLR FLAG
+   59   2              }       
+   60   1      
+   61   1              if((isr & 0x20) == 0x20)  //EWI
+   62   1              {
+   63   2                      CANAR = MR;
+   64   2                      CANDR &= ~0x04;  //清除 Reset Mode, 从BUS-OFF状态退出
+   65   2                      
+   66   2                      CANAR = ISR;
+   67   2                      CANDR = 0x20;    //CLR FLAG
+   68   2              }       
+   69   1      
+   70   1              if((isr & 0x10) == 0x10)  //EPI
+   71   1              {
+   72   2                      CANAR = ISR;
+   73   2                      CANDR = 0x10;    //CLR FLAG
+   74   2              }       
+   75   1      
+   76   1              if((isr & 0x02) == 0x02)  //BEI
+   77   1              {
+   78   2                      CANAR = ISR;
+   79   2                      CANDR = 0x02;    //CLR FLAG
+   80   2              }       
+   81   1      
+   82   1              if((isr & 0x01) == 0x01)  //DOI
+   83   1              {
+   84   2                      CANAR = ISR;
+   85   2                      CANDR = 0x01;    //CLR FLAG
+   86   2              }       
+   87   1      
+   88   1              AUXR2 = store;     //先AUXR2现场恢复
+   89   1              CANAR = arTemp;    //后CANAR现场恢复
+   90   1      }
+   91          
+   92          //========================================================================
+   93          // 函数: CAN2_ISR_Handler
+   94          // 描述: CAN2中断函数.
+   95          // 参数: none.
+   96          // 返回: none.
+   97          // 版本: V1.0, 2022-03-27
+   98          //========================================================================
+   99          void CAN2_ISR_Handler (void) interrupt CAN2_VECTOR
+  100          {
+  101   1              u8 isr;
+  102   1              u8 store;
+  103   1              u8 arTemp;
+  104   1      
+  105   1              arTemp = CANAR;     //先CANAR现场保存，避免主循环里写完 CANAR 后产生中断，在中断里修改了 CANAR 内容
+  106   1              store = AUXR2;      //后AUXR2现场保存
+  107   1              
+  108   1              AUXR2 |= 0x08;          //选择CAN2模块
+  109   1              isr = CanReadReg(ISR);
+  110   1      
+  111   1              if((isr & 0x04) == 0x04)  //TI
+  112   1              {
+  113   2                      CANAR = ISR;
+  114   2                      CANDR = 0x04;    //CLR FLAG
+  115   2              
+  116   2              B_Can2Send = 0;
+  117   2        }     
+  118   1              if((isr & 0x08) == 0x08)  //RI
+  119   1              {
+  120   2                      CANAR = ISR;
+  121   2                      CANDR = 0x08;    //CLR FLAG
+  122   2              
+  123   2                      B_Can2Read = 1;
+C251 COMPILER V5.60.0,  STC32G_CAN_Isr                                                     25/01/24  22:28:44  PAGE 3   
+
+  124   2              }
+  125   1      
+  126   1              if((isr & 0x40) == 0x40)  //ALI
+  127   1              {
+  128   2                      CANAR = ISR;
+  129   2                      CANDR = 0x40;    //CLR FLAG
+  130   2              }       
+  131   1      
+  132   1              if((isr & 0x20) == 0x20)  //EWI
+  133   1              {
+  134   2                      CANAR = MR;
+  135   2                      CANDR &= ~0x04;  //清除 Reset Mode, 从BUS-OFF状态退出
+  136   2                      
+  137   2                      CANAR = ISR;
+  138   2                      CANDR = 0x20;    //CLR FLAG
+  139   2              }       
+  140   1      
+  141   1              if((isr & 0x10) == 0x10)  //EPI
+  142   1              {
+  143   2                      CANAR = ISR;
+  144   2                      CANDR = 0x10;    //CLR FLAG
+  145   2              }       
+  146   1      
+  147   1              if((isr & 0x02) == 0x02)  //BEI
+  148   1              {
+  149   2                      CANAR = ISR;
+  150   2                      CANDR = 0x02;    //CLR FLAG
+  151   2              }       
+  152   1      
+  153   1              if((isr & 0x01) == 0x01)  //DOI
+  154   1              {
+  155   2                      CANAR = ISR;
+  156   2                      CANDR = 0x01;    //CLR FLAG
+  157   2              }       
+  158   1      
+  159   1              AUXR2 = store;     //先AUXR2现场恢复
+  160   1              CANAR = arTemp;    //后CANAR现场恢复
+  161   1      }
+  162          
+  163          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       622     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =         4     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,74 @@
+C251 COMPILER V5.60.0,  STC32G_LCM                                                         27/01/24  11:12:02  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_LCM
+OBJECT MODULE PLACED IN .\List\STC32G_LCM.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\driver\src\STC32G_LCM.c XSMALL INTR2 BROWSE INCDIR(..\driver\incl
+                    -ude;..\peripheral\header;..\user\include) DEBUG PRINT(.\List\STC32G_LCM.lst) OBJECT(.\List\STC32G_LCM.obj) 
+
+stmt  level    source
+
+    1          /*---------------------------------------------------------------------*/
+    2          /* --- STC MCU Limited ------------------------------------------------*/
+    3          /* --- STC 1T Series MCU Demo Programme -------------------------------*/
+    4          /* --- Mobile: (86)13922805190 ----------------------------------------*/
+    5          /* --- Fax: 86-0513-55012956,55012947,55012969 ------------------------*/
+    6          /* --- Tel: 86-0513-55012928,55012929,55012966 ------------------------*/
+    7          /* --- Web: www.STCMCU.com --------------------------------------------*/
+    8          /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
+    9          /* --- QQ:  800003751 -------------------------------------------------*/
+   10          /* Èç¹ûÒªÔÚ³ÌÐòÖÐÊ¹ÓÃ´Ë´úÂë,ÇëÔÚ³ÌÐòÖÐ×¢Ã÷Ê¹ÓÃÁËSTCµÄ×ÊÁÏ¼°³ÌÐò            */
+   11          /*---------------------------------------------------------------------*/
+   12          
+   13          #include "STC32G_LCM.h"
+   14          
+   15          //========================================================================
+   16          // º¯Êý: void LCM_Inilize(LCM_InitTypeDef *LCM)
+   17          // ÃèÊö: LCM ³õÊ¼»¯³ÌÐò.
+   18          // ²ÎÊý: LCM: ½á¹¹²ÎÊý,Çë²Î¿¼LCM.hÀïµÄ¶¨Òå.
+   19          // ·µ»Ø: none.
+   20          // °æ±¾: V1.0, 2021-06-02
+   21          //========================================================================
+   22          void LCM_Inilize(LCM_InitTypeDef *LCM)
+   23          {
+   24   1              LCMIFSTA = 0x00;
+   25   1              if(LCM->LCM_Mode == MODE_M6800)         LCMIFCFG |= MODE_M6800; //LCM½Ó¿ÚÄ£Ê½£ºM6800
+   26   1              else LCMIFCFG &= ~MODE_M6800;   //LCM½Ó¿ÚÄ£Ê½£ºI8080
+   27   1              
+   28   1              if(LCM->LCM_Bit_Wide == BIT_WIDE_16)            LCMIFCFG |= BIT_WIDE_16;        //LCMÊý¾Ý¿í¶È£º16Î»
+   29   1              else LCMIFCFG &= ~BIT_WIDE_16;  //LCMÊý¾Ý¿í¶È£º8Î»
+   30   1              
+   31   1              if(LCM->LCM_Setup_Time <= 7) LCMIFCFG2 = (LCMIFCFG2 & ~0x1c) | (LCM->LCM_Setup_Time << 2);      //LCMÍ¨ÐÅÊý¾Ý
+             -½¨Á¢Ê±¼ä£º0~7
+   32   1              if(LCM->LCM_Hold_Time <= 3) LCMIFCFG2 = (LCMIFCFG2 & ~0x03) | LCM->LCM_Hold_Time;       //LCMÍ¨ÐÅÊý¾Ý½¨Á¢Ê±¼ä£
+             -º0~7
+   33   1              
+   34   1              if(LCM->LCM_Enable == ENABLE)           LCMIFCR |= 0x80;        //Ê¹ÄÜLCM½Ó¿Ú¹¦ÄÜ
+   35   1              else LCMIFCR &= ~0x80;  //½ûÖ¹LCM½Ó¿Ú¹¦ÄÜ
+   36   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       188     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+C251 COMPILER V5.60.0,  STC32G_LCM                                                         27/01/24  11:12:02  PAGE 2   
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,182 @@
+C251 COMPILER V5.60.0,  cpost                                                              26/01/24  10:11:21  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE cpost
+OBJECT MODULE PLACED IN .\List\cpost.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\user\src\cpost.c XSMALL INTR2 BROWSE INCDIR(..\driver\include;..\
+                    -peripheral\header;..\user\include) DEBUG PRINT(.\List\cpost.lst) OBJECT(.\List\cpost.obj) 
+
+stmt  level    source
+
+    1          /**
+    2           * @file cpost.c
+    3           * @author Letter (nevermindzzt@gmail.com)
+    4           * @brief c post
+    5           * @version 1.0.0
+    6           * @date 2020-10-31
+    7           * 
+    8           * @copyright (c) 2020 Letter
+    9           * 
+   10           */
+   11          #include "cpost.h"
+   12          
+   13          
+   14          CpostHandler cposhHandlers[CPOST_MAX_HANDLER_SIZE] = {0};           //定义了一个总的句柄合集
+   15          
+   16          
+   17          /**
+   18           * @brief cpost 添加handler
+   19           * 
+   20           * @param param 参数
+   21           * 
+   22           * @return signed char 0 添加成功 -1 添加失败
+   23           */
+   24          signed char cpostAddHandler(CpostParam *param)
+   25          {
+   26   1              size_t i;
+   27   1          if (cpostIsInList(param->handler, param->attrs.paramDiff ? param->param : NULL) == 0)
+   28   1          {
+   29   2              switch (param->attrs.flag)
+   30   2              {
+   31   3              case CPOST_FLAG_CLEAR_FRONT:
+   32   3                  cpostRemove(param->handler, param->attrs.paramDiff ? param->param : NULL);
+   33   3                  break;
+   34   3      
+   35   3              case CPOST_FLAG_CANCEL_CURRENT:
+   36   3                  return 0;
+   37   3                  // break;
+   38   3      
+   39   3              case CPOST_FLAG_ADD_NEW:
+   40   3                  // do nothint
+   41   3                  break;
+   42   3      
+   43   3              default:
+   44   3                  break;
+   45   3              }
+   46   2          }
+   47   1      
+   48   1          for (i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
+   49   1          {
+   50   2              if (cposhHandlers[i].handler == NULL)
+   51   2              {
+   52   3                  cposhHandlers[i].startTime = CPOST_GET_TICK();
+   53   3                  cposhHandlers[i].delay = param->delay;
+   54   3                  cposhHandlers[i].handler = (void (*)(void *))(param->handler);  //强制类型转化，返回
+             -值为一个指针，参数也是一个指针
+   55   3                  cposhHandlers[i].param = param->param;
+   56   3                  return 0;
+   57   3              }
+C251 COMPILER V5.60.0,  cpost                                                              26/01/24  10:11:21  PAGE 2   
+
+   58   2          }
+   59   1          return -1;
+   60   1      }
+   61          
+   62          
+   63          /**
+   64           * @brief 移除handler
+   65           * 
+   66           * @param handler handler
+   67           * @param param 参数，传 `NULL` 表示不比较参数
+   68           * 
+   69           */
+   70          void cpostRemove(void *handler, void *param)
+   71          {
+   72   1              size_t i;
+   73   1          for ( i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
+   74   1          {
+   75   2              if (cposhHandlers[i].handler == handler
+   76   2                  && (param == NULL || param == cposhHandlers[i].param))
+   77   2              {
+   78   3                  cposhHandlers[i].handler = NULL;
+   79   3              }
+   80   2          }
+   81   1      }
+   82          
+   83          /**
+   84           * @brief 移除所有handler
+   85           * 
+   86           */
+   87          void cpostRemoveAll(void)
+   88          {
+   89   1              size_t i;
+   90   1          for ( i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
+   91   1          {
+   92   2              cposhHandlers[i].handler = NULL;
+   93   2          }
+   94   1      }
+   95          
+   96          
+   97          /**
+   98           * @brief 判断handler是否已经在列表中
+   99           * 
+  100           * @param handler handler
+  101           * @param param 参数，传 `NULL` 表示不比较参数
+  102           * 
+  103           * @return signed char 0 存在 -1 不存在
+  104           */
+  105          signed char cpostIsInList(void *handler, void *param)
+  106          {
+  107   1              size_t i;
+  108   1          for ( i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
+  109   1          {
+  110   2              if (cposhHandlers[i].handler == handler
+  111   2                  && (param == NULL || param == cposhHandlers[i].param))
+  112   2              {
+  113   3                  return 0;
+  114   3              }
+  115   2          }
+  116   1          return -1;
+  117   1      }
+  118          
+  119          /**
+  120           * @brief cpost 处理
+  121           * 
+  122           */
+  123          void cpostProcess(void)
+C251 COMPILER V5.60.0,  cpost                                                              26/01/24  10:11:21  PAGE 3   
+
+  124          {
+  125   1          size_t tick;
+  126   1              size_t i;
+  127   1          for ( i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
+  128   1          {
+  129   2              if (cposhHandlers[i].handler)
+  130   2              {
+  131   3                  tick = CPOST_GET_TICK();
+  132   3                  if (cposhHandlers[i].delay == 0 || 
+  133   3                      (CPOST_MAX_TICK - cposhHandlers[i].startTime > cposhHandlers[i].delay
+  134   3                          ? tick - cposhHandlers[i].startTime >= cposhHandlers[i].delay
+  135   3                          : CPOST_MAX_TICK - cposhHandlers[i].startTime + tick >= cposhHandlers[i].delay))     
+             -   //判断本次读取的系统时间是否和添加句柄的时间是否在一个周期里面
+  136   3                  {
+  137   4                      cposhHandlers[i].handler(cposhHandlers[i].param);
+  138   4                      cposhHandlers[i].handler = NULL;
+  139   4                  }
+  140   3              }
+  141   2          }
+  142   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       407     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       160     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =       164     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

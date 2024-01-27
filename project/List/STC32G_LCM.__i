@@ -1,0 +1,1 @@
+"..\driver\src\STC32G_LCM.c" XSMALL INTR2 BROWSE INCDIR(..\driver\include;..\peripheral\header;..\user\include) DEBUG PRINT(.\List\STC32G_LCM.lst) OBJECT(.\List\STC32G_LCM.obj)

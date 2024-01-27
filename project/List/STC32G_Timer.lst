@@ -1,0 +1,129 @@
+C251 COMPILER V5.60.0,  STC32G_Timer                                                       27/01/24  11:12:03  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_Timer
+OBJECT MODULE PLACED IN .\List\STC32G_Timer.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\driver\src\STC32G_Timer.c XSMALL INTR2 BROWSE INCDIR(..\driver\in
+                    -clude;..\peripheral\header;..\user\include) DEBUG PRINT(.\List\STC32G_Timer.lst) OBJECT(.\List\STC32G_Timer.obj) 
+
+stmt  level    source
+
+    1          /*---------------------------------------------------------------------*/
+    2          /* --- STC MCU Limited ------------------------------------------------*/
+    3          /* --- STC 1T Series MCU Demo Programme -------------------------------*/
+    4          /* --- Mobile: (86)13922805190 ----------------------------------------*/
+    5          /* --- Fax: 86-0513-55012956,55012947,55012969 ------------------------*/
+    6          /* --- Tel: 86-0513-55012928,55012929,55012966 ------------------------*/
+    7          /* --- Web: www.STCAI.com ---------------------------------------------*/
+    8          /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
+    9          /* --- BBS: www.STCAIMCU.com  -----------------------------------------*/
+   10          /* --- QQ:  800003751 -------------------------------------------------*/
+   11          /* 如果要在程序中使用此代码,请在程序中注明使用了STC的资料及程序            */
+   12          /*---------------------------------------------------------------------*/
+   13          
+   14          #include        "STC32G_Timer.h"
+   15          
+   16          //========================================================================
+   17          // 函数: u8     Timer_Inilize(u8 TIM, TIM_InitTypeDef *TIMx)
+   18          // 描述: 定时器初始化程序.
+   19          // 参数: TIMx: 结构参数,请参考timer.h里的定义.
+   20          // 返回: 成功返回 SUCCESS, 错误返回 FAIL.
+   21          // 版本: V1.0, 2012-10-22
+   22          //========================================================================
+   23          u8      Timer_Inilize(u8 TIM, TIM_InitTypeDef *TIMx)
+   24          {
+   25   1              if(TIM == Timer0)
+   26   1              {
+   27   2                      Timer0_Stop();          //停止计数
+   28   2                      if(TIMx->TIM_Mode > TIM_16BitAutoReloadNoMask)  return FAIL;    //错误
+   29   2                      TMOD = (TMOD & ~0x03) | TIMx->TIM_Mode; //工作模式,0: 16位自动重装, 1: 16位定时/计数, 2: 8位自动重装, 3
+             -: 不可屏蔽16位自动重装
+   30   2                      if(TIMx->TIM_ClkSource > TIM_CLOCK_Ext) return FAIL;
+   31   2                      Timer0_CLK_Select(TIMx->TIM_ClkSource); //对外计数或分频, 定时12T/1T
+   32   2                      Timer0_CLK_Output(TIMx->TIM_ClkOut);            //输出时钟使能
+   33   2                      T0_Load(TIMx->TIM_Value);
+   34   2              TM0PS = TIMx->TIM_PS;
+   35   2                      Timer0_Run(TIMx->TIM_Run);
+   36   2                      return  SUCCESS;                //成功
+   37   2              }
+   38   1      
+   39   1              if(TIM == Timer1)
+   40   1              {
+   41   2                      Timer1_Stop();          //停止计数
+   42   2                      if(TIMx->TIM_Mode > TIM_16BitAutoReloadNoMask)  return FAIL;    //错误
+   43   2                      TMOD = (TMOD & ~0x30) | (TIMx->TIM_Mode << 4);  //工作模式,0: 16位自动重装, 1: 16位定时/计数, 2: 8位自动
+             -重装, 3: 停止工作
+   44   2                      if(TIMx->TIM_ClkSource > TIM_CLOCK_Ext) return FAIL;
+   45   2                      Timer1_CLK_Select(TIMx->TIM_ClkSource); //对外计数或分频, 定时12T/1T
+   46   2                      Timer1_CLK_Output(TIMx->TIM_ClkOut);            //输出时钟使能
+   47   2                      T1_Load(TIMx->TIM_Value);
+   48   2              TM1PS = TIMx->TIM_PS;
+   49   2                      Timer1_Run(TIMx->TIM_Run);
+   50   2                      return  SUCCESS;                //成功
+   51   2              }
+   52   1      
+   53   1              if(TIM == Timer2)               //Timer2,固定为16位自动重装, 中断无优先级
+   54   1              {
+   55   2                      Timer2_Stop();  //停止计数
+   56   2                      Timer2_CLK_Select(TIMx->TIM_ClkSource); //对外计数或分频, 定时12T/1T
+C251 COMPILER V5.60.0,  STC32G_Timer                                                       27/01/24  11:12:03  PAGE 2   
+
+   57   2                      Timer2_CLK_Output(TIMx->TIM_ClkOut);            //输出时钟使能
+   58   2      
+   59   2                      T2_Load(TIMx->TIM_Value);
+   60   2              TM2PS = TIMx->TIM_PS;
+   61   2                      Timer2_Run(TIMx->TIM_Run);
+   62   2                      return  SUCCESS;                //成功
+   63   2              }
+   64   1      
+   65   1              if(TIM == Timer3)               //Timer3,固定为16位自动重装, 中断无优先级
+   66   1              {
+   67   2                      Timer3_Stop();  //停止计数
+   68   2                      if(TIMx->TIM_ClkSource > TIM_CLOCK_Ext) return FAIL;
+   69   2                      Timer3_CLK_Select(TIMx->TIM_ClkSource); //对外计数或分频, 定时12T/1T
+   70   2                      Timer3_CLK_Output(TIMx->TIM_ClkOut);            //输出时钟使能
+   71   2      
+   72   2                      T3_Load(TIMx->TIM_Value);
+   73   2              TM3PS = TIMx->TIM_PS;
+   74   2                      Timer3_Run(TIMx->TIM_Run);
+   75   2                      return  SUCCESS;                //成功
+   76   2              }
+   77   1      
+   78   1              if(TIM == Timer4)               //Timer3,固定为16位自动重装, 中断无优先级
+   79   1              {
+   80   2                      Timer4_Stop();  //停止计数
+   81   2                      if(TIMx->TIM_ClkSource > TIM_CLOCK_Ext) return FAIL;
+   82   2                      Timer4_CLK_Select(TIMx->TIM_ClkSource); //对外计数或分频, 定时12T/1T
+   83   2                      Timer4_CLK_Output(TIMx->TIM_ClkOut);            //输出时钟使能
+   84   2      
+   85   2                      T4_Load(TIMx->TIM_Value);
+   86   2              TM4PS = TIMx->TIM_PS;
+   87   2                      Timer4_Run(TIMx->TIM_Run);
+   88   2                      return  SUCCESS;                //成功
+   89   2              }
+   90   1              return FAIL;    //错误
+   91   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       537     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

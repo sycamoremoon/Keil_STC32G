@@ -1,0 +1,302 @@
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         25/01/24  23:20:09  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_CAN
+OBJECT MODULE PLACED IN .\Listings\STC32G_CAN.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\driver\src\STC32G_CAN.c XSMALL INTR2 BROWSE INCDIR(..\driver\incl
+                    -ude;..\peripheral\header;..\user\include) DEBUG PRINT(.\Listings\STC32G_CAN.lst) OBJECT(.\Listings\STC32G_CAN.obj) 
+
+stmt  level    source
+
+    1          /*---------------------------------------------------------------------*/
+    2          /* --- STC MCU Limited ------------------------------------------------*/
+    3          /* --- STC 1T Series MCU Demo Programme -------------------------------*/
+    4          /* --- Mobile: (86)13922805190 ----------------------------------------*/
+    5          /* --- Fax: 86-0513-55012956,55012947,55012969 ------------------------*/
+    6          /* --- Tel: 86-0513-55012928,55012929,55012966 ------------------------*/
+    7          /* --- Web: www.STCAI.com ---------------------------------------------*/
+    8          /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
+    9          /* --- BBS: www.STCAIMCU.com  -----------------------------------------*/
+   10          /* --- QQ:  800003751 -------------------------------------------------*/
+   11          /* Èç¹ûÒªÔÚ³ÌÐòÖÐÊ¹ÓÃ´Ë´úÂë,ÇëÔÚ³ÌÐòÖÐ×¢Ã÷Ê¹ÓÃÁËSTCµÄ×ÊÁÏ¼°³ÌÐò            */
+   12          /*---------------------------------------------------------------------*/
+   13          
+   14          #include "STC32G_CAN.h"
+   15          
+   16          CAN_DataDef CAN1_Tx;
+   17          CAN_DataDef CAN1_Rx[8];
+   18          
+   19          CAN_DataDef CAN2_Tx;
+   20          CAN_DataDef CAN2_Rx[8];
+   21          
+   22          //========================================================================
+   23          // º¯Êý: u8 ReadReg(u8 addr)
+   24          // ÃèÊö: CAN¹¦ÄÜ¼Ä´æÆ÷¶ÁÈ¡º¯Êý¡£
+   25          // ²ÎÊý: CAN¹¦ÄÜ¼Ä´æÆ÷µØÖ·.
+   26          // ·µ»Ø: CAN¹¦ÄÜ¼Ä´æÆ÷Êý¾Ý.
+   27          // °æ±¾: VER1.0
+   28          // ÈÕÆÚ: 2020-11-16
+   29          // ±¸×¢: 
+   30          //========================================================================
+   31          u8 CanReadReg(u8 addr)
+   32          {
+   33   1          u8 dat;
+   34   1          CANAR = addr;
+   35   1          dat = CANDR;
+   36   1          return dat;
+   37   1      }
+   38          
+   39          //========================================================================
+   40          // º¯Êý: void WriteReg(u8 addr, u8 dat)
+   41          // ÃèÊö: CAN¹¦ÄÜ¼Ä´æÆ÷ÅäÖÃº¯Êý¡£
+   42          // ²ÎÊý: CAN¹¦ÄÜ¼Ä´æÆ÷µØÖ·, CAN¹¦ÄÜ¼Ä´æÆ÷Êý¾Ý.
+   43          // ·µ»Ø: none.
+   44          // °æ±¾: VER1.0
+   45          // ÈÕÆÚ: 2020-11-16
+   46          // ±¸×¢: 
+   47          //========================================================================
+   48          void CanWriteReg(u8 addr, u8 dat)
+   49          {
+   50   1          CANAR = addr;
+   51   1          CANDR = dat;
+   52   1      }
+   53          
+   54          //========================================================================
+   55          // º¯Êý: void CAN_Inilize(u8 CANx, CAN_InitTypeDef *CAN)
+   56          // ÃèÊö: CAN ³õÊ¼»¯³ÌÐò.
+   57          // ²ÎÊý: CAN: ½á¹¹²ÎÊý,Çë²Î¿¼CAN.hÀïµÄ¶¨Òå.
+   58          // ·µ»Ø: none.
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         25/01/24  23:20:09  PAGE 2   
+
+   59          // °æ±¾: V1.0, 2021-06-02
+   60          //========================================================================
+   61          void CAN_Inilize(u8 CANx, CAN_InitTypeDef *CAN)
+   62          {
+   63   1          if(CANx == CAN1)
+   64   1          {
+   65   2              CANSEL = CAN1;          //Ñ¡ÔñCAN1Ä£¿é
+   66   2              CanWriteReg(MR  ,0x04);         //Ê¹ÄÜ Reset Mode
+   67   2      
+   68   2              if(CAN->CAN_Enable == ENABLE)   CANEN = 1;              //Ê¹ÄÜCAN1Ä£¿é
+   69   2              else                                                            CANEN = 0;              //¹Ø±ÕCAN1Ä£¿é
+   70   2              
+   71   2              CanWriteReg(BTR0,(u8)((CAN->CAN_SJW << 6) + CAN->CAN_BRP));
+   72   2              CanWriteReg(BTR1,(u8)((CAN->CAN_SAM << 7) + (CAN->CAN_TSG2 << 4) + CAN->CAN_TSG1));
+   73   2      
+   74   2              CanWriteReg(ACR0,CAN->CAN_ACR0);                //×ÜÏßÑéÊÕ´úÂë¼Ä´æÆ÷
+   75   2              CanWriteReg(ACR1,CAN->CAN_ACR1);
+   76   2              CanWriteReg(ACR2,CAN->CAN_ACR2);
+   77   2              CanWriteReg(ACR3,CAN->CAN_ACR3);
+   78   2              CanWriteReg(AMR0,CAN->CAN_AMR0);                //×ÜÏßÑéÊÕÆÁ±Î¼Ä´æÆ÷
+   79   2              CanWriteReg(AMR1,CAN->CAN_AMR1);
+   80   2              CanWriteReg(AMR2,CAN->CAN_AMR2);
+   81   2              CanWriteReg(AMR3,CAN->CAN_AMR3);
+   82   2      
+   83   2              CanWriteReg(ISR ,0xff);         //ÇåÖÐ¶Ï±êÖ¾
+   84   2              CanWriteReg(IMR ,CAN->CAN_IMR);                 //ÖÐ¶Ï¼Ä´æÆ÷ÉèÖÃ
+   85   2              CanWriteReg(MR  ,0x00|(CAN->CAN_ListenOnly<<1)|CAN->CAN_Filter);        //ÍË³ö Reset Mode
+   86   2          }
+   87   1          else if(CANx == CAN2)
+   88   1          {
+   89   2              CANSEL = CAN2;          //Ñ¡ÔñCAN2Ä£¿é
+   90   2              
+   91   2              CanWriteReg(MR  ,0x04);         //Ê¹ÄÜ Reset Mode
+   92   2      
+   93   2              if(CAN->CAN_Enable == ENABLE)   CAN2EN = 1;             //Ê¹ÄÜCAN2Ä£¿é
+   94   2              else                                                            CAN2EN = 0;             //¹Ø±ÕCAN2Ä£¿é
+   95   2              
+   96   2              CanWriteReg(BTR0,(u8)((CAN->CAN_SJW << 6) + CAN->CAN_BRP));
+   97   2              CanWriteReg(BTR1,(u8)((CAN->CAN_SAM << 7) + (CAN->CAN_TSG2 << 4) + CAN->CAN_TSG1));
+   98   2      
+   99   2              CanWriteReg(ACR0,CAN->CAN_ACR0);                //×ÜÏßÑéÊÕ´úÂë¼Ä´æÆ÷
+  100   2              CanWriteReg(ACR1,CAN->CAN_ACR1);
+  101   2              CanWriteReg(ACR2,CAN->CAN_ACR2);
+  102   2              CanWriteReg(ACR3,CAN->CAN_ACR3);
+  103   2              CanWriteReg(AMR0,CAN->CAN_AMR0);                //×ÜÏßÑéÊÕÆÁ±Î¼Ä´æÆ÷
+  104   2              CanWriteReg(AMR1,CAN->CAN_AMR1);
+  105   2              CanWriteReg(AMR2,CAN->CAN_AMR2);
+  106   2              CanWriteReg(AMR3,CAN->CAN_AMR3);
+  107   2      
+  108   2              CanWriteReg(ISR ,0xff);         //ÇåÖÐ¶Ï±êÖ¾
+  109   2              CanWriteReg(IMR ,CAN->CAN_IMR);                 //ÖÐ¶Ï¼Ä´æÆ÷ÉèÖÃ
+  110   2              CanWriteReg(MR  ,0x00|(CAN->CAN_ListenOnly<<1)|CAN->CAN_Filter);        //ÍË³ö Reset Mode
+  111   2          }
+  112   1      
+  113   1          B_Can1Send = 0;
+  114   1          B_Can2Send = 0;
+  115   1      }
+  116          
+  117          //========================================================================
+  118          // º¯Êý: void CanReadFifo(CAN_DataDef *CAN)
+  119          // ÃèÊö: ¶ÁÈ¡CAN»º³åÇøÊý¾Ýº¯Êý¡£
+  120          // ²ÎÊý: *CAN: ´æ·ÅCAN×ÜÏß¶ÁÈ¡Êý¾Ý.½á¹¹²ÎÊý,Çë²Î¿¼CAN.hÀïµÄ¶¨Òå.
+  121          // ·µ»Ø: none.
+  122          // °æ±¾: VER2.0
+  123          // ÈÕÆÚ: 2023-01-31
+  124          // ±¸×¢: 
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         25/01/24  23:20:09  PAGE 3   
+
+  125          //========================================================================
+  126          void CanReadFifo(CAN_DataDef *CAN)
+  127          {
+  128   1          u8 i;
+  129   1          u8 pdat[5];
+  130   1          u8 RX_Index=0;
+  131   1      
+  132   1          pdat[0] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));
+  133   1      
+  134   1          if(pdat[0] & 0x80)  //ÅÐ¶ÏÊÇ±ê×¼Ö¡»¹ÊÇÀ©Õ¹Ö¡
+  135   1          {
+  136   2              pdat[1] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));   //À©Õ¹Ö¡IDÕ¼4¸ö×Ö½Ú
+  137   2              pdat[2] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));
+  138   2              pdat[3] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));
+  139   2              pdat[4] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));
+  140   2              CAN->ID = (((u32)pdat[1] << 24) + ((u32)pdat[2] << 16) + ((u32)pdat[3] << 8) + pdat[4]) >> 3;
+  141   2          }
+  142   1          else
+  143   1          {
+  144   2              pdat[1] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));   //±ê×¼Ö¡IDÕ¼2¸ö×Ö½Ú
+  145   2              pdat[2] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));
+  146   2              CAN->ID = ((pdat[1] << 8) + pdat[2]) >> 5;
+  147   2          }
+  148   1          
+  149   1          CAN->FF = pdat[0] >> 7;     //Ö¡¸ñÊ½
+  150   1          CAN->RTR = pdat[0] >> 6;    //Ö¡ÀàÐÍ
+  151   1          CAN->DLC = pdat[0];         //Êý¾Ý³¤¶È
+  152   1      
+  153   1          for(i=0;((i<CAN->DLC) && (i<8));i++)        //¶ÁÈ¡Êý¾Ý³¤¶ÈÎªlen£¬×î¶à²»³¬¹ý8
+  154   1          {
+  155   2              CAN->DataBuffer[i] = CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));   //¶ÁÈ¡ÓÐÐ§Êý¾Ý
+  156   2          }
+  157   1          while(RX_Index&3)   //ÅÐ¶ÏÒÑ¶ÁÊý¾Ý³¤¶ÈÊÇ·ñ4µÄÕûÊý±¶
+  158   1          {
+  159   2              CanReadReg((u8)(RX_BUF0 + (RX_Index++&3)));  //¶ÁÈ¡Ìî³äÊý¾Ý£¬Ò»Ö¡Êý¾ÝÕ¼¾Ý4µÄÕûÊý±¶»º³åÇø¿Õ¼ä£¬²»×
+             -ã²¹0
+  160   2          }
+  161   1      }
+  162          
+  163          //========================================================================
+  164          // º¯Êý: u8 CanReadMsg(void)
+  165          // ÃèÊö: CAN½ÓÊÕÊý¾Ýº¯Êý¡£
+  166          // ²ÎÊý: *CANx: ´æ·ÅCAN×ÜÏß¶ÁÈ¡Êý¾Ý..
+  167          // ·µ»Ø: Ö¡¸öÊý.
+  168          // °æ±¾: VER2.0
+  169          // ÈÕÆÚ: 2023-01-31
+  170          // ±¸×¢: 
+  171          //========================================================================
+  172          u8 CanReadMsg(CAN_DataDef *CAN)
+  173          {
+  174   1          u8 i;
+  175   1          u8 n=0;
+  176   1      
+  177   1          do{
+  178   2              CanReadFifo(&CAN[n++]);  //¶ÁÈ¡½ÓÊÕ»º³åÇøÊý¾Ý
+  179   2              i = CanReadReg(SR);
+  180   2          }while(i&0x80);     //ÅÐ¶Ï½ÓÊÕ»º³åÇøÀïÊÇ·ñ»¹ÓÐÊý¾Ý£¬ÓÐµÄ»°¼ÌÐø¶ÁÈ¡
+  181   1      
+  182   1          return n;   //·µ»ØÖ¡¸öÊý
+  183   1      }
+  184          
+  185          //========================================================================
+  186          // º¯Êý: void CanSendMsg(CAN_DataDef *CAN)
+  187          // ÃèÊö: CAN·¢ËÍ±ê×¼Ö¡º¯Êý¡£
+  188          // ²ÎÊý: *CANx: ´æ·ÅCAN×ÜÏß·¢ËÍÊý¾Ý..
+  189          // ·µ»Ø: none.
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         25/01/24  23:20:09  PAGE 4   
+
+  190          // °æ±¾: VER1.0
+  191          // ÈÕÆÚ: 2020-11-19
+  192          // ±¸×¢: 
+  193          //========================================================================
+  194          void CanSendMsg(CAN_DataDef *CAN)
+  195          {
+  196   1              u32 CanID;
+  197   1          u8 RX_Index,i;
+  198   1      
+  199   1          if(CANSEL)  //ÅÐ¶ÏÊÇ·ñCAN2
+  200   1          {
+  201   2              while(B_Can2Send);  //µÈ´ýCAN2ÉÏ´Î·¢ËÍÍê³É
+  202   2          }
+  203   1          else
+  204   1          {
+  205   2              while(B_Can1Send);  //µÈ´ýCAN1ÉÏ´Î·¢ËÍÍê³É
+  206   2          }
+  207   1      
+  208   1          if(CAN->FF)     //ÅÐ¶ÏÊÇ·ñÀ©Õ¹Ö¡
+  209   1          {
+  210   2              CanID = CAN->ID << 3;
+  211   2              CanWriteReg(TX_BUF0,CAN->DLC|((u8)CAN->RTR<<6)|0x80);   //bit7: ±ê×¼Ö¡(0)/À©Õ¹Ö¡(1), bit6: Êý¾ÝÖ¡(0
+             -)/Ô¶³ÌÖ¡(1), bit3~bit0: Êý¾Ý³¤¶È(DLC)
+  212   2              CanWriteReg(TX_BUF1,(u8)(CanID>>24));
+  213   2              CanWriteReg(TX_BUF2,(u8)(CanID>>16));
+  214   2              CanWriteReg(TX_BUF3,(u8)(CanID>>8));
+  215   2      
+  216   2              CanWriteReg(TX_BUF0,(u8)CanID);
+  217   2      
+  218   2              RX_Index = 1;
+  219   2              for(i=0;((i<CAN->DLC) && (i<8));i++)        //Êý¾Ý³¤¶ÈÎªDLC£¬×î¶à²»³¬¹ý8
+  220   2              {
+  221   3                  CanWriteReg((u8)(TX_BUF0 + (RX_Index++&3)),CAN->DataBuffer[i]);   //Ð´ÈëÓÐÐ§Êý¾Ý
+  222   3              }
+  223   2              while(RX_Index&3)   //ÅÐ¶ÏÒÑ¶ÁÊý¾Ý³¤¶ÈÊÇ·ñ4µÄÕûÊý±¶
+  224   2              {
+  225   3                  CanWriteReg((u8)(TX_BUF0 + (RX_Index++&3)),0x00);  //Ð´ÈëÌî³äÊý¾Ý£¬Ò»Ö¡Êý¾ÝÕ¼¾Ý4µÄÕûÊý±¶»º³åÇ
+             -ø¿Õ¼ä£¬²»×ã²¹0
+  226   3              }
+  227   2          }
+  228   1          else    //·¢ËÍ±ê×¼Ö¡
+  229   1          {
+  230   2              CanID = (u16)(CAN->ID << 5);
+  231   2              CanWriteReg(TX_BUF0,CAN->DLC|((u8)CAN->RTR<<6));  //bit7: ±ê×¼Ö¡(0)/À©Õ¹Ö¡(1), bit6: Êý¾ÝÖ¡(0)/Ô¶
+             -³ÌÖ¡(1), bit3~bit0: Êý¾Ý³¤¶È(DLC)
+  232   2              CanWriteReg(TX_BUF1,(u8)(CanID>>8));
+  233   2              CanWriteReg(TX_BUF2,(u8)CanID);
+  234   2      
+  235   2              RX_Index = 3;
+  236   2              for(i=0;((i<CAN->DLC) && (i<8));i++)        //Êý¾Ý³¤¶ÈÎªDLC£¬×î¶à²»³¬¹ý8
+  237   2              {
+  238   3                  CanWriteReg((u8)(TX_BUF0 + (RX_Index++&3)),CAN->DataBuffer[i]);   //Ð´ÈëÓÐÐ§Êý¾Ý
+  239   3              }
+  240   2              while(RX_Index&3)   //ÅÐ¶ÏÒÑ¶ÁÊý¾Ý³¤¶ÈÊÇ·ñ4µÄÕûÊý±¶
+  241   2              {
+  242   3                  CanWriteReg((u8)(TX_BUF0 + (RX_Index++&3)),0x00);  //Ð´ÈëÌî³äÊý¾Ý£¬Ò»Ö¡Êý¾ÝÕ¼¾Ý4µÄÕûÊý±¶»º³åÇ
+             -ø¿Õ¼ä£¬²»×ã²¹0
+  243   3              }
+  244   2          }
+  245   1              CanWriteReg(CMR ,0x04);         //·¢ÆðÒ»´ÎÖ¡´«Êä
+  246   1          
+  247   1          if(CANSEL)  //ÅÐ¶ÏÊÇ·ñCAN2
+  248   1          {
+  249   2              B_Can2Send = 1;     //ÉèÖÃCAN2·¢ËÍÃ¦±êÖ¾
+  250   2          }
+  251   1          else
+C251 COMPILER V5.60.0,  STC32G_CAN                                                         25/01/24  23:20:09  PAGE 5   
+
+  252   1          {
+  253   2              B_Can1Send = 1;     //ÉèÖÃCAN1·¢ËÍÃ¦±êÖ¾
+  254   2          }
+  255   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =      1102     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       234         15
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

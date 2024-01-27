@@ -1,0 +1,1 @@
+"..\driver\src\STC32G_EEPROM.c" XSMALL INTR2 BROWSE INCDIR(..\driver\include;..\peripheral\header;..\user\include) DEBUG PRINT(.\List\STC32G_EEPROM.lst) OBJECT(.\List\STC32G_EEPROM.obj)

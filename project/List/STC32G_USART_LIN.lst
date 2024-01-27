@@ -1,0 +1,301 @@
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   27/01/24  11:12:03  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE STC32G_USART_LIN
+OBJECT MODULE PLACED IN .\List\STC32G_USART_LIN.obj
+COMPILER INVOKED BY: G:\KEIL_CORE\C251\BIN\C251.EXE ..\driver\src\STC32G_USART_LIN.c XSMALL INTR2 BROWSE INCDIR(..\drive
+                    -r\include;..\peripheral\header;..\user\include) DEBUG PRINT(.\List\STC32G_USART_LIN.lst) OBJECT(.\List\STC32G_USART_LIN.
+                    -obj) 
+
+stmt  level    source
+
+    1          /*---------------------------------------------------------------------*/
+    2          /* --- STC MCU Limited ------------------------------------------------*/
+    3          /* --- STC 1T Series MCU Demo Programme -------------------------------*/
+    4          /* --- Mobile: (86)13922805190 ----------------------------------------*/
+    5          /* --- Fax: 86-0513-55012956,55012947,55012969 ------------------------*/
+    6          /* --- Tel: 86-0513-55012928,55012929,55012966 ------------------------*/
+    7          /* --- Web: www.STCAI.com ---------------------------------------------*/
+    8          /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
+    9          /* --- BBS: www.STCAIMCU.com  -----------------------------------------*/
+   10          /* --- QQ:  800003751 -------------------------------------------------*/
+   11          /* 如果要在程序中使用此代码,请在程序中注明使用了STC的资料及程序            */
+   12          /*---------------------------------------------------------------------*/
+   13          
+   14          #include "STC32G_UART.h"
+   15          #include "STC32G_USART_LIN.h"
+   16          
+   17          //========================================================================
+   18          //                               本地变量声明
+   19          //========================================================================
+   20          
+   21          //========================================================================
+   22          // 函数: void UsartLinSendByte(u8 USARTx, u8 dat)
+   23          // 描述: 发送一个字节函数。
+   24          // 参数: USARTx: USART组号，取值：USART1或者USART2
+   25          // 参数: dat: 发送的数据.
+   26          // 返回: none.
+   27          // 版本: VER1.0
+   28          // 日期: 2021-10-28
+   29          // 备注: 
+   30          //========================================================================
+   31          void UsartLinSendByte(u8 USARTx, u8 dat)
+   32          {
+   33   1              if(USARTx == USART1)
+   34   1              {
+   35   2                      COM1.B_TX_busy = 1;
+   36   2                      SBUF = dat;
+   37   2                      while(COM1.B_TX_busy);
+   38   2              }
+   39   1              else if(USARTx == USART2)
+   40   1              {
+   41   2                      COM2.B_TX_busy = 1;
+   42   2                      S2BUF = dat;
+   43   2                      while(COM2.B_TX_busy);
+   44   2              }
+   45   1      }
+   46          
+   47          //========================================================================
+   48          // 函数: void UsartLinSendData(u8 USARTx, u8 *pdat, u8 len)
+   49          // 描述: Lin发送数据函数。
+   50          // 参数: USARTx: USART组号，取值：USART1或者USART2
+   51          // 参数: *pdat: 发生数据缓冲区
+   52          // 参数: len: 数据长度.
+   53          // 返回: Lin ID.
+   54          // 版本: VER1.0
+   55          // 日期: 2023-4-15
+   56          // 备注: 
+   57          //========================================================================
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   27/01/24  11:12:03  PAGE 2   
+
+   58          void UsartLinSendData(u8 USARTx, u8 *pdat, u8 len)
+   59          {
+   60   1              u8 i;
+   61   1      
+   62   1          if(len > 8) return; 
+   63   1              for(i=0;i<len;i++)
+   64   1              {
+   65   2                      UsartLinSendByte(USARTx,pdat[i]);
+   66   2              }
+   67   1      }
+   68          
+   69          //========================================================================
+   70          // 函数: void UsartLinSendChecksum(u8 USARTx, u8 *dat, u8 len)
+   71          // 描述: 计算校验码并发送。
+   72          // 参数: USARTx: USART组号，取值：USART1或者USART2
+   73          // 参数: *dat: 数据场传输的数据
+   74          // 参数: len: 数据长度.
+   75          // 返回: none.
+   76          // 版本: VER1.0
+   77          // 日期: 2023-4-15
+   78          // 备注: 
+   79          //========================================================================
+   80          void UsartLinSendChecksum(u8 USARTx, u8 *dat, u8 len)
+   81          {
+   82   1          u16 sum = 0;
+   83   1          u8 i;
+   84   1      
+   85   1          if(len > 8) return; 
+   86   1          for(i = 0; i < len; i++)
+   87   1          {
+   88   2              sum += dat[i];
+   89   2              if(sum & 0xFF00)
+   90   2              {
+   91   3                  sum = (sum & 0x00FF) + 1;
+   92   3              }
+   93   2          }
+   94   1          sum ^= 0x00FF;
+   95   1              UsartLinSendByte(USARTx,(u8)sum);
+   96   1      }
+   97          
+   98          //========================================================================
+   99          // 函数: void UsartSendBreak(u8 USARTx)
+  100          // 描述: 主模式发送Lin总线Break函数。
+  101          // 参数: USARTx: USART组号，取值：USART1或者USART2
+  102          // 返回: none.
+  103          // 版本: VER1.0
+  104          // 日期: 2021-10-28
+  105          // 备注: 
+  106          //========================================================================
+  107          void UsartSendBreak(u8 USARTx)
+  108          {
+  109   1              if(USARTx == USART1)
+  110   1              {
+  111   2                      USARTCR5 |= 0x04;               //主模式 Send Break
+  112   2              }
+  113   1              else if(USARTx == USART2)
+  114   1              {
+  115   2                      USART2CR5 |= 0x04;              //主模式 Send Break
+  116   2              }
+  117   1              UsartLinSendByte(USARTx,0x00);
+  118   1      }
+  119          
+  120          //========================================================================
+  121          // 函数: void UsartLinSendPID(u8 USARTx, u8 id)
+  122          // 描述: ID码加上校验符，转成PID码并发送。
+  123          // 参数: USARTx: USART组号，取值：USART1或者USART2
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   27/01/24  11:12:03  PAGE 3   
+
+  124          // 参数: ID码.
+  125          // 返回: none.
+  126          // 版本: VER1.0
+  127          // 日期: 2020-12-2
+  128          // 备注: 
+  129          //========================================================================
+  130          void UsartLinSendPID(u8 USARTx, u8 id)
+  131          {
+  132   1              u8 P0 ;
+  133   1              u8 P1 ;
+  134   1              
+  135   1              P0 = (((id)^(id>>1)^(id>>2)^(id>>4))&0x01)<<6 ;
+  136   1              P1 = ((~((id>>1)^(id>>3)^(id>>4)^(id>>5)))&0x01)<<7 ;
+  137   1              
+  138   1              UsartLinSendByte(USARTx,id|P0|P1);
+  139   1      }
+  140          
+  141          //========================================================================
+  142          // 函数: void UsartLinSendHeader(u8 USARTx, u8 lid)
+  143          // 描述: Lin主机发送帧头函数。
+  144          // 参数: USARTx: USART组号，取值：USART1或者USART2
+  145          // 参数: ID码.
+  146          // 返回: none.
+  147          // 版本: VER1.0
+  148          // 日期: 2021-10-28
+  149          // 备注: 
+  150          //========================================================================
+  151          void UsartLinSendHeader(u8 USARTx, u8 lid)
+  152          {
+  153   1              UsartSendBreak(USARTx);                                         //Send Break
+  154   1              UsartLinSendByte(USARTx,0x55);          //Send Sync Field
+  155   1              UsartLinSendPID(USARTx,lid);                    //设置总线ID
+  156   1      }
+  157          
+  158          //========================================================================
+  159          // 函数: void UsartLinSendFrame(u8 USARTx, u8 lid, u8 *pdat, u8 len)
+  160          // 描述: Lin主机发送完整帧函数。
+  161          // 参数: USARTx: USART组号，取值：USART1或者USART2
+  162          // 参数: lid: Lin ID
+  163          // 参数: *pdat: 发送数据缓冲区
+  164          // 参数: len: 数据长度
+  165          // 返回: none.
+  166          // 版本: VER1.0
+  167          // 日期: 2021-10-28
+  168          // 备注: 
+  169          //========================================================================
+  170          void UsartLinSendFrame(u8 USARTx, u8 lid, u8 *pdat, u8 len)
+  171          {
+  172   1              UsartSendBreak(USARTx);                                         //Send Break
+  173   1              UsartLinSendByte(USARTx,0x55);          //Send Sync Field
+  174   1      
+  175   1              UsartLinSendPID(USARTx,lid);                    //设置总线ID
+  176   1              UsartLinSendData(USARTx,pdat,len);
+  177   1              UsartLinSendChecksum(USARTx,pdat,len);
+  178   1      }
+  179          
+  180          //========================================================================
+  181          // 函数: void UsartLinBaudrate(u8 USARTx, u16 brt)
+  182          // 描述: Lin总线波特率设置函数。
+  183          // 参数: brt: 波特率.
+  184          // 返回: none.
+  185          // 版本: VER1.0
+  186          // 日期: 2021-10-28
+  187          // 备注: 
+  188          //========================================================================
+  189          void UsartLinBaudrate(u8 USARTx, u16 brt)
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   27/01/24  11:12:03  PAGE 4   
+
+  190          {
+  191   1              u16 tmp;
+  192   1              
+  193   1              tmp = (MAIN_Fosc >> 4) / brt;
+  194   1              if(USARTx == USART1)
+  195   1              {
+  196   2                      USARTBRH = (u8)(tmp>>8);
+  197   2                      USARTBRL = (u8)tmp;
+  198   2              }
+  199   1              else if(USARTx == USART2)
+  200   1              {
+  201   2                      USART2BRH = (u8)(tmp>>8);
+  202   2                      USART2BRL = (u8)tmp;
+  203   2              }
+  204   1      }
+  205          
+  206          //========================================================================
+  207          // 函数: UASRT_LIN_Configuration
+  208          // 描述: USART LIN初始化程序.
+  209          // 参数: USARTx: UART组号, USART LIN结构参数,请参考STC32G_USART_LIN.h里的定义.
+  210          // 返回: none.
+  211          // 版本: V1.0, 2022-03-30
+  212          //========================================================================
+  213          u8 UASRT_LIN_Configuration(u8 USARTx, USARTx_LIN_InitDefine *USART)
+  214          {
+  215   1              if(USARTx == USART1)
+  216   1              {
+  217   2                      SCON = (SCON & 0x3f) | 0x40;    //USART1模式, 0x00: 同步移位输出, 0x40: 8位数据,可变波特率, 0x80: 9位数
+             -据,固定波特率, 0xc0: 9位数据,可变波特率
+  218   2                      SMOD = 1;
+  219   2                      TI = 0;
+  220   2                      REN = 1;    //允许接收
+  221   2                      ES  = 1;    //允许中断
+  222   2      
+  223   2                      if(USART->LIN_Enable == ENABLE) USARTCR1 |= 0x80;               //使能LIN模块
+  224   2                      else                                                            USARTCR1 &= ~0x80;              //关闭LIN模块
+  225   2                      if(USART->LIN_Mode == LinSlaveMode)     USARTCR5 |= 0x20;               //LIN模块从机模式
+  226   2                      else                                                            USARTCR5 &= ~0x20;              //LIN模块主机模式
+  227   2                      if(USART->LIN_AutoSync == ENABLE)       USARTCR5 |= 0x10;               //使能自动同步
+  228   2                      else                                                            USARTCR5 &= ~0x10;              //关闭自动同步
+  229   2      
+  230   2                      UsartLinBaudrate(USART1,USART->LIN_Baudrate);                   //设置波特率
+  231   2      
+  232   2                      return SUCCESS;
+  233   2              }
+  234   1      
+  235   1              if(USARTx == USART2)
+  236   1              {
+  237   2                      S2CON = (S2CON & 0x3f) | 0x50;
+  238   2                      T2x12 = 1;   //定时器2时钟1T模式
+  239   2                      T2R = 1;     //开始计时
+  240   2                      ES2 = 1;     //允许中断
+  241   2                      S2CFG |= 0x80;                          //S2MOD = 1
+  242   2      
+  243   2                      if(USART->LIN_Enable == ENABLE) USART2CR1 |= 0x80;              //使能LIN模块
+  244   2                      else                                                            USART2CR1 &= ~0x80;             //关闭LIN模块
+  245   2                      if(USART->LIN_Mode == LinSlaveMode)     USART2CR5 |= 0x20;              //LIN模块从机模式
+  246   2                      else                                                            USART2CR5 &= ~0x20;             //LIN模块主机模式
+  247   2                      if(USART->LIN_AutoSync == ENABLE)       USART2CR5 |= 0x10;              //使能自动同步
+  248   2                      else                                                            USART2CR5 &= ~0x10;             //关闭自动同步
+  249   2      
+  250   2                      UsartLinBaudrate(USART2,USART->LIN_Baudrate);                   //设置波特率
+  251   2      
+  252   2                      return SUCCESS;
+  253   2              }
+  254   1              return FAIL;    //错误
+C251 COMPILER V5.60.0,  STC32G_USART_LIN                                                   27/01/24  11:12:03  PAGE 5   
+
+  255   1      }
+  256          
+  257          /*********************************************************/
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       790     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------          7
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
