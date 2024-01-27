@@ -1,5 +1,3 @@
 # This will ignore all list documents
-project/List/
 
 #but save HEX
-!project/List/*.hex
