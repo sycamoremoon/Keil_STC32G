@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include "config.h"
 #include "motor.h"
 
