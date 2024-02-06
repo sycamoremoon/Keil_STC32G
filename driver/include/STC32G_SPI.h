@@ -8,7 +8,7 @@
 /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
 /* --- BBS: www.STCAIMCU.com  -----------------------------------------*/
 /* --- QQ:  800003751 -------------------------------------------------*/
-/* Èç¹ûÒªÔÚ³ÌÐòÖÐÊ¹ÓÃ´Ë´úÂë,ÇëÔÚ³ÌÐòÖÐ×¢Ã÷Ê¹ÓÃÁËSTCµÄ×ÊÁÏ¼°³ÌÐò            */
+/* ï¿½ï¿½ï¿½Òªï¿½Ú³ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã´Ë´ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ú³ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½STCï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½ï¿½ï¿½            */
 /*---------------------------------------------------------------------*/
 
 #ifndef	__STC32G_SPI_H
@@ -17,24 +17,24 @@
 #include	"config.h"
 
 //========================================================================
-//                               SPIÉèÖÃ
+//                               SPIï¿½ï¿½ï¿½ï¿½
 //========================================================================
 
-#define		SPI_SSIG_Set(n)					SSIG = n		/* SSÒý½Å¹¦ÄÜ¿ØÖÆ */
-#define		SPI_Start(n)						SPEN = n		/* SPIÊ¹ÄÜ¿ØÖÆÎ» */
-#define		SPI_FirstBit_Set(n)			DORD = n		/* Êý¾Ý·¢ËÍ/½ÓÊÕË³Ðò MSB/LSB */
-#define		SPI_Mode_Set(n)					MSTR = n		/* SPIÖ÷´ÓÄ£Ê½ÉèÖÃ */
-#define		SPI_CPOL_Set(n)					CPOL = n		/* SPIÊ±ÖÓ¼«ÐÔ¿ØÖÆ */
-#define		SPI_CPHA_Set(n)					CPHA = n		/* SPIÊ±ÖÓÏàÎ»¿ØÖÆ */
-#define		SPI_Clock_Select(n)			SPCTL = (SPCTL & ~0x03) | (n)					/* SPIÊ±ÖÓÆµÂÊÑ¡Ôñ */
+#define		SPI_SSIG_Set(n)					SSIG = n		/* SSï¿½ï¿½ï¿½Å¹ï¿½ï¿½Ü¿ï¿½ï¿½ï¿½ */
+#define		SPI_Start(n)						SPEN = n		/* SPIÊ¹ï¿½Ü¿ï¿½ï¿½ï¿½Î» */
+#define		SPI_FirstBit_Set(n)			DORD = n		/* ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ MSB/LSB */
+#define		SPI_Mode_Set(n)					MSTR = n		/* SPIï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ */
+#define		SPI_CPOL_Set(n)					CPOL = n		/* SPIÊ±ï¿½Ó¼ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ */
+#define		SPI_CPHA_Set(n)					CPHA = n		/* SPIÊ±ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ */
+#define		SPI_Clock_Select(n)			SPCTL = (SPCTL & ~0x03) | (n)					/* SPIÊ±ï¿½ï¿½Æµï¿½ï¿½Ñ¡ï¿½ï¿½ */
 
-#define		SPI_ClearFlag()					{SPIF = 1; WCOL = 1;}		/* Ð´ 1 Çå³ý SPIFºÍWCOL ±êÖ¾ */
+#define		SPI_ClearFlag()					{SPIF = 1; WCOL = 1;}		/* Ð´ 1 ï¿½ï¿½ï¿½ SPIFï¿½ï¿½WCOL ï¿½ï¿½Ö¾ */
 
-#define		HSSPI_Enable(n)					HSSPI_CFG2 |= 0x20       //Ê¹ÄÜSPI¸ßËÙÄ£Ê½
-#define		HSSPI_Disable(n)				HSSPI_CFG2 &= ~0x20      //¹Ø±ÕSPI¸ßËÙÄ£Ê½
+#define		HSSPI_Enable(n)					HSSPI_CFG2 |= 0x20       //Ê¹ï¿½ï¿½SPIï¿½ï¿½ï¿½ï¿½Ä£Ê½
+#define		HSSPI_Disable(n)				HSSPI_CFG2 &= ~0x20      //ï¿½Ø±ï¿½SPIï¿½ï¿½ï¿½ï¿½Ä£Ê½
 
 //========================================================================
-//                              ¶¨ÒåÉùÃ÷
+//                              ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //========================================================================
 
 #define	SPI_BUF_LENTH	128
@@ -75,8 +75,8 @@ sbit  SPI_SCLK_4  = P3^2;
 
 typedef struct
 {
-	u8	SPI_Enable;     //SPIÆô¶¯, ENABLE,DISABLE
-	u8	SPI_SSIG;       //Æ¬Ñ¡Î», ENABLE(SSÈ·¶¨Ö÷»ú´Ó»ú), DISABLE(ºöÂÔSSÒý½Å¹¦ÄÜ)
+	u8	SPI_Enable;     //SPIï¿½ï¿½ï¿½ï¿½, ENABLE,DISABLE
+	u8	SPI_SSIG;       //Æ¬Ñ¡Î», ENABLE(SSÈ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó»ï¿½), DISABLE(ï¿½ï¿½ï¿½ï¿½SSï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½)
 	u8	SPI_FirstBit;   //SPI_MSB, SPI_LSB
 	u8	SPI_Mode;       //SPI_Mode_Master, SPI_Mode_Slave
 	u8	SPI_CPOL;       //SPI_CPOL_High,   SPI_CPOL_Low
@@ -85,7 +85,7 @@ typedef struct
 } SPI_InitTypeDef;
 
 
-extern	bit B_SPI_Busy; //·¢ËÍÃ¦±êÖ¾
+extern	bit B_SPI_Busy; //ï¿½ï¿½ï¿½ï¿½Ã¦ï¿½ï¿½Ö¾
 extern	u8 	SPI_RxCnt;
 extern	u8 	SPI_RxTimerOut;
 extern	u8 	SPI_BUF_type SPI_RxBuffer[SPI_BUF_LENTH];

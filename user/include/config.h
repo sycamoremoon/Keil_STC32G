@@ -17,20 +17,29 @@
 //                               主时钟定义
 //========================================================================
 
-//#define MAIN_Fosc		22118400L	//定义主时钟
+#define MAIN_Fosc		22118400L	//定义主时钟
 //#define MAIN_Fosc		12000000L	//定义主时钟
 //#define MAIN_Fosc		11059200L	//定义主时钟
 //#define MAIN_Fosc		 5529600L	//定义主时钟
-#define MAIN_Fosc		24000000L	//定义主时钟
+//#define MAIN_Fosc		24000000L	//定义主时钟
 
 //========================================================================
 //                                头文件
 //========================================================================
 /******************************库头文件*************************************/
-#include 	"stc32g.h"
 #include 	"type_def.h"
+#include 	"stc32g.h"
 #include	"STC32G_GPIO.h"
 #include	"STC32G_Delay.h"
+#include	"STC32G_Exti.h"
+#include	"STC32G_UART.h"
+#include	"STC32G_NVIC.h"
+#include	"STC32G_Switch.h"
+#include	"STC32G_Timer.h"
+#include    "STC32G_ADC.h"
+#include 	"STC32G_SPI.h"
+#include 	"STC32G_DMA.h"
+#include 	"STC32G_PWM.h"
 #include  	"stc32_stc8_usb.h"
 
 /******************************系统头文件*************************************/
@@ -41,7 +50,7 @@
 /******************************自定义头文件*************************************/
 #include "cpost.h"
 #include "cevent.h"
-#include "pid.h"
+#include "interupt.h"
 
 //========================================================================
 //                             外部函数和变量声明

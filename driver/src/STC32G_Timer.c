@@ -89,3 +89,12 @@ u8	Timer_Inilize(u8 TIM, TIM_InitTypeDef *TIMx)
 	}
 	return FAIL;	//´íÎó
 }
+
+u16 T0_Get_TIck()
+{
+	u16 tick;
+	tick = TH0;
+	tick = (tick<<8) + TL0;
+	return tick;
+}
+

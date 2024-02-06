@@ -12,7 +12,9 @@
 #define __CPOST_H__
 
 #define     CPOST_VERSION               "1.0.3"
+
 #include <stddef.h>
+#include	"STC32G_Timer.h"
 
 #define     CPOST_FLAG_CLEAR_FRONT      0           // post列表中，存在相同handler, 清除之前的post
 #define     CPOST_FLAG_CANCEL_CURRENT   1           // post列表中，存在相同handler, 取消当前post
@@ -29,12 +31,18 @@
 /**
  * @brief 获取系统tick函数
  */
-#define     CPOST_GET_TICK()            0
+#define     CPOST_GET_TICK()            T0_Get_TIck()
 
 /**
  * @brief tick最大值
  */
-#define     CPOST_MAX_TICK              0xFFFFFFFF
+#define     CPOST_MAX_TICK              0xFFFF
+
+struct Attrs
+{
+unsigned char flag : 2;         //结构体位段定义两个位存状态,flag表示当添加相同handler的时候应该如何处理，
+unsigned char paramDiff: 1;     //paramdiff表示进行比较handler是否相等时考虑参数与否        
+};
 
 typedef struct
 {
@@ -49,11 +57,9 @@ typedef struct
     void *handler;
     void *param;
     size_t delay;
-    struct {
-        unsigned char flag : 2;         //结构体位段定义两个位存状态
-        unsigned char paramDiff: 1;
-    } attrs;
+    struct Attrs attrs;
 } CpostParam;
+
 
 /**
  * @brief cpsot
@@ -66,8 +72,8 @@ typedef struct
  *       在中断中按照个数抛出任务
  * @return signed char 0 成功 -1 失败
  */
-#define cpost(...) \
-        cpostAddHandler(&((CpostParam){__VA_ARGS__}))   //宏定义传递可变参数
+#define cpost(handler,param,delay,flag,paramdiff) \
+        cpostAddHandler(cpostparaminit(handler,param,delay,flag,paramdiff))   //宏定义传递可变参数
 // #define cpost(arg...) 
 //         cpostAddHandler(&((CpostParam){arg}))   //等价用arg代替
 #define cpostDelay(_handler, _delay) \
@@ -78,6 +84,8 @@ typedef struct
 
 #define cpostDelayEx(_handler, _param, _delay) \
         cpost(_handler, _param, _delay)
+
+CpostParam * cpostparaminit(void * handler,void * param,size_t delay,unsigned char flag,unsigned char paramDiff);
 
 signed char cpostAddHandler(CpostParam *param);
 
