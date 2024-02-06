@@ -1,3 +1,10 @@
+#this will ignore project buffer file
+project/STC32G.uvgui.Damon
+project/STC32G.uvgui.wanggood
+project/STC32G.uvguix.wanggood
+project/STC32G.uvopt
+project/STC32G.uvoptx
+
 # This will ignore listing documents
 project/List/*
 
@@ -6,9 +13,3 @@ project/List/*
 !project/List/*.hex
 
 
-#this will ignore project buffer file
-project/STC32G.uvgui.Damon
-project/STC32G.uvgui.wanggood
-project/STC32G.uvguix.wanggood
-project/STC32G.uvopt
-project/STC32G.uvoptx
