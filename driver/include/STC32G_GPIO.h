@@ -199,7 +199,7 @@
 typedef struct
 {
 	u8	Mode;		//IO模式,  		GPIO_PullUp,GPIO_HighZ,GPIO_OUT_OD,GPIO_OUT_PP
-	u8	Pin;		//要设置的端口	
+	u8	Pin;		//要设置的端口
 } GPIO_InitTypeDef;
 
 u8	GPIO_Inilize(u8 GPIO, GPIO_InitTypeDef *GPIOx);

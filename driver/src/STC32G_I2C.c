@@ -29,18 +29,18 @@ void I2C_Init(I2C_InitTypeDef *I2Cx)
 {
 	if(I2Cx->I2C_Mode == I2C_Mode_Master)
 	{
-		I2C_Master();			//设为主机	
-		I2CMSST = 0x00;		//清除I2C主机状态寄存器
+		I2C_Master();						//设为主机	
+		I2CMSST = 0x00;						//清除I2C主机状态寄存器
 		I2C_SetSpeed(I2Cx->I2C_Speed);
-		if(I2Cx->I2C_MS_WDTA == ENABLE)		I2C_WDTA_EN();	//使能自动发送
-		else									I2C_WDTA_DIS();	//禁止自动发送
+		if(I2Cx->I2C_MS_WDTA == ENABLE)		I2C_WDTA_EN();				//使能自动发送
+		else									I2C_WDTA_DIS();			//禁止自动发送
 	}
 	else
 	{
-		I2C_Slave();	//设为从机
-		I2CSLST = 0x00;		//清除I2C从机状态寄存器
+		I2C_Slave();						//设为从机
+		I2CSLST = 0x00;						//清除I2C从机状态寄存器
 		I2C_Address(I2Cx->I2C_SL_ADR);
-		if(I2Cx->I2C_SL_MA == ENABLE)		I2C_MATCH_EN();	//从机地址比较功能，只接受相匹配地址
+		if(I2Cx->I2C_SL_MA == ENABLE)		I2C_MATCH_EN();			//从机地址比较功能，只接受相匹配地址
 		else									I2C_MATCH_DIS();	//禁止从机地址比较功能，接受所有设备地址
 	}
 	

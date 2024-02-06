@@ -326,14 +326,14 @@
           <GroupName>LIB</GroupName>
           <Files>
             <File>
-              <FileName>STC32_MDU32_V1.1.LIB</FileName>
-              <FileType>4</FileType>
-              <FilePath>W:\programming\Keil\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
-            </File>
-            <File>
               <FileName>stc_usb_hid_32.LIB</FileName>
               <FileType>4</FileType>
-              <FilePath>W:\programming\Keil\driver\lib\stc_usb_hid_32.LIB</FilePath>
+              <FilePath>..\driver\lib\stc_usb_hid_32.LIB</FilePath>
+            </File>
+            <File>
+              <FileName>STC32_MDU32_V1.1.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
             </File>
           </Files>
         </Group>
@@ -938,9 +938,15 @@
               <FilePath>..\user\include\pid.h</FilePath>
             </File>
             <File>
+<<<<<<< HEAD
+              <FileName>mpu6050.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\user\include\mpu6050.h</FilePath>
+=======
               <FileName>interupt.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
+>>>>>>> origin/master
             </File>
           </Files>
         </Group>
@@ -978,6 +984,11 @@
               <FilePath>..\user\src\pid.c</FilePath>
             </File>
             <File>
+<<<<<<< HEAD
+              <FileName>mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\mpu6050.c</FilePath>
+=======
               <FileName>callback.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\callback.c</FilePath>
@@ -1021,6 +1032,7 @@
                   </C251>
                 </File251>
               </FileOption>
+>>>>>>> origin/master
             </File>
           </Files>
         </Group>

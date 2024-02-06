@@ -16,7 +16,7 @@
 extern "C"{
 #endif
 
-
+// PID常数
     typedef struct pid_calibration {
         /*
          * struct PID_Calibration
@@ -30,7 +30,7 @@ extern "C"{
         float kd; // Derivative gain
     } PID_Calibration;
 
-
+// PID当前状态，输入值
     typedef struct pid_state {
         /*
          * struct PID_State
@@ -42,11 +42,11 @@ extern "C"{
          * NOTE: The output field in this struct is set by the PID algorithm function, and
          * is ignored in the actual calculations.
          */
-        float actual; // The actual reading as measured
-        float target; // The desired reading
+        float actual; // 测量的真实值
+        float target; // 目标值
         float time_delta; // Time since last sample/calculation - should be set when updating state
-        // The previously calculated error between actual and target (zero initially)
-        float previous_error;
+        
+        float previous_error;	// The previously calculated error between actual and target (zero initially)
         float integral; // Sum of integral error over time
         float output; // the modified output value calculated by the algorithm, to compensate for error
     } PID_State;

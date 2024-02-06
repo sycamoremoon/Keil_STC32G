@@ -1,4 +1,3 @@
-
 /*==========电机驱动头文件============*/
 
 #ifndef __MOTOR_H__
@@ -22,6 +21,7 @@ void GPIO_Motor_Init();
 void motor_init(u8 PWMx);				//初始化电机
 void Set_Lmotor_Speed(float speed);		//设置左电机速度
 void Set_Rmotor_Speed(float speed);		//设置右电机速度	
+
 
 
 #endif

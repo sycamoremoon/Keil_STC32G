@@ -700,7 +700,7 @@
 #define PWM_UIE     0x01
 
 typedef struct
-{ 
+{
 	u8	PWM_Mode;			//模式,   CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
 	u16	PWM_Period;		//周期时间,   0~65535
 	u16	PWM_Duty;			//占空比时间, 0~Period
@@ -713,6 +713,7 @@ typedef struct
 	u8	PWM_CEN_Enable;		//使能计数器, ENABLE,DISABLE
 	u8	PWM_MainOutEnable;//主输出使能,  ENABLE,DISABLE
 } PWMx_InitDefine; 
+
 
 typedef struct
 { 
@@ -737,11 +738,11 @@ typedef struct
 } HSPWMx_InitDefine; 
 
 
-u8	PWM_Configuration(u8 PWM, PWMx_InitDefine *PWMx);
-void UpdatePwm(u8 PWM, PWMx_Duty *PWMx);
+u8 PWM_Configuration(u8 PWM, PWMx_InitDefine *PWMx);		// PWM初始化程序
+void UpdatePwm(u8 PWM, PWMx_Duty *PWMx);					// PWM占空比更新程序
 
-void HSPWM_Configuration(u8 PWM, HSPWMx_InitDefine *PWMx, PWMx_Duty *DUTYx);
-void UpdateHSPwm(u8 PWM, PWMx_Duty *PWMx);
+void HSPWM_Configuration(u8 PWM, HSPWMx_InitDefine *PWMx, PWMx_Duty *DUTYx);	// HSPWM初始化程序
+void UpdateHSPwm(u8 PWM, PWMx_Duty *PWMx);										// HSPWM占空比更新程序
 
 #endif
 
