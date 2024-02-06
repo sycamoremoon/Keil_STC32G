@@ -1,9 +1,6 @@
 #this will ignore project buffer file
-project/STC32G.uvgui.Damon
-project/STC32G.uvgui.wanggood
-project/STC32G.uvguix.wanggood
-project/STC32G.uvopt
-project/STC32G.uvoptx
+project/STC32G.*
+!project/STC32G.uvproj
 
 # This will ignore listing documents
 project/List/*
