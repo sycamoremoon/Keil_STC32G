@@ -1,6 +1,8 @@
 #include "config.h"
 #include "motor.h"
 
+#define	PWM_Peri	65535	// PWM周期设定
+
 Motor *motor;				// 定义电机结构体
 PWMx_Duty *pwmA_duty;		// 定义PWMA结构体
 
@@ -71,7 +73,7 @@ void motor_init(u8 PWMx)
 	//NVIC_PWM_Init(PWMA,DISABLE,Priority_0); 					// PWM 中断关闭, 优先级 0 级
 	
 	// 初始化 GPIO，全部设置为准双向口
-	GPIO_Motor_Init();
+	GPIO_PU_All_Init();
 	
 }
 
@@ -93,7 +95,7 @@ void Set_Lmotor_Speed(float speed)
         speed = 100;	    
 
 	// 计算占空比，假设PWM的范围是0到255
-    duty_cycle = (speed * 255) / 100; 
+    duty_cycle = (speed * PWM_Peri) / 100; 
 
 	// 判断计算出的占空比输出到哪个PWM通道
 	if(motor->pwm_pin == PWM1)
@@ -128,7 +130,7 @@ void Set_Rmotor_Speed(float speed)
         speed = 100;	    
 
 	// 计算占空比，假设PWM的范围是0到255
-    duty_cycle = (speed * 255) / 100; 
+    duty_cycle = (speed * PWM_Peri) / 100; 
 
 	// 判断占空比duty_cycle输出到哪个PWM通道
 	if(motor->pwm_pin == PWM3)
@@ -152,7 +154,8 @@ void Set_Rmotor_Speed(float speed)
 //  @since      v1.0
 //  Sample usage:
 //-------------------------------------------------------------------------------------------------------------------
-void GPIO_Motor_Init(void)
+void GPIO_PU_All_Init(void)
 {
 
+	
 }

@@ -326,14 +326,14 @@
           <GroupName>LIB</GroupName>
           <Files>
             <File>
-              <FileName>STC32_MDU32_V1.1.LIB</FileName>
-              <FileType>4</FileType>
-              <FilePath>W:\programming\Keil\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
-            </File>
-            <File>
               <FileName>stc_usb_hid_32.LIB</FileName>
               <FileType>4</FileType>
-              <FilePath>W:\programming\Keil\driver\lib\stc_usb_hid_32.LIB</FilePath>
+              <FilePath>..\driver\lib\stc_usb_hid_32.LIB</FilePath>
+            </File>
+            <File>
+              <FileName>STC32_MDU32_V1.1.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
             </File>
           </Files>
         </Group>

@@ -4,3 +4,11 @@ project/List/*
 #But save .hex
 
 !project/List/*.hex
+
+
+#this will ignore project buffer file
+project/STC32G.uvgui.Damon
+project/STC32G.uvgui.wanggood
+project/STC32G.uvguix.wanggood
+project/STC32G.uvopt
+project/STC32G.uvoptx
