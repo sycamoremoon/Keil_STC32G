@@ -28,8 +28,8 @@ u8 WakeUpSource;
 void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-//	P00 = ~P00;
-	WakeUpSource = 1;
+	char * num = 3;
+	cpost(turn_on,num,0,0,0);
 }
 
 //========================================================================
@@ -42,8 +42,9 @@ void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 void INT1_ISR_Handler (void) interrupt INT1_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-//	P01 = ~P01;
-	WakeUpSource = 2;
+	char * num =  3;
+	cpost(turn_off,num,0,0,0); 
+
 }
 
 //========================================================================

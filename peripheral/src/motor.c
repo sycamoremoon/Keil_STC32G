@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "config.h"
 #include "motor.h"
 
@@ -156,12 +157,6 @@ void Set_Rmotor_Speed(float speed)
 //-------------------------------------------------------------------------------------------------------------------
 void GPIO_PU_All_Init(void)
 {
-	P0_MODE_IO_PU(GPIO_Pin_All);
-	P1_MODE_IO_PU(GPIO_Pin_All);
-	P2_MODE_IO_PU(GPIO_Pin_All);
-	P3_MODE_IO_PU(GPIO_Pin_All);
-	P4_MODE_IO_PU(GPIO_Pin_All);
-	P5_MODE_IO_PU(GPIO_Pin_All);
-	P6_MODE_IO_PU(GPIO_Pin_All);
-	P7_MODE_IO_PU(GPIO_Pin_All);
+
+	
 }

@@ -195,7 +195,7 @@
             <uocRom>0</uocRom>
             <uocXRAM>0</uocXRAM>
             <uSrcBin>1</uSrcBin>
-            <uFrame4>0</uFrame4>
+            <uFrame4>1</uFrame4>
             <hadIRAM>1</hadIRAM>
             <hadXRAM>1</hadXRAM>
             <hadIROM>1</hadIROM>
@@ -265,7 +265,7 @@
             <uFlt64>0</uFlt64>
             <Fuzzy>3</Fuzzy>
             <Optim>7</Optim>
-            <wLevel>2</wLevel>
+            <wLevel>0</wLevel>
             <SizSpd>1</SizSpd>
             <AcaOpt>0</AcaOpt>
             <VariousControls>
@@ -296,14 +296,15 @@
             <DataOverlaying>1</DataOverlaying>
             <OverlayString></OverlayString>
             <MiscControls></MiscControls>
-            <DisableWarningNumbers>57,16</DisableWarningNumbers>
+            <DisableWarningNumbers>57,16,15</DisableWarningNumbers>
             <LinkerCmdFile></LinkerCmdFile>
             <Assign></Assign>
             <ReserveString></ReserveString>
             <CClasses></CClasses>
-            <UserClasses></UserClasses>
+            <UserClasses>XDATA(0x10000-0x11FFF)
+</UserClasses>
             <CSection></CSection>
-            <UserSection></UserSection>
+            <UserSection>?ED?CEVENT?SCREEN(0x800),?ED?CEVENT?MAIN</UserSection>
             <CodeBaseAddress></CodeBaseAddress>
             <XDataBaseAddress></XDataBaseAddress>
             <PDataBaseAddress></PDataBaseAddress>
@@ -645,6 +646,46 @@
               <FileName>STC32G_Exti_Isr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\driver\isr\STC32G_Exti_Isr.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251>
+                  <C251>
+                    <RegColor>2</RegColor>
+                    <uOrder>2</uOrder>
+                    <uAlias>2</uAlias>
+                    <uRentF>2</uRentF>
+                    <uUch>2</uUch>
+                    <uFlt64>2</uFlt64>
+                    <Fuzzy>8</Fuzzy>
+                    <Optim>10</Optim>
+                    <wLevel>4</wLevel>
+                    <SizSpd>2</SizSpd>
+                    <AcaOpt>2</AcaOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </C251>
+                </File251>
+              </FileOption>
             </File>
             <File>
               <FileName>STC32G_GPIO_Isr.c</FileName>
@@ -680,6 +721,46 @@
               <FileName>STC32G_SPI_Isr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\driver\isr\STC32G_SPI_Isr.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251>
+                  <C251>
+                    <RegColor>2</RegColor>
+                    <uOrder>2</uOrder>
+                    <uAlias>2</uAlias>
+                    <uRentF>2</uRentF>
+                    <uUch>2</uUch>
+                    <uFlt64>2</uFlt64>
+                    <Fuzzy>8</Fuzzy>
+                    <Optim>10</Optim>
+                    <wLevel>4</wLevel>
+                    <SizSpd>2</SizSpd>
+                    <AcaOpt>2</AcaOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </C251>
+                </File251>
+              </FileOption>
             </File>
             <File>
               <FileName>STC32G_Timer_Isr.c</FileName>
@@ -690,6 +771,46 @@
               <FileName>STC32G_UART_Isr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\driver\isr\STC32G_UART_Isr.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251>
+                  <C251>
+                    <RegColor>2</RegColor>
+                    <uOrder>2</uOrder>
+                    <uAlias>2</uAlias>
+                    <uRentF>2</uRentF>
+                    <uUch>2</uUch>
+                    <uFlt64>2</uFlt64>
+                    <Fuzzy>8</Fuzzy>
+                    <Optim>10</Optim>
+                    <wLevel>4</wLevel>
+                    <SizSpd>2</SizSpd>
+                    <AcaOpt>2</AcaOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </C251>
+                </File251>
+              </FileOption>
             </File>
           </Files>
         </Group>
@@ -705,6 +826,86 @@
               <FileName>motor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\gpio.h</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\encoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\encoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>exti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\exti.h</FilePath>
+            </File>
+            <File>
+              <FileName>gyroscope.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\gyroscope.c</FilePath>
+            </File>
+            <File>
+              <FileName>gyroscope.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\gyroscope.h</FilePath>
+            </File>
+            <File>
+              <FileName>screen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\screen.c</FilePath>
+            </File>
+            <File>
+              <FileName>screen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\screen.h</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>signal_acq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\signal_acq.c</FilePath>
+            </File>
+            <File>
+              <FileName>signal_acq.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\signal_acq.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -737,9 +938,15 @@
               <FilePath>..\user\include\pid.h</FilePath>
             </File>
             <File>
+<<<<<<< HEAD
               <FileName>mpu6050.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user\include\mpu6050.h</FilePath>
+=======
+              <FileName>interupt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\user\include\interupt.h</FilePath>
+>>>>>>> origin/master
             </File>
           </Files>
         </Group>
@@ -777,9 +984,55 @@
               <FilePath>..\user\src\pid.c</FilePath>
             </File>
             <File>
+<<<<<<< HEAD
               <FileName>mpu6050.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\mpu6050.c</FilePath>
+=======
+              <FileName>callback.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\callback.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251>
+                  <C251>
+                    <RegColor>2</RegColor>
+                    <uOrder>2</uOrder>
+                    <uAlias>2</uAlias>
+                    <uRentF>2</uRentF>
+                    <uUch>2</uUch>
+                    <uFlt64>2</uFlt64>
+                    <Fuzzy>8</Fuzzy>
+                    <Optim>10</Optim>
+                    <wLevel>4</wLevel>
+                    <SizSpd>2</SizSpd>
+                    <AcaOpt>2</AcaOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </C251>
+                </File251>
+              </FileOption>
+>>>>>>> origin/master
             </File>
           </Files>
         </Group>
