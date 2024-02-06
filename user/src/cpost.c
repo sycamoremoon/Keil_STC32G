@@ -13,7 +13,6 @@
 
 CpostHandler cposhHandlers[CPOST_MAX_HANDLER_SIZE] = {0};           //定义了一个总的句柄合集
 
-
 /**
  * @brief cpost 添加handler
  * 
@@ -139,4 +138,28 @@ void cpostProcess(void)
             }
         }
     }
+}
+
+
+/*
+*   @brief cpostparam 结构体生成
+*	目前只支持用地址传递一个参数
+*/
+CpostParam * cpostparaminit(void * handler,void * param,size_t delay,unsigned char flag,unsigned char paramDiff)
+{
+	CpostParam cpostparam;                 //定义了一个参数结构体
+    size_t i;
+    for ( i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
+    {
+        if (cposhHandlers[i].handler == NULL)
+        {
+            cpostparam.handler = handler;
+            cpostparam.param = param;
+            cpostparam.delay = delay;
+            cpostparam.attrs.flag = flag;
+            cpostparam.attrs.paramDiff = paramDiff;
+            return &cpostparam;
+        }
+    }
+    return 0;
 }

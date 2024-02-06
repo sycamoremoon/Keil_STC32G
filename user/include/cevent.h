@@ -31,12 +31,16 @@
  */
 #define     CEVENT_BUFFER_SIZE      64
 
+#if defined (__C251__) || (__C51__)
+#define ABSOLUTE_ADDR       0x0800
+#endif
+
 /**
  * @brief 内存分配函数
  *        `CEVENT_SPEED_OPTIMIZE` 打开且 `CEVENT_BUFFER_SIZE` 配置为 `0` 时，
  *        需要配置这个宏
  */
-#define     CEVENT_MALLOC(x)        0
+#define     CEVENT_MALLOC(x)        
 
 #ifndef SECTION
     #if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && __ARMCC_VERSION >= 6000000)
@@ -55,10 +59,20 @@
  * 
  * @param _event 事件
  * @param _func 注册函数
- * @param ... 参数,参数传递的时候要以地址的形式传递
+ * @param _params参数,参数传递的时候要以地址的形式传递
  * @note cEventParam##_event##_func和cEvent##_event##_func是定义的两个变量，一个是存放指针的数组，一个是类型为Cevent的变量
  */
-#define CEVENT_EXPORT(_event, _func, ...) \
+#if defined (__C251__) || (__C51__)
+    #define CEVENT_EXPORT(_event, _func, ...) \
+        void * xdata cEventParam##_event##_func[] = {(void *)_func,##__VA_ARGS__}; \
+		CEvent edata cEvent##_event##_func = \
+        { \
+            cEventParam##_event##_func, \
+            sizeof(cEventParam##_event##_func) / sizeof(void *), \
+            _event, \
+        }
+#else 
+    #define CEVENT_EXPORT(_event, _func, ...) \
         const void *cEventParam##_event##_func[] = {(void *)_func, ##__VA_ARGS__}; \
         const CEvent SECTION("cEvent") cEvent##_event##_func = \
         { \
@@ -66,7 +80,7 @@
             .paramNum = sizeof(cEventParam##_event##_func) / sizeof(void *), \
             .event = _event, \
         }
-
+#endif
 /**
  * @brief 导出事件(解决命名冲突)
  *        一般情况下不需要调用这个宏导出事件，当需要对同一个事件调用同一个函数时
@@ -77,29 +91,42 @@
  * @param _func 注册函数
  * @param ... 参数
  */
-#define CEVENT_EXPORT_ALIAS(_alias, _event, _func, ...) \
-        const void *cEventParam##_event##_func##_alias[] = {(void *)_func, ##__VA_ARGS__}; \
-        const CEvent SECTION("cEvent") cEvent##_event##_func##_alias = \
+#if defined (__C251__) || (__C51__)
+    #define CEVENT_EXPORT_ALIAS(_alias,_event, _func, ...) \
+        const void * xdata cEventParam##_event##_func##_alias[] = {(void *)_func, ##__VA_ARGS__}; \
+        const  cEvent##_event##_func##_alias = \
         { \
-            .param = cEventParam##_event##_func##_alias, \
-            .paramNum = sizeof(cEventParam##_event##_func##_alias) / sizeof(void *), \
-            .event = _event, \
+            param = cEventParam##_event##_func##_alias, \
+            paramNum = sizeof(cEventParam##_event##_func##_alias) / sizeof(void *), \
+            event = _event, \
         }
+#else 
+    #define CEVENT_EXPORT_ALIAS(_alias, _event, _func, ...) \
+            const void *cEventParam##_event##_func##_alias[] = {(void *)_func, ##__VA_ARGS__}; \
+            const CEvent SECTION("cEvent") cEvent##_event##_func##_alias = \
+            { \
+                .param = cEventParam##_event##_func##_alias, \
+                .paramNum = sizeof(cEventParam##_event##_func##_alias) / sizeof(void *), \
+                .event = _event, \
+            }
+#endif
 
 /**
  * @brief CEvent
  */
 typedef struct 
 {
-    const void **param;                         /**< 参数(包括函数)指向一个数组，数组中存放了指向函数地址的指针和指向参数的指针 */
-    const unsigned char paramNum;               /**< 参数数量 */
-    const unsigned short event;                 /**< 监听事件 */
+    void **param;                         /**< 参数(包括函数)指向一个数组，数组中存放了指向函数地址的指针和指向参数的指针 */
+    unsigned char paramNum;               /**< 参数数量 */
+    unsigned short event;                 /**< 监听事件 */
 } CEvent;
 
+CEvent setparams(void ** params,const unsigned short _event);
+
+unsigned char get_lastcevent(CEvent* event_list);
 
 void ceventInit(void);
 
 void ceventPost(unsigned short event);
-
 #endif
 

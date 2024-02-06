@@ -1,0 +1,15 @@
+{
+    "editor.tabSize": 4,
+    "files.associations": {
+        "cpost.h": "c",
+        "stc32g_timer.h": "c",
+        "config.h": "c",
+        "STC32G.H": "cpp",
+        "INTRINS.H": "cpp",
+        "signal.h": "c",
+        "signal_smp.h": "c",
+        "signal_acq.h": "c",
+        "screen.h": "c",
+        "stc32g_spi.h": "c"
+    }
+}

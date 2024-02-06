@@ -1,6 +1,12 @@
+#this will ignore project buffer file
+project/STC32G.*
+!project/STC32G.uvproj
+
 # This will ignore listing documents
 project/List/*
 
 #But save .hex
 
 !project/List/*.hex
+
+

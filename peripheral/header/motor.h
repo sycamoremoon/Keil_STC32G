@@ -1,5 +1,7 @@
-#ifndef __motor_H__
-#define __motor_H__
+/*==========电机驱动头文件============*/
+
+#ifndef __MOTOR_H__
+#define __MOTOR_H__
 
 #include "config.h"
 
@@ -11,7 +13,7 @@ typedef struct {
 } Motor;
 
 // 内部函数声明	用户无需关心
-void GPIO_PU_All_Init();
+void GPIO_Motor_Init();
 
 
 
@@ -19,6 +21,7 @@ void GPIO_PU_All_Init();
 void motor_init(u8 PWMx);				//初始化电机
 void Set_Lmotor_Speed(float speed);		//设置左电机速度
 void Set_Rmotor_Speed(float speed);		//设置右电机速度	
+
 
 
 #endif
