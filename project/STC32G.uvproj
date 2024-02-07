@@ -942,6 +942,11 @@
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
             </File>
+            <File>
+              <FileName>Kalman_Filter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\user\include\Kalman_Filter.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1021,6 +1026,11 @@
                   </C251>
                 </File251>
               </FileOption>
+            </File>
+            <File>
+              <FileName>Kalman_Filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\Kalman_Filter.c</FilePath>
             </File>
           </Files>
         </Group>
