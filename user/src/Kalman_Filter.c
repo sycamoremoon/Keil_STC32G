@@ -1,11 +1,11 @@
 #include "Kalman_Filter.h"
 #include <math.h> 
 
-// 卡尔曼滤波器参数
+/* 卡尔曼滤波器参数 */
 #define Q_angle		0.001		// 角度的测量噪声方差
 #define Q_bias		0.003		// 角速度偏差的测量噪声方差
 #define R_measure	0.03		// 测量的噪声方差
-// 定义全局变量，同时初始化
+/* 定义全局变量，同时初始化 */
 float angle = 0; 					// 卡尔曼滤波器计算的角度
 float bias = 0;  					// 卡尔曼滤波器计算的陀螺仪偏置
 float P_Filt[2][2] = {{0, 0}, {0, 0}}; 	// 误差协方差矩阵
@@ -16,9 +16,9 @@ float P_Filt[2][2] = {{0, 0}, {0, 0}}; 	// 误差协方差矩阵
 //  @param      newAngle	陀螺仪测量得到的新角度值
 //  @param      newRate		陀螺仪测量得到的新角速度值
 //  @param      dt			时间间隔，表示两次测量之间的时间差，通常以秒为单位。
-//  @return     		
+//  @return     void
 //  @since      v1.0
-//  Sample usage:				
+//  Sample usage:			KalmanFilter(accel_angle, gyroX_real,0.01); 调用滤波后可直接引用全局变量angle	
 //-------------------------------------------------------------------------------------------------------------------
 void KalmanFilter(float newAngle, float newRate, float dt)
 {
