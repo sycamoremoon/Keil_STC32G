@@ -73,7 +73,7 @@ void motor_init(u8 PWMx)
 	//NVIC_PWM_Init(PWMA,DISABLE,Priority_0); 					// PWM 中断关闭, 优先级 0 级
 	
 	// 初始化 GPIO，全部设置为准双向口
-	GPIO_PU_All_Init();
+	GPIO_PU_Init();
 	
 }
 
@@ -148,14 +148,13 @@ void Set_Rmotor_Speed(float speed)
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      初始化所有IO口为准双向口	内部调用，用户无需关心
+//  @brief      初始化IO口为准双向口	内部调用，用户无需关心
 //  @param      void
 //  @return     void					
 //  @since      v1.0
 //  Sample usage:
 //-------------------------------------------------------------------------------------------------------------------
-void GPIO_PU_All_Init(void)
+void GPIO_PU_Init(void)
 {
-
-	
+	P6_MODE_IO_PU(GPIO_Pin_All);	
 }

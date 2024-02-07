@@ -42,7 +42,7 @@
 #include 	"STC32G_PWM.h"
 #include  	"stc32_stc8_usb.h"
 #include 	"STC32G_PWM.h"
-#include 	"mpu6050.h"
+// #include 	"mpu6050.h"
 
 /******************************系统头文件*************************************/
 #include <stdlib.h>
@@ -62,7 +62,8 @@
 
 
 /******************************基本参数*************************************/
-
+#define	PI	3.1416
+#define G	9.8
 
 
 #endif

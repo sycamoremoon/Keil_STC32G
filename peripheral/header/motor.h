@@ -13,7 +13,7 @@ typedef struct {
 } Motor;
 
 // 内部函数声明	用户无需关心
-void GPIO_Motor_Init();
+void GPIO_PU_Init();
 
 
 
