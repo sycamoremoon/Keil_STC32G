@@ -5,6 +5,9 @@ project/STC32G.*
 # This will ignore listing documents
 project/List/*
 
+#But save .hex
+
+!project/List/blank
 
 #this will ignore vscode dir
 
