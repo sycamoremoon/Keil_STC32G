@@ -53,5 +53,24 @@ typedef unsigned long   uint32; // 32 bits
 #define FAIL		-1
 
 //========================================================================
+/////////////////////////////////////////////////
+
+#define T22M_ADDR CHIPID11 //22.1184MHz
+#define T24M_ADDR CHIPID12 //24MHz
+#define T27M_ADDR CHIPID13 //27MHz
+#define T30M_ADDR CHIPID14 //30MHz
+#define T33M_ADDR CHIPID15 //33.1776MHz
+#define T35M_ADDR CHIPID16 //35MHz
+#define T36M_ADDR CHIPID17 //36.864MHz
+#define T40M_ADDR CHIPID18 //40MHz
+#define T44M_ADDR CHIPID19 //44.2368MHz
+#define T48M_ADDR CHIPID20 //48MHz
+#define VRT6M_ADDR CHIPID21 //VRTRIM_6M
+#define VRT10M_ADDR CHIPID22 //VRTRIM_10M
+#define VRT27M_ADDR CHIPID23 //VRTRIM_27M
+#define VRT44M_ADDR CHIPID24 //VRTRIM_44M
+
 
 #endif
+
+

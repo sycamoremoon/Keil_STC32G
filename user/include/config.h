@@ -16,12 +16,15 @@
 //========================================================================
 //                               主时钟定义
 //========================================================================
-
+//MAIN_FOSC可选值:35000000, 33177600, 30000000, 27000000. 24000000, 22118400
 #define MAIN_Fosc		22118400L	//定义主时钟
-//#define MAIN_Fosc		12000000L	//定义主时钟
-//#define MAIN_Fosc		11059200L	//定义主时钟
-//#define MAIN_Fosc		 5529600L	//定义主时钟
 //#define MAIN_Fosc		24000000L	//定义主时钟
+//#define MAIN_Fosc		27000000L	//定义主时钟
+//#define MAIN_Fosc		 30000000L	//定义主时钟
+//#define MAIN_Fosc		35000000L	//定义主时钟
+//#define MAIN_Fosc		33177600L	//定义主时钟	// FOSC的值设置为33.1776Mhz,
+													// 使用STC-ISP软件下载的时候，
+													// 此频率需要跟STC-ISP软件中的 <输入用户程序运行时的IRC频率>选项的频率一致。
 
 //========================================================================
 //                                头文件
@@ -32,7 +35,7 @@
 #include	"STC32G_GPIO.h"
 #include	"STC32G_Delay.h"
 #include	"STC32G_Exti.h"
-#include	"STC32G_UART.h"
+#include	"STC32G_UART.h"						
 #include	"STC32G_NVIC.h"
 #include	"STC32G_Switch.h"
 #include	"STC32G_Timer.h"
@@ -42,7 +45,6 @@
 #include 	"STC32G_PWM.h"
 #include  	"stc32_stc8_usb.h"
 #include 	"STC32G_PWM.h"
-// #include 	"mpu6050.h"
 
 /******************************系统头文件*************************************/
 #include <stdlib.h>
@@ -53,7 +55,6 @@
 #include "cpost.h"
 #include "cevent.h"
 #include "interupt.h"
-
 
 //========================================================================
 //                             外部函数和变量声明
