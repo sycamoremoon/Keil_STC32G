@@ -3,12 +3,13 @@
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
 static float All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
 
-/// @brief 初始化ADC信号采集模块,以及使用DMA数据传输
-/// @param GPIO_PX 	选择IO为P1或者P0
-/// @param GPIO_pin 选择需要初始化的引脚号
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,Signal_Acq_Init,GPIO_P1,0x7F);
 //#pragma userclass (near=default)
+
+/// @brief 初始化ADC信号采集模块,以及使用DMA数据传输
+/// @param GPIO_PX 	选择IO为P1或者P0
+/// @param GPIO_pin 选择需要初始化的引脚号
 void Signal_Acq_Init(unsigned char GPIO_PX, unsigned int GPIO_pin)
 {
     ADC_InitTypeDef		ADC_InitStructure;		//结构定义

@@ -9,4 +9,6 @@ project/List/*
 
 !project/List/*.hex
 
+#this will ignore vscode dir
 
+.vscode/
