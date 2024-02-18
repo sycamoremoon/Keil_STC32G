@@ -156,5 +156,5 @@ void Set_Rmotor_Speed(float speed)
 //-------------------------------------------------------------------------------------------------------------------
 void GPIO_PU_Init(void)
 {
-	P6_MODE_IO_PU(GPIO_Pin_All);	
+	P6_MODE_IO_PU(GPIO_Pin_All);	// P6.0~P6.7 设置为准双向口
 }
