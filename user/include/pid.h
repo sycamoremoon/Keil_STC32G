@@ -42,13 +42,13 @@ extern "C"{
          * NOTE: The output field in this struct is set by the PID algorithm function, and
          * is ignored in the actual calculations.
          */
-        float actual; // 测量的真实值
-        float target; // 目标值
-        float time_delta; // Time since last sample/calculation - should be set when updating state
+        unsigned int actual; // 测量的真实值
+        unsigned int target; // 目标值
+        unsigned int time_delta; // Time since last sample/calculation - should be set when updating state
         
-        float previous_error;	// The previously calculated error between actual and target (zero initially)
-        float integral; // Sum of integral error over time
-        float output; // the modified output value calculated by the algorithm, to compensate for error
+        unsigned int previous_error;	// The previously calculated error between actual and target (zero initially)
+        unsigned int integral; // Sum of integral error over time
+        unsigned int output; // the modified output value calculated by the algorithm, to compensate for error
     } PID_State;
 
 

@@ -304,7 +304,7 @@
             <UserClasses>XDATA(0x10000-0x11FFF)
 </UserClasses>
             <CSection></CSection>
-            <UserSection>?ED?CEVENT?SCREEN(0x800),?ED?CEVENT?MAIN</UserSection>
+            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?MAIN</UserSection>
             <CodeBaseAddress></CodeBaseAddress>
             <XDataBaseAddress></XDataBaseAddress>
             <PDataBaseAddress></PDataBaseAddress>
@@ -326,14 +326,14 @@
           <GroupName>LIB</GroupName>
           <Files>
             <File>
-              <FileName>stc_usb_hid_32.LIB</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\driver\lib\stc_usb_hid_32.LIB</FilePath>
-            </File>
-            <File>
               <FileName>STC32_MDU32_V1.1.LIB</FileName>
               <FileType>4</FileType>
-              <FilePath>..\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
+              <FilePath>W:\programming\Keil\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
+            </File>
+            <File>
+              <FileName>stc_usb_hid_32.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>W:\programming\Keil\driver\lib\stc_usb_hid_32.LIB</FilePath>
             </File>
           </Files>
         </Group>
@@ -766,6 +766,46 @@
               <FileName>STC32G_Timer_Isr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\driver\isr\STC32G_Timer_Isr.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251>
+                  <C251>
+                    <RegColor>2</RegColor>
+                    <uOrder>2</uOrder>
+                    <uAlias>2</uAlias>
+                    <uRentF>2</uRentF>
+                    <uUch>2</uUch>
+                    <uFlt64>2</uFlt64>
+                    <Fuzzy>8</Fuzzy>
+                    <Optim>10</Optim>
+                    <wLevel>4</wLevel>
+                    <SizSpd>2</SizSpd>
+                    <AcaOpt>2</AcaOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </C251>
+                </File251>
+              </FileOption>
             </File>
             <File>
               <FileName>STC32G_UART_Isr.c</FileName>
@@ -826,16 +866,6 @@
               <FileName>motor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\motor.h</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\peripheral\src\gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\peripheral\header\gpio.h</FilePath>
             </File>
             <File>
               <FileName>encoder.c</FileName>
@@ -923,6 +953,11 @@
               <FilePath>..\user\include\config.h</FilePath>
             </File>
             <File>
+              <FileName>board.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\user\include\board.h</FilePath>
+            </File>
+            <File>
               <FileName>cevent.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user\include\cevent.h</FilePath>
@@ -931,6 +966,11 @@
               <FileName>cpost.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user\include\cpost.h</FilePath>
+            </File>
+            <File>
+              <FileName>control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\user\include\control.h</FilePath>
             </File>
             <File>
               <FileName>pid.h</FileName>
@@ -963,6 +1003,11 @@
               <FilePath>..\user\src\isr.asm</FilePath>
             </File>
             <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\board.c</FilePath>
+            </File>
+            <File>
               <FileName>cevent.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\cevent.c</FilePath>
@@ -973,6 +1018,11 @@
               <FilePath>..\user\src\cpost.c</FilePath>
             </File>
             <File>
+              <FileName>control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\control.c</FilePath>
+            </File>
+            <File>
               <FileName>interupt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\interupt.c</FilePath>
@@ -981,51 +1031,6 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>callback.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user\src\callback.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                  <BankNo>65535</BankNo>
-                </CommonProperty>
-                <File251>
-                  <C251>
-                    <RegColor>2</RegColor>
-                    <uOrder>2</uOrder>
-                    <uAlias>2</uAlias>
-                    <uRentF>2</uRentF>
-                    <uUch>2</uUch>
-                    <uFlt64>2</uFlt64>
-                    <Fuzzy>8</Fuzzy>
-                    <Optim>10</Optim>
-                    <wLevel>4</wLevel>
-                    <SizSpd>2</SizSpd>
-                    <AcaOpt>2</AcaOpt>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </C251>
-                </File251>
-              </FileOption>
             </File>
             <File>
               <FileName>Kalman_Filter.c</FileName>
