@@ -33,10 +33,10 @@
           <SFDFile></SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
-          <BinPath></BinPath>
+          <BinPath>D:\Keil5\C251\BIN\</BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath>STC\</RegisterFilePath>
+          <RegisterFilePath></RegisterFilePath>
           <DBRegisterFilePath>STC\</DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
@@ -326,14 +326,14 @@
           <GroupName>LIB</GroupName>
           <Files>
             <File>
-              <FileName>STC32_MDU32_V1.1.LIB</FileName>
-              <FileType>4</FileType>
-              <FilePath>W:\programming\Keil\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
-            </File>
-            <File>
               <FileName>stc_usb_hid_32.LIB</FileName>
               <FileType>4</FileType>
-              <FilePath>W:\programming\Keil\driver\lib\stc_usb_hid_32.LIB</FilePath>
+              <FilePath>..\driver\lib\stc_usb_hid_32.LIB</FilePath>
+            </File>
+            <File>
+              <FileName>STC32_MDU32_V1.1.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
             </File>
           </Files>
         </Group>
@@ -871,6 +871,46 @@
               <FileName>encoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\peripheral\src\encoder.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251>
+                  <C251>
+                    <RegColor>2</RegColor>
+                    <uOrder>2</uOrder>
+                    <uAlias>2</uAlias>
+                    <uRentF>2</uRentF>
+                    <uUch>2</uUch>
+                    <uFlt64>2</uFlt64>
+                    <Fuzzy>8</Fuzzy>
+                    <Optim>10</Optim>
+                    <wLevel>4</wLevel>
+                    <SizSpd>2</SizSpd>
+                    <AcaOpt>2</AcaOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </C251>
+                </File251>
+              </FileOption>
             </File>
             <File>
               <FileName>encoder.h</FileName>
@@ -936,6 +976,16 @@
               <FileName>signal_acq.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\signal_acq.h</FilePath>
+            </File>
+            <File>
+              <FileName>encoder2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\encoder2.c</FilePath>
+            </File>
+            <File>
+              <FileName>encoder2.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\encoder2.h</FilePath>
             </File>
           </Files>
         </Group>

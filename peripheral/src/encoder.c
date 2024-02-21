@@ -42,7 +42,7 @@ void Encoder_Config(void)
 	PWMB_CCER2 = 0x55; 					// 配置通道使能和极性
 	
 //	PWMA_SMCR = 0x01; 					// 编码器模式 1
-//	PWMA_SMCR = 0x02; 					// 编码器模式 2	
+//	PWMA_SMCR = 0x02; 					// 编码器模式 2
 	PWMB_SMCR = 0x03; 					// 编码器模式 3
 	
 	PWMB_IER = 0x02; 					// 使能中断
