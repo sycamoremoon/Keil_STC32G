@@ -1,4 +1,4 @@
-verion :2024/02/05 电机外设驱动更新
+version : 2024/02/05 电机外设驱动更新
 - peripheral文件夹更新：motor.c & motor.h更新
 - 功能更新：通过PWM控制左右两电机的速度
 
@@ -7,3 +7,6 @@ verion :2024/02/07 mpu6050陀螺仪、加速度计、卡尔曼滤波更新
 - user文件夹更新：config.h新增宏定义圆周率PI和重力加速度G
 - peripheral文件夹更新：gyroscope.c & gyroscope.h更新
 - 功能更新：获取三个方向的加速度值；获取角度值
+
+version : 2024/02/21 编码器外设更新
+- peripheral文件夹更新：encoder.c & encoder.h 通过定时器获取外部编码器计数值，并计算出真实速度
