@@ -7,13 +7,13 @@
 
 
 // 内部函数声明	用户无需关心
-void Encoder1_init();
-void Encoder2_init();
-void Encoder1();
-void Encoder2();
+void EncoderL();
+void EncoderR();
 
 //函数原型
 void Encoder_init();
-void Encoder();
+u16 get_EncoderL();
+u16 get_EncoderR();
+
 
 #endif
