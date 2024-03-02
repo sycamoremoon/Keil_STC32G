@@ -493,7 +493,7 @@ void Screen_ShowFloat(uint16 x,uint16 y,u16 font_color, u16 background_color,con
 {
 	uint8 tmp_str[8];
 	
-	sprintf(tmp_str, "%f", flot); // 将整数转换为字符串
+	sprintf(tmp_str, "%.2f", flot); // 将整数转换为字符串
 	Screen_Show_String(x,y,font_color,background_color,tmp_str);
 }
 

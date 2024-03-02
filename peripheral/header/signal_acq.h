@@ -2,20 +2,20 @@
 #define __SIGNAL_ACQ_H__
 
 #include "config.h"
-#define CHANNEL_NUM         7
-#define CONVERT_TIMES       4           //DMA_ADCè½¬åŒ–æ¬¡æ•°
-#define MAX_VOLTAGE         3           //å°è½¦åœ¨èµ›é“ä¸Šèƒ½é‡‡é›†çš„æœ€å¤§ç”µå‹
-#define MIN_VOLTAGE         1           //å°è½¦åœ¨èµ›é“ä¸Šèƒ½é‡‡é›†çš„æœ€å°ç”µå‹
-#define MAX_BIAS          100           //å°è½¦åç§»ä½ç½®çš„æ˜ å°„èŒƒå›´æœ€å¤§å€¼
-#define MIN_BIAS          (-100)          //å°è½¦åç§»ä½ç½®çš„æ˜ å°„èŒƒå›´æœ€å°å€¼
+#define CHANNEL_NUM         1           //Ò»¹²ĞèÒª²É¼¯µÄÍ¨µÀÊıÄ¿
+#define CONVERT_TIMES       4           //DMA_ADC²É¼¯µÄ´ÎÊı
+#define MAX_VOLTAGE         2.5           //Ğ¡³µÄÜ²É¼¯µÄ×î´óµçÑ¹
+#define MIN_VOLTAGE         1.6           //Ğ¡³µÄÜ²É¼¯µÄ×îĞ¡µçÑ¹
+#define MAX_BIAS          100           //±ê×¼»¯ºó±íÊ¾µçÑ¹´óĞ¡µÄ²ÎÊı×î´óÖµ
+#define MIN_BIAS          (-100)        //±ê×¼»¯ºó±íÊ¾µçÑ¹´óĞ¡µÄ×îĞ¡Öµ
 #define RATIO              MAX_BIAS/(MAX_VOLTAGE-MIN_VOLTAGE)*(MAX_VOLTAGE-MIN_VOLTAGE)*(MAX_VOLTAGE-MIN_VOLTAGE)
-                                        //ä»çº¿æ€§ç”µå‹æ•°æ®åˆ°æ˜ å°„èŒƒå›´è½¬åŒ–çš„æ¯”ä¾‹
-#define REF_VOLTAGE         3.3         //å°è½¦ADCå‚è€ƒç”µå‹
+                                        //½«ADC²É¼¯Öµ×ª»¯³É±ê×¼·¶Î§µÄ±ÈÀı
+#define REF_VOLTAGE         5         //²Î¿¼µçÑ¹
 #define CAPTURE_LIMIT       4096
 
 int8 Get_Regularized_Signal_Data(const float * Data_Array);
 void Sample_All_Chanel();
 uint16 Get_DMA_ADC_Result(uint8 channel);
 void Signal_Acq_Init(unsigned char GPIO_PX, unsigned int GPIO_pin);
-
+float Get_Voltage();
 #endif

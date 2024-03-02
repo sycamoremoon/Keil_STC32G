@@ -1,5 +1,4 @@
 #include "config.h"
-
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
@@ -11,13 +10,11 @@ int main(void)
 	CKCON = 0;      //提高访问XRAM速度
 	
 	/******************************************************************/
-
 	ceventInit();
 	ceventPost(0);
 	//初始化结束
 	/******************************************************************/
 	EA =1;
-
 	/******************************************************************/
 	//主循环
 	while(1)
