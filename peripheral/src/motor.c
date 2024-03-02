@@ -1,151 +1,120 @@
 #include "config.h"
 #include "motor.h"
 
-#define	PWM_Peri	65535	// PWM周期设定
+#define	PWM_Peri			65535	// PWM周期设定
+#define Lmotor_direction	P35		// 左电机方向控制引脚
+#define Rmotor_direction	P70		// 右电机方向控制引脚
 
-Motor *motor;				// 定义电机结构体
-PWMx_Duty *pwmA_duty;		// 定义PWMA结构体
+Motor motor;				// 定义电机结构体
+PWMx_Duty pwmA_duty;		// 定义PWMA结构体
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      初始化电机
-//  @param      PWM					PWM通道，取值 PWM1~PWM8,PWMA,PWMB
+//  @param      PWM	
 //  @return     void					
 //  @since      v1.0
-//  Sample usage:	motor_init(PWM1);
+//  Sample usage:	motor_init()
 //-------------------------------------------------------------------------------------------------------------------
-void motor_init(u8 PWMx)
+void motor_init(void)
 {
 
 	// 初始化 PWMx
-	PWMx_InitDefine PWMx_InitStructure;		// 定义PWM初始化结构体
+	PWMx_InitDefine PWMx_InitStructure;							// 定义PWM初始化结构体
 	
-	pwmA_duty -> PWM1_Duty = 128; 			// 初始化PWMA的4个通道的占空比
-	pwmA_duty -> PWM2_Duty = 256;
-	pwmA_duty -> PWM3_Duty = 512;
-	pwmA_duty -> PWM4_Duty = 1024;
+	pwmA_duty.PWM3_Duty = 0;									// 初始化PWM3 PWM4个通道的占空比
+	pwmA_duty.PWM4_Duty = 0;
 	
-	motor->pwm_pin = PWMx;
-	
-	if(PWMx == PWM1)
-	{
-		PWMx_InitStructure.PWM_Mode = CCMRn_PWM_MODE1; 			//设置 PWM1 模式
-		PWMx_InitStructure.PWM_Duty = pwmA_duty -> PWM1_Duty; 				//PWM 占空比时间, 0~Period
-		PWMx_InitStructure.PWM_EnoSelect = ENO1P | ENO1N; 		//输出通道选择
-		PWM_Configuration(PWM1, &PWMx_InitStructure); 			//初始化 PWM1
+	PWMx_InitStructure.PWM_Mode    =	CCMRn_PWM_MODE1;		//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
+	PWMx_InitStructure.PWM_Duty    = pwmA_duty.PWM3_Duty;		//PWM占空比时间, 0~Period
+	PWMx_InitStructure.PWM_EnoSelect   = ENO3P | ENO3N;			//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
+	PWM_Configuration(PWM3, &PWMx_InitStructure);				//初始化PWM3
 
-		PWM1_USE_P60P61(); 										// PWM1 对应选择通道 P60, P61
-	}
+	PWMx_InitStructure.PWM_Mode    =	CCMRn_PWM_MODE1;		//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
+	PWMx_InitStructure.PWM_Duty    = pwmA_duty.PWM4_Duty;		//PWM占空比时间, 0~Period
+	PWMx_InitStructure.PWM_EnoSelect   = ENO4P | ENO4N;			//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
+	PWM_Configuration(PWM4, &PWMx_InitStructure);				//初始化PWM4
 
-	else if(PWMx == PWM2)
-	{
-		PWMx_InitStructure.PWM_Mode = CCMRn_PWM_MODE1; 			//设置 PWM2 模式
-		PWMx_InitStructure.PWM_Duty = pwmA_duty -> PWM2_Duty; 				//PWM 占空比时间, 0~Period
-		PWMx_InitStructure.PWM_EnoSelect = ENO2P | ENO2N; 		//输出通道选择
-		PWM_Configuration(PWM2, &PWMx_InitStructure); 			//初始化 PWM2
-		
-		PWM2_USE_P62P63(); 										// PWM2 选择通道 P62, P63
-	}
-	else if(PWMx == PWM3)
-	{
-		PWMx_InitStructure.PWM_Mode = CCMRn_PWM_MODE1; 			//设置 PWM3 模式
-		PWMx_InitStructure.PWM_Duty = pwmA_duty -> PWM3_Duty; 				//PWM 占空比时间, 0~Period
-		PWMx_InitStructure.PWM_EnoSelect = ENO3P | ENO3N; 		//输出通道选择
-		PWM_Configuration(PWM3, &PWMx_InitStructure); 			//初始化 PWM3
-		
-		PWM3_USE_P64P65(); 										//PWM3 选择通道 P64, P65
-	}
-	else if(PWMx == PWM4)
-	{
-		PWMx_InitStructure.PWM_Mode = CCMRn_PWM_MODE1; 			//设置 PWM4 模式
-		PWMx_InitStructure.PWM_Duty = pwmA_duty -> PWM4_Duty; 				//PWM 占空比时间, 0~Period
-		PWMx_InitStructure.PWM_EnoSelect = ENO4P | ENO4N; 		//输出通道选择
-		PWM_Configuration(PWM4, &PWMx_InitStructure); 			//初始化 PWM2
-		
-		PWM4_USE_P66P67(); 										//PWM4 选择通道 P66, P67
-	}
-
-	PWMx_InitStructure.PWM_Period = 2047; 						//周期时间, 0~65535
-	PWMx_InitStructure.PWM_DeadTime = 0; 						//死区发生器设置, 0~255
+	PWMx_InitStructure.PWM_Period   = PWM_Peri;					//周期时间,   0~65535
+	PWMx_InitStructure.PWM_DeadTime = 0;						//死区发生器设置, 0~255
 	PWMx_InitStructure.PWM_MainOutEnable= ENABLE;				//主输出使能, ENABLE,DISABLE
-	PWMx_InitStructure.PWM_CEN_Enable = ENABLE; 				//使能计数器, ENABLE,DISABLE
+	PWMx_InitStructure.PWM_CEN_Enable   = ENABLE;				//使能计数器, ENABLE,DISABLE
+	PWM_Configuration(PWMA, &PWMx_InitStructure);				//初始化PWM通用寄存器,  PWMA,PWMB
 	
-	PWM_Configuration(PWMA, &PWMx_InitStructure); 				//初始化 PWMA 通用寄存器
-	//NVIC_PWM_Init(PWMA,DISABLE,Priority_0); 					// PWM 中断关闭, 优先级 0 级
+	motor.L_pwm_channel = PWM3;
+	motor.R_pwm_channel = PWM4;
 	
-	// 初始化 GPIO，全部设置为准双向口
-	GPIO_PU_Init();
+	PWM3_USE_P14P15();					//PWM3选择P14P15
+	PWM4_USE_P16P17();					//PWM4选择P16P17
 	
+	GPIO_PU_Init();						//IO口初始化
 }
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      设置左电机速度
-//  @param      speed
+//  @param      speed	参数选择区间为-10000~10000	正数为正转，负数为反转
 //  @return     void				
 //  @since      v1.0
-//  Sample usage:
+//  Sample usage:	Set_Lmotor_Speed(5000)
 //-------------------------------------------------------------------------------------------------------------------
-void Set_Lmotor_Speed(float speed)
+void Set_Lmotor_Speed(long speed)
 {
-	float duty_cycle = 0;
+	u16 duty_cycle = 0;
 	
-	// 限制速度在0到100之间
-    if (speed < 0)
-        speed = 0;
-	else if (speed > 100)
-        speed = 100;	    
+    if (speed < -10000)				// 限制速度在-10000到10000之间
+        speed = -10000;
+	else if (speed > 10000)
+        speed = 10000;
 
-	// 计算占空比，假设PWM的范围是0到255
-    duty_cycle = (speed * PWM_Peri) / 100; 
-
-	// 判断计算出的占空比输出到哪个PWM通道
-	if(motor->pwm_pin == PWM1)
-	{
-		pwmA_duty->PWM1_Duty = duty_cycle;
+	if(speed >= 0)
+    {
+		Lmotor_direction = 1;							// 电机正转
+		duty_cycle = (PWM_Peri / 10000) * speed; 		// 计算占空比
+		pwmA_duty.PWM3_Duty = duty_cycle;
 	}
-	else if(motor->pwm_pin == PWM2)
+	else if(speed < 0)
 	{
-		pwmA_duty->PWM2_Duty = duty_cycle;
+		Lmotor_direction = 0;							// 电机反转
+		duty_cycle = (PWM_Peri / 10000) * -speed; 		// 计算占空比
+		pwmA_duty.PWM3_Duty = duty_cycle;
 	}
-		
+	
+	UpdatePwm(PWM3, &pwmA_duty) ;	   // 设置左电机PWM输出引脚的占空比
 
-	UpdatePwm(motor->pwm_pin, pwmA_duty) ;	   // 设置PWM输出引脚的占空比
 }
 
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      设置右电机速度
-//  @param      speed
+//  @param      speed		参数选择区间为-10000~10000	正数为正转，负数为反转
 //  @return     void				
 //  @since      v1.0
-//  Sample usage:
+//  Sample usage:	Set_Rmotor_Speed(5000)
 //-------------------------------------------------------------------------------------------------------------------
-void Set_Rmotor_Speed(float speed)
+void Set_Rmotor_Speed(long speed)
 {
-	float duty_cycle = 0;
+	u16 duty_cycle = 0;
 	
-	// 限制速度在0到100之间
-    if (speed < 0)
-        speed = 0;
-	else if (speed > 100)
-        speed = 100;	    
+    if (speed < -10000)					// 限制速度在-10000到10000之间
+        speed = -10000;
+	else if (speed > 10000)
+        speed = 10000;
 
-	// 计算占空比，假设PWM的范围是0到255
-    duty_cycle = (speed * PWM_Peri) / 100; 
-
-	// 判断占空比duty_cycle输出到哪个PWM通道
-	if(motor->pwm_pin == PWM3)
-	{
-		pwmA_duty->PWM3_Duty = duty_cycle;
+	if(speed >= 0)
+    {
+		Rmotor_direction = 1;							// 电机正转
+		duty_cycle = (PWM_Peri / 10000) * speed; 		// 计算占空比
+		pwmA_duty.PWM4_Duty = duty_cycle;
 	}
-	else if(motor->pwm_pin == PWM4)
+	else if(speed < 0)
 	{
-		pwmA_duty->PWM4_Duty = duty_cycle;
+		Rmotor_direction = 0;							// 电机反转
+		duty_cycle = (PWM_Peri / 10000) * -speed; 		// 计算占空比
+		pwmA_duty.PWM4_Duty = duty_cycle;
 	}
-
-	UpdatePwm(motor->pwm_pin, pwmA_duty) ;	   // 对pwm输出通道更新占空比
+	
+	UpdatePwm(PWM4, &pwmA_duty) ;	   // 设置右电机PWM输出引脚的占空比
 	
 }
-
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      初始化IO口为准双向口	内部调用，用户无需关心
@@ -156,5 +125,7 @@ void Set_Rmotor_Speed(float speed)
 //-------------------------------------------------------------------------------------------------------------------
 void GPIO_PU_Init(void)
 {
-	P6_MODE_IO_PU(GPIO_Pin_All);	// P6.0~P6.7 设置为准双向口
+	P1_MODE_IO_PU(GPIO_Pin_4|GPIO_Pin_6);	//P1.4和P1.6输出PWM的波形
+	P3_MODE_IO_PU(GPIO_Pin_5);				//P3.5控制电机方向
+	P7_MODE_IO_PU(GPIO_Pin_0);				//P7.0控制电机方向
 }

@@ -304,7 +304,7 @@
             <UserClasses>XDATA(0x10000-0x11FFF)
 </UserClasses>
             <CSection></CSection>
-            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?MAIN</UserSection>
+            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?SCREEN,?ED?CEVENT?MAIN</UserSection>
             <CodeBaseAddress></CodeBaseAddress>
             <XDataBaseAddress></XDataBaseAddress>
             <PDataBaseAddress></PDataBaseAddress>

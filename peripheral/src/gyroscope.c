@@ -13,7 +13,7 @@
 #include "math.h"
 
 #define	Gyro_Range	2000	// 根据MPU6050手册选择陀螺仪量程范围 ±Gyro_Range
-#define Accel_Range	16		// 根据MPU6050手册选择加速度计量程范围 ±Accel_Range * G, G为重力加速度，在config.h中宏定义
+#define Accel_Range	16		// 根据MPU6050手册选择加速度计量程范围 ±Accel_Range * G. G为重力加速度，在config.h中宏定义
 
 int16 mpu6050_acc_x,mpu6050_acc_y,mpu6050_acc_z;		// 用于接收原始数据
 int16 mpu6050_gyro_x, mpu6050_gyro_y, mpu6050_gyro_z;
@@ -330,7 +330,7 @@ void mpu6050_get_gyro(void)
 	gyroZ_real = mpu6050_gyro_z / (Gyro_Range * 57.30);
 	
 	// 使用加速度计数据计算角度
-	accel_angle = atan2( accelY_real, accelZ_real) * 180 / PI;
+	accel_angle = atan2(accelY_real, accelZ_real) * 180 / PI;
 //	accel_angleY = atan2(-accelX_real, sqrt(accelY_real * accelY_real + accelZ_real * accelZ_real)) * 180 / PI;
 //	accel_angleZ = atan2( accelZ_real, sqrt(accelX_real * accelX_real + accelY_real * accelY_real)) * 180 / PI;
 	
