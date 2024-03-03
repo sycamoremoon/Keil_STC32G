@@ -47,15 +47,20 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 {
 	uint16 * ADC_Data;
 	uint16 adc;
-	ADC_Data = &DmaAdBuffer[channel][2*CONVERT_TIMES+2];
+	ADC_Data = &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
 	{
-		adc = *ADC_Data;
+		adc = *ADC_Data;						//由于ADC_data是16位的格式，所以直接取地址
 	}
 	else		//转换结果左对齐。 
 	{
 		adc = *ADC_Data;
 		adc = adc>>4;
+	}
+	if(channel == CHANNEL_NUM-1)
+	{
+		DMA_ADC_STA &= ~0x01;	//清标志位
+		DMA_ADC_TRIG();		//触发启动转换
 	}
 	return adc;
 }
@@ -80,11 +85,21 @@ int8 Get_Regularized_Signal_Data(const float * Data_Array)
 	int8 i;
 	float answer = 0;
 	float diff ,sum;
-	for(i=0;i<(CHANNEL_NUM/2);i++)
+	for(i=0;i<(CHANNEL_NUM/2);i++)			//用两端的数据进行比较，作差之后进行函数变化，得到线性结果
 	{
 		diff = *(Data_Array+i)-*(Data_Array+CHANNEL_NUM-1-i);
 		sum = *(Data_Array+i)+*(Data_Array+CHANNEL_NUM-1-i);
 		answer += diff/(sum*sum)*RATIO;
 	}
 	return (int8)(answer/(CHANNEL_NUM/2));
+}
+
+
+/// @brief 测试ADC采集准确性使用
+/// @return 采集的一个通道电压
+float Get_Voltage()
+{
+	float vol;
+	vol = (Get_DMA_ADC_Result(0)/CAPTURE_LIMIT)*REF_VOLTAGE;
+	return vol;
 }
