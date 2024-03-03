@@ -335,6 +335,11 @@
               <FileType>4</FileType>
               <FilePath>..\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
             </File>
+            <File>
+              <FileName>SEEKFREE_CONFIG.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driver\lib\SEEKFREE_CONFIG.LIB</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -936,6 +941,16 @@
               <FileName>encoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\encoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>telemeter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\telemeter.c</FilePath>
+            </File>
+            <File>
+              <FileName>telemeter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\telemeter.h</FilePath>
             </File>
           </Files>
         </Group>

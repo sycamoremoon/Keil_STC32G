@@ -463,8 +463,8 @@ void Screen_Show_String(u16 x, u16 y, u16 font_color, u16 background_color, u8 *
 /// @param dat 
 void Screen_ShowChar(uint16 x,uint16 y,u16 font_color, u16 background_color,const char dat)
 {
-	uint8 tmp_str[2];
-	
+	uint8 tmp_str[2] = {0};
+
 	sprintf(tmp_str, "%c", dat); // 将整数转换为字符串
 	Screen_Show_String(x,y,font_color,background_color,tmp_str);
 }
@@ -481,6 +481,7 @@ void Screen_ShowInt(uint16 x,uint16 y,u16 font_color, u16 background_color,const
 	Screen_Show_String(x,y,font_color,background_color,"      ");
 	sprintf(tmp_str, "%d", num); // 将整数转换为字符串
 	Screen_Show_String(x,y,font_color,background_color,tmp_str);
+
 }
 
 /// @brief 显示float型浮点数
@@ -491,8 +492,8 @@ void Screen_ShowInt(uint16 x,uint16 y,u16 font_color, u16 background_color,const
 /// @param flot 
 void Screen_ShowFloat(uint16 x,uint16 y,u16 font_color, u16 background_color,const float flot)
 {
-	uint8 tmp_str[8];
-	
+	uint8 tmp_str[8] = {0};
+	Screen_Show_String(x,y,font_color,background_color,"       ");
 	sprintf(tmp_str, "%.2f", flot); // 将整数转换为字符串
 	Screen_Show_String(x,y,font_color,background_color,tmp_str);
 }
