@@ -50,6 +50,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <string.h>
 
 /******************************自定义头文件*************************************/
 #include "cpost.h"
