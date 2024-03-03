@@ -10,15 +10,16 @@
  ********************************************************************************************************************/
 #include "gyroscope.h"
 #include "Kalman_Filter.h"
-#include "math.h"
+#include <math.h>
 
 #define	Gyro_Range	2000	// 根据MPU6050手册选择陀螺仪量程范围 ±Gyro_Range
 #define Accel_Range	16		// 根据MPU6050手册选择加速度计量程范围 ±Accel_Range * G. G为重力加速度，在config.h中宏定义
 
 int16 mpu6050_acc_x,mpu6050_acc_y,mpu6050_acc_z;		// 用于接收原始数据
-int16 mpu6050_gyro_x, mpu6050_gyro_y, mpu6050_gyro_z;
-float accelX_real, accelY_real, accelZ_real;			// 用于接收处理后的数据
-// 全局变量angle已在Kalman_Filter.c定义
+int16 mpu6050_gyro_x, mpu6050_gyro_y, mpu6050_gyro_z;	// 原始数据
+
+float accelX_real, accelY_real, accelZ_real;			// 用于接收处理后的数据(实际值)
+// *全局变量angle已在Kalman_Filter.c定义*
 
 #define GET_MPU6050_SDA   		 	MPU6050_SDA_PIN
 #define MPU6050_SCL_LOW()          	MPU6050_SCL_PIN = 0		//IO口输出低电平

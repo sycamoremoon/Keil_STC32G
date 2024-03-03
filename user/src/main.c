@@ -1,4 +1,8 @@
 #include "config.h"
+#include "screen.h"
+#include "gyroscope.h"
+
+
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
@@ -16,11 +20,15 @@ int main(void)
 	/******************************************************************/
 	EA =1;
 	/******************************************************************/
-
+	mpu6050_init();
 	//Ö÷Ñ­»·
 	while(1)
 	{	
-		
+		mpu6050_get_accdata();
+		mpu6050_get_gyro();
+
+		delay_ms(50);
+		printf("mpu6050_acc_x:%d\nmpu6050_acc_y:%d\nmpu6050_acc_z:%d\n\n\n",mpu6050_acc_x,mpu6050_acc_y,mpu6050_acc_z);
 	}
 
 }

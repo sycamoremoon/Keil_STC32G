@@ -10,3 +10,7 @@ verion :2024/02/07 mpu6050陀螺仪、加速度计、卡尔曼滤波更新
 
 version : 2024/02/21 编码器外设更新
 - peripheral文件夹更新：encoder.c & encoder.h 通过定时器获取外部编码器计数值，并计算出真实速度
+
+version : 2024/03/02 调试外设驱动
+- peripheral：电机PWM驱动、编码器驱动
+- screen.c：调整输出宽度
