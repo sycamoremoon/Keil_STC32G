@@ -118,8 +118,6 @@ uint32 set_clk(void)
 
 
 
-
-
 void board_init(void)
 {
 	EAXFR = 1;				// 使能访问XFR
