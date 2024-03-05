@@ -1,106 +1,128 @@
 /*********************************************************************************************************************
+ * COPYRIGHT NOTICE
  * Copyright (c) 2018,逐飞科技
- * 部分代码改自SEEKFREE
-			接线定义：
-			------------------------------------ 
-			软件IIC
-			SCL	查看本头文件内的MPU6050_SCL_PIN宏定义
-			SDA 查看本头文件内的MPU6050_SDA_PIN宏定义  
-			------------------------------------ 
+ * All rights reserved.
+ * 技术讨论QQ群：一群：179029047(已满)  二群：244861897
+ *
+ * 以下所有内容版权均属逐飞科技所有，未经允许不得用于商业用途，
+ * 欢迎各位使用并传播本程序，修改内容时必须保留逐飞科技的版权声明。
+ *
+ * @file       		ICM20602
+ * @company	   		成都逐飞科技有限公司
+ * @author     		逐飞科技(QQ3184284598)
+ * @version    		查看doc内version文件 版本说明
+ * @Software 		MDK FOR C251 V5.60
+ * @Target core		STC32G12K128
+ * @Taobao   		https://seekfree.taobao.com/
+ * @date       		2019-04-30
+ * @note		
+					接线定义：
+					------------------------------------ 
+					ICM20602模块(SPI通信)   单片机                        
+					SPC              		查看SEEKFREE_ICM20602.h文件中的ICM20602_SPC_PIN宏定义
+					SDI              		查看SEEKFREE_ICM20602.h文件中的ICM20602_SDI_PIN宏定义
+					SDO             		查看SEEKFREE_ICM20602.h文件中的ICM20602_SDO_PIN宏定义
+					CS             			查看SEEKFREE_ICM20602.h文件中的ICM20602_CS_PIN宏定义
+					------------------------------------ 
+					ICM20602模块(IIC通信)   单片机                        
+					SCL              		查看SEEKFREE_ICM20602.h文件中的ICM20602_SCL_PIN宏定义
+					SDA              		查看SEEKFREE_ICM20602.h文件中的ICM20602_SDA_PIN宏定义
+					------------------------------------ 
  ********************************************************************************************************************/
+
+
 #include "gyroscope.h"
-#include "Kalman_Filter.h"
-#include <math.h>
 
-#define	Gyro_Range	2000	// 根据MPU6050手册选择陀螺仪量程范围 ±Gyro_Range
-#define Accel_Range	16		// 根据MPU6050手册选择加速度计量程范围 ±Accel_Range * G. G为重力加速度，在config.h中宏定义
 
-int16 mpu6050_acc_x,mpu6050_acc_y,mpu6050_acc_z;		// 用于接收原始数据
-int16 mpu6050_gyro_x, mpu6050_gyro_y, mpu6050_gyro_z;	// 原始数据
+#pragma warning disable = 177
+#pragma warning disable = 183
 
-float accelX_real, accelY_real, accelZ_real;			// 用于接收处理后的数据(实际值)
-// *全局变量angle已在Kalman_Filter.c定义*
+int16 icm20602_gyro_x,icm20602_gyro_y,icm20602_gyro_z;
+int16 icm20602_acc_x,icm20602_acc_y,icm20602_acc_z;
 
-#define GET_MPU6050_SDA   		 	MPU6050_SDA_PIN
-#define MPU6050_SCL_LOW()          	MPU6050_SCL_PIN = 0		//IO口输出低电平
-#define MPU6050_SCL_HIGH()         	MPU6050_SCL_PIN = 1		//IO口输出高电平  
-#define MPU6050_SDA_LOW()          	MPU6050_SDA_PIN = 0		//IO口输出低电平
-#define MPU6050_SDA_HIGH()         	MPU6050_SDA_PIN = 1		//IO口输出高电平
+
+#if ICM20602_USE_SOFT_IIC
+
+
+#define GET_ICM20602_SDA   		 	ICM20602_SDA_PIN
+#define ICM20602_SDA_LOW()         	ICM20602_SDA_PIN = 0		//IO口输出低电平
+#define ICM20602_SDA_HIGH()         ICM20602_SDA_PIN = 1		//IO口输出高电平
+
+#define ICM20602_SCL_LOW()          ICM20602_SCL_PIN = 0		//IO口输出低电平
+#define ICM20602_SCL_HIGH()         ICM20602_SCL_PIN = 1		//IO口输出高电平
 
 #define ack 1      //主应答
 #define no_ack 0   //从应答	
+
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      模拟IIC延时
 //  @return     void						
 //  @since      v1.0
-//	@p.s.		#define MPU6050_IIC_DELAY 	(0)
 //  Sample usage:				如果IIC通讯失败可以尝试增加j的值
 //-------------------------------------------------------------------------------------------------------------------
-static void mpu6050_simiic_delay(void)
+static void icm20602_simiic_delay(void)
 {
-    uint16 j = MPU6050_IIC_DELAY;   
+    uint16 j=ICM20602_SOFT_IIC_DELAY;   
 	while(j--);
 }
 
-// 起始信号。内部使用，用户无需调用
-static void mpu6050_simiic_start(void)
+//内部使用，用户无需调用
+static void icm20602_simiic_start(void)
 {
-	MPU6050_SDA_HIGH();
-	MPU6050_SCL_HIGH();
-	mpu6050_simiic_delay();
-	MPU6050_SDA_LOW();
-	mpu6050_simiic_delay();
-	MPU6050_SCL_LOW();
+	ICM20602_SDA_HIGH();
+	ICM20602_SCL_HIGH();
+	icm20602_simiic_delay();
+	ICM20602_SDA_LOW();
+	icm20602_simiic_delay();
+	ICM20602_SCL_LOW();
 }
 
-// 结束信号。内部使用，用户无需调用
-static void mpu6050_simiic_stop(void)
+//内部使用，用户无需调用
+static void icm20602_simiic_stop(void)
 {
-	MPU6050_SDA_LOW();
-	MPU6050_SCL_LOW();
-	mpu6050_simiic_delay();
-	MPU6050_SCL_HIGH();
-	mpu6050_simiic_delay();
-	MPU6050_SDA_HIGH();
-	mpu6050_simiic_delay();
+	ICM20602_SDA_LOW();
+	ICM20602_SCL_LOW();
+	icm20602_simiic_delay();
+	ICM20602_SCL_HIGH();
+	icm20602_simiic_delay();
+	ICM20602_SDA_HIGH();
+	icm20602_simiic_delay();
 }
 
 //主应答(包含ack:SDA=0和no_ack:SDA=0)
 //内部使用，用户无需调用
-static void mpu6050_simiic_sendack(unsigned char ack_dat)
+static void icm20602_simiic_sendack(unsigned char ack_dat)
 {
-    MPU6050_SCL_LOW();
-	mpu6050_simiic_delay();
-	if(ack_dat) MPU6050_SDA_LOW();
-    else    	MPU6050_SDA_HIGH();
+    ICM20602_SCL_LOW();
+	icm20602_simiic_delay();
+	if(ack_dat) ICM20602_SDA_LOW();
+    else    	ICM20602_SDA_HIGH();
 
-    MPU6050_SCL_HIGH();
-    mpu6050_simiic_delay();
-    MPU6050_SCL_LOW();
-    mpu6050_simiic_delay();
+    ICM20602_SCL_HIGH();
+    icm20602_simiic_delay();
+    ICM20602_SCL_LOW();
+    icm20602_simiic_delay();
 }
 
-// 等待应答信号到来
-// 返回值：0, 接收应答失败
-//         1, 接收应答成功
-static int mpu6050_sccb_waitack(void)
-{
-    MPU6050_SCL_LOW();
 
-	mpu6050_simiic_delay();
+static int icm20602_sccb_waitack(void)
+{
+    ICM20602_SCL_LOW();
+
+	icm20602_simiic_delay();
 	
-	MPU6050_SCL_HIGH();
-    mpu6050_simiic_delay();
+	ICM20602_SCL_HIGH();
+    icm20602_simiic_delay();
 	
-    if(GET_MPU6050_SDA)           //应答为高电平，异常，通信失败
+    if(GET_ICM20602_SDA)           //应答为高电平，异常，通信失败
     {
 
-        MPU6050_SCL_LOW();
+        ICM20602_SCL_LOW();
         return 0;
     }
 
-    MPU6050_SCL_LOW();
-	mpu6050_simiic_delay();
+    ICM20602_SCL_LOW();
+	icm20602_simiic_delay();
     return 1;
 }
 
@@ -108,59 +130,59 @@ static int mpu6050_sccb_waitack(void)
 //发送c(可以是数据也可是地址)，送完后接收从应答
 //不考虑从应答位
 //内部使用，用户无需调用
-static void mpu6050_send_ch(uint8 c)
+static void icm20602_send_ch(uint8 c)
 {
 	uint8 i = 8;
     while(i--)
     {
-        if(c & 0x80)	MPU6050_SDA_HIGH();//SDA 输出数据
-        else			MPU6050_SDA_LOW();
+        if(c & 0x80)	ICM20602_SDA_HIGH();//SDA 输出数据
+        else			ICM20602_SDA_LOW();
         c <<= 1;
-        mpu6050_simiic_delay();
-        MPU6050_SCL_HIGH();                //SCL 拉高，采集信号
-        mpu6050_simiic_delay();
-        MPU6050_SCL_LOW();                //SCL 时钟线拉低
+        icm20602_simiic_delay();
+        ICM20602_SCL_HIGH();                //SCL 拉高，采集信号
+        icm20602_simiic_delay();
+        ICM20602_SCL_LOW();                //SCL 时钟线拉低
     }
-	mpu6050_sccb_waitack();
+	icm20602_sccb_waitack();
 }
 
 
 //字节接收程序
-//接收从器件传来的数据，此程序应配合|主应答函数|使用
+//接收器件传来的数据，此程序应配合|主应答函数|使用
 //内部使用，用户无需调用
-static uint8 mpu6050_read_ch(uint8 ack_x)
+static uint8 icm20602_read_ch(uint8 ack_x)
 {
     uint8 i;
     uint8 c;
     c=0;
-    MPU6050_SCL_LOW();
-    mpu6050_simiic_delay();
-    MPU6050_SDA_HIGH();             
+    ICM20602_SCL_LOW();
+    icm20602_simiic_delay();
+    ICM20602_SDA_HIGH();             
 
     for(i=0;i<8;i++)
     {
-        mpu6050_simiic_delay();
-        MPU6050_SCL_LOW();         //置时钟线为低，准备接收数据位
-        mpu6050_simiic_delay();
-        MPU6050_SCL_HIGH();         //置时钟线为高，使数据线上数据有效
-        mpu6050_simiic_delay();
+        icm20602_simiic_delay();
+        ICM20602_SCL_LOW();         //置时钟线为低，准备接收数据位
+        icm20602_simiic_delay();
+        ICM20602_SCL_HIGH();         //置时钟线为高，使数据线上数据有效
+        icm20602_simiic_delay();
         c<<=1;
-        if(GET_MPU6050_SDA) 
+        if(GET_ICM20602_SDA) 
         {
             c+=1;   //读数据位，将接收的数据存c
         }
     }
 
-	MPU6050_SCL_LOW();
-	mpu6050_simiic_delay();
-	mpu6050_simiic_sendack(ack_x);
+	ICM20602_SCL_LOW();
+	icm20602_simiic_delay();
+	icm20602_simiic_sendack(ack_x);
 	
     return c;
 }
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      模拟IIC写数据到设备寄存器函数 write
+//  @brief      模拟IIC写数据到设备寄存器函数
 //  @param      dev_add			设备地址(低七位地址)
 //  @param      reg				寄存器地址
 //  @param      dat				写入的数据
@@ -168,36 +190,36 @@ static uint8 mpu6050_read_ch(uint8 ack_x)
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-static void mpu6050_simiic_write_reg(uint8 dev_add, uint8 reg, uint8 dat)
+static void icm20602_simiic_write_reg(uint8 dev_add, uint8 reg, uint8 dat)
 {
-	mpu6050_simiic_start();
-    mpu6050_send_ch( (dev_add<<1) | 0x00);   //发送器件地址加写位
-	mpu6050_send_ch( reg );   				 //发送从机寄存器地址
-	mpu6050_send_ch( dat );   				 //发送需要写入的数据
-	mpu6050_simiic_stop();
+	icm20602_simiic_start();
+    icm20602_send_ch( (dev_add<<1) | 0x00);   //发送器件地址加写位
+	icm20602_send_ch( reg );   				 //发送从机寄存器地址
+	icm20602_send_ch( dat );   				 //发送需要写入的数据
+	icm20602_simiic_stop();
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      模拟IIC从设备寄存器读取数据 read
+//  @brief      模拟IIC从设备寄存器读取数据
 //  @param      dev_add			设备地址(低七位地址)
 //  @param      reg				寄存器地址
-//  @param      type			选择通信方式是IIC  还是 SCCB	-rm
+//  @param      type			选择通信方式是IIC  还是 SCCB
 //  @return     uint8			返回寄存器的数据			
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-uint8 mpu6050_simiic_read_reg(uint8 dev_add, uint8 reg)
+static uint8 icm20602_simiic_read_reg(uint8 dev_add, uint8 reg)
 {
 	uint8 dat;
-	mpu6050_simiic_start();
-    mpu6050_send_ch( (dev_add<<1) | 0x00);  //发送器件地址加写位
-	mpu6050_send_ch( reg );   				//发送从机寄存器地址
+	icm20602_simiic_start();
+    icm20602_send_ch( (dev_add<<1) | 0x00);  //发送器件地址加写位
+	icm20602_send_ch( reg );   				//发送从机寄存器地址
 
 	
-	mpu6050_simiic_start();
-	mpu6050_send_ch( (dev_add<<1) | 0x01);  //发送器件地址加读位
-	dat = mpu6050_read_ch(no_ack);   				//读取数据
-	mpu6050_simiic_stop();
+	icm20602_simiic_start();
+	icm20602_send_ch( (dev_add<<1) | 0x01);  //发送器件地址加读位
+	dat = icm20602_read_ch(no_ack);   				//读取数据
+	icm20602_simiic_stop();
 	
 	return dat;
 }
@@ -208,135 +230,393 @@ uint8 mpu6050_simiic_read_reg(uint8 dev_add, uint8 reg)
 //  @param      reg				寄存器地址
 //  @param      dat_add			数据保存的地址指针
 //  @param      num				读取字节数量
-//  @param      type			选择通信方式是IIC  还是 SCCB	-rm
+//  @param      type			选择通信方式是IIC  还是 SCCB
 //  @return     uint8			返回寄存器的数据			
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void mpu6050_simiic_read_regs(uint8 dev_add, uint8 reg, uint8 *dat_add, uint8 num)
+static void icm20602_simiic_read_regs(uint8 dev_add, uint8 reg, uint8 *dat_add, uint32 num)
 {
-	mpu6050_simiic_start();
-    mpu6050_send_ch( (dev_add<<1) | 0x00);  //发送器件地址加写位
-	mpu6050_send_ch( reg );   				//发送从机寄存器地址
+	icm20602_simiic_start();
+    icm20602_send_ch( (dev_add<<1) | 0x00);  //发送器件地址加写位
+	icm20602_send_ch( reg );   				//发送从机寄存器地址
 
 	
-	mpu6050_simiic_start();
-	mpu6050_send_ch( (dev_add<<1) | 0x01);  //发送器件地址加读位
+	icm20602_simiic_start();
+	icm20602_send_ch( (dev_add<<1) | 0x01);  //发送器件地址加读位
     while(--num)
     {
-        *dat_add = mpu6050_read_ch(ack); //读取数据
+        *dat_add = icm20602_read_ch(ack); //读取数据
         dat_add++;
     }
-    *dat_add = mpu6050_read_ch(no_ack); //读取数据
-	mpu6050_simiic_stop();
+    *dat_add = icm20602_read_ch(no_ack); //读取数据
+	icm20602_simiic_stop();
+}
+
+#define icm20602_write_register(reg, dat)        (icm20602_simiic_write_reg(ICM20602_DEV_ADDR, (reg), (dat)))
+#define icm20602_write_registers(reg, dat, len)  (icm20602_simiic_write_regs(ICM20602_DEV_ADDR, (reg), (dat), (len)))
+#define icm20602_read_register(reg)              (icm20602_simiic_read_reg(ICM20602_DEV_ADDR, (reg)))
+#define icm20602_read_registers(reg, dat, len)   (icm20602_simiic_read_regs(ICM20602_DEV_ADDR, (reg), (dat), (len)))
+
+//#else
+
+//#define ICM20602_SCK(x)				ICM20602_SPC_PIN  = x
+//#define ICM20602_MOSI(x) 			ICM20602_SDI_PIN = x
+//#define ICM20602_CS(x)  			ICM20602_CS_PIN  = x
+//#define ICM20602_MISO    			ICM20602_SDO_PIN 
+
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      通过SPI写一个byte,同时读取一个byte
+////  @param      byte        发送的数据    
+////  @return     uint8       return 返回status状态
+////  @since      v1.0
+////  Sample usage:
+////-------------------------------------------------------------------------------------------------------------------
+//static uint8 icm20602_simspi_wr_byte(uint8 byte)
+//{
+//    uint8 i;
+//	
+//    for(i=0; i<8; i++)
+//    {
+//        ICM20602_MOSI(byte&0x80);
+//        byte <<= 1;
+//		ICM20602_SCK (0);
+//		ICM20602_SCK (0);
+//		
+//		ICM20602_SCK (1);
+//		ICM20602_SCK (1);
+//		byte |= ICM20602_MISO; 
+//    }	
+//    return(byte);                                      		
+//}
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      将val写入cmd对应的寄存器地址,同时返回status字节
+////  @param      cmd         命令字
+////  @param      val         待写入寄存器的数值
+////  @since      v1.0
+////  Sample usage:
+////-------------------------------------------------------------------------------------------------------------------
+//static void icm20602_simspi_w_reg_byte(uint8 cmd, uint8 val)
+//{
+
+//    cmd |= ICM20602_SPI_W;
+//    icm20602_simspi_wr_byte(cmd);                      	
+//    icm20602_simspi_wr_byte(val);                               	
+//                                	
+//}
+
+
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      将val写入cmd对应的寄存器地址
+////  @param      cmd         命令字
+////  @param      val         待写入寄存器的数值
+////  @since      v1.0
+////  Sample usage:
+////-------------------------------------------------------------------------------------------------------------------
+////static void icm20602_simspi_w_reg_bytes(uint8 cmd, uint8 *dat_addr, uint32 len)
+////{
+
+////	
+////    ICM20602_CS(0);
+////    cmd |= ICM20602_SPI_W;
+////    icm20602_simspi_wr_byte(cmd);   
+////	while(len--)
+////	{
+////		icm20602_simspi_wr_byte(*dat_addr++); 
+////	}                	
+////    ICM20602_CS(1);                                    	
+////}
+
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      读取cmd所对应的寄存器地址
+////  @param      cmd         命令字
+////  @param      *val        存储读取的数据地址
+////  @since      v1.0
+////  Sample usage:
+////-------------------------------------------------------------------------------------------------------------------
+//static void icm20602_simspi_r_reg_byte(uint8 cmd, uint8 *val)
+//{
+
+//    cmd |= ICM20602_SPI_R;
+//    icm20602_simspi_wr_byte(cmd);                               	
+//    *val = icm20602_simspi_wr_byte(0);                           	
+//                               	
+//}
+
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      读取cmd所对应的寄存器地址
+////  @param      cmd         命令字
+////  @param      *val        存储读取的数据地址
+////  @param      num         读取的数量
+////  @since      v1.0
+////  Sample usage:
+////-------------------------------------------------------------------------------------------------------------------
+//static void icm20602_simspi_r_reg_bytes(uint8 cmd, uint8 *val, uint32 num)
+//{
+//    uint32 i = 0;
+//    cmd |= ICM20602_SPI_R;
+//    icm20602_simspi_wr_byte(cmd);
+
+//	while(num--)
+//	{
+//		*val++ = icm20602_simspi_wr_byte(0);
+//	}          
+//}
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     IMU660RA 写寄存器
+// 参数说明     reg             寄存器地址
+// 参数说明     dat            数据
+// 返回参数     void
+// 使用示例     icm20602_write_register(ICM20602_PWR_CONF, 0x00);                   // 关闭高级省电模式
+// 备注信息     内部调用
+//-------------------------------------------------------------------------------------------------------------------
+static void icm20602_write_register(uint8 reg, uint8 dat)
+{
+    ICM20602_CS(0);
+    icm20602_simspi_w_reg_byte(reg | ICM20602_SPI_W, dat);
+    ICM20602_CS(1);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     IMU660RA 写数据
+// 参数说明     reg             寄存器地址
+// 参数说明     dat            数据
+// 返回参数     void
+// 使用示例     icm20602_write_registers(ICM20602_INIT_dat, icm20602_config_file, sizeof(icm20602_config_file));
+// 备注信息     内部调用
+//-------------------------------------------------------------------------------------------------------------------
+//static void icm20602_write_registers(uint8 reg, const uint8 *dat, uint32 len)
+//{
+//    ICM20602_CS(0);
+//    icm20602_simspi_w_reg_bytes(reg | ICM20602_SPI_W, dat, len);
+//    ICM20602_CS(1);
+//}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     IMU660RA 读寄存器
+// 参数说明     reg             寄存器地址
+// 返回参数     uint8           数据
+// 使用示例     icm20602_read_register(ICM20602_CHIP_ID);
+// 备注信息     内部调用
+//-------------------------------------------------------------------------------------------------------------------
+static uint8 icm20602_read_register(uint8 reg)
+{
+    uint8 dat;
+    ICM20602_CS(0);
+    icm20602_simspi_r_reg_byte(reg | ICM20602_SPI_R, &dat);
+    ICM20602_CS(1);
+    return dat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     IMU660RA 读数据
+// 参数说明     reg             寄存器地址
+// 参数说明     dat            数据缓冲区
+// 参数说明     len             数据长度
+// 返回参数     void
+// 使用示例     icm20602_read_registers(ICM20602_ACC_ADDRESS, dat, 6);
+// 备注信息     内部调用
+//-------------------------------------------------------------------------------------------------------------------
+static void icm20602_read_registers(uint8 reg, uint8 *dat, uint32 len)
+{
+    ICM20602_CS(0);
+    icm20602_simspi_r_reg_bytes(reg | ICM20602_SPI_R, dat, len);
+	ICM20602_CS(1);
 }
 
 
+#endif
+
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      MPU6050自检函数
-//  @param      NULL
-//  @return     void					
-//  @since      v1.0
-//  Sample usage:				
+// 函数简介     ICM20602 自检
+// 参数说明     void
+// 返回参数     uint8           1-自检失败 0-自检成功
+// 使用示例     icm20602_self_check();
+// 备注信息     内部调用
 //-------------------------------------------------------------------------------------------------------------------
-static uint8 mpu6050_self1_check(void)
+static uint8 icm20602_self_check (void)
 {
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, PWR_MGMT_1, 0x00);	//解除休眠状态
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, SMPLRT_DIV, 0x07);   //125HZ采样率
-    if(0x07 != mpu6050_simiic_read_reg(MPU6050_DEV_ADDR, SMPLRT_DIV))
+    uint8 dat = 0, return_state = 0;
+    uint16 timeout_count = 0;
+
+    while(0x12 != dat)                                                          // 判断 ID 是否正确
     {
-		printf("mpu6050 init error.\r\n");
-		return 1;
-        //卡在这里原因有以下几点
-        //1 MPU6050坏了，如果是新的这样的概率极低
-        //2 接线错误或者没有接好
-        //3 可能你需要外接上拉电阻，上拉到3.3V
-		//4 可能没有调用模拟IIC的初始化函数
+        if(timeout_count ++ > ICM20602_TIMEOUT_COUNT)
+        {
+            return_state =  1;
+            break;
+        }
+        dat = icm20602_read_register(ICM20602_WHO_AM_I);
+
+        delay_ms(10);
     }
-
-	return 0;
-
-}
-
-/*===============================可调用函数的定义===========================*/
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      初始化MPU6050
-//  @param      NULL
-//  @return     void					
-//  @since      v1.0
-//  Sample usage:				
-//-------------------------------------------------------------------------------------------------------------------
-uint8 mpu6050_init(void)
-{
-    delay_ms(100);                                   //上电延时
-
-    if(mpu6050_self1_check())
-	{
-		return 1;
-	}
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, PWR_MGMT_1, 0x00);	//解除休眠状态
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, SMPLRT_DIV, 0x07);   //125HZ采样率
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, MPU6050_CONFIG, 0x04);       //
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, GYRO_CONFIG, 0x18);  //2000
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, ACCEL_CONFIG, 0x10); //8g
-	mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, User_Control, 0x00);
-    mpu6050_simiic_write_reg(MPU6050_DEV_ADDR, INT_PIN_CFG, 0x02);
-	return 0;
+    return return_state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      获取MPU6050加速度计数据
-//  @param      NULL
-//  @return     void
-//  @since      v1.0
-//  Sample usage:				执行该函数后，直接查看对应的变量即可(accelX_real, accelY_real, accelZ_real)
+// 函数简介     获取 ICM20602 加速度计数据
+// 参数说明     void
+// 返回参数     void
+// 使用示例     icm20602_get_acc();                                             // 执行该函数后，直接查看对应的变量即可
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void mpu6050_get_accdata(void)
+void icm20602_get_acc (void)
 {
     uint8 dat[6];
-	// 读取加速度计原始数据
-    mpu6050_simiic_read_regs(MPU6050_DEV_ADDR, ACCEL_XOUT_H, dat, 6);  
-    mpu6050_acc_x = (int16)(((uint16)dat[0]<<8 | dat[1]));
-    mpu6050_acc_y = (int16)(((uint16)dat[2]<<8 | dat[3]));
-    mpu6050_acc_z = (int16)(((uint16)dat[4]<<8 | dat[5]));
-	// 加速度计原始数据转化为实际值，单位为m/s^2
-	accelX_real = mpu6050_acc_x / (32767 / Accel_Range) * G;	// (32767 / Accel_Range)为灵敏度
-	accelY_real = mpu6050_acc_y / (32767 / Accel_Range) * G;
-	accelZ_real = mpu6050_acc_z / (32767 / Accel_Range) * G;
+
+    icm20602_read_registers(ICM20602_ACCEL_XOUT_H, dat, 6);
+    icm20602_acc_x = (int16)(((uint16)dat[0] << 8 | dat[1]));
+    icm20602_acc_y = (int16)(((uint16)dat[2] << 8 | dat[3]));
+    icm20602_acc_z = (int16)(((uint16)dat[4] << 8 | dat[5]));
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      获取MPU6050陀螺仪数据
-//  @param      NULL
-//  @return     void
-//  @since      v1.0
-//  Sample usage:				执行该函数后，直接查看对应的变量即可(angle, gyroX_real, gyroY_real, gyroZ_real)
+// 函数简介     获取ICM20602陀螺仪数据
+// 参数说明     void
+// 返回参数     void
+// 使用示例     icm20602_get_gyro();                                            // 执行该函数后，直接查看对应的变量即可
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
-void mpu6050_get_gyro(void)
+void icm20602_get_gyro (void)
 {
-	float gyroX_real, gyroY_real, gyroZ_real;
-	float accel_angle;
-	float dt = 0.01;		// 选择滤波器采样时间
     uint8 dat[6];
-	
-	// 读取陀螺仪原始数据
-    mpu6050_simiic_read_regs(MPU6050_DEV_ADDR, GYRO_XOUT_H, dat, 6);  
-    mpu6050_gyro_x = (int16)(((uint16)dat[0]<<8 | dat[1]));
-    mpu6050_gyro_y = (int16)(((uint16)dat[2]<<8 | dat[3]));
-    mpu6050_gyro_z = (int16)(((uint16)dat[4]<<8 | dat[5]));
-	
-	// 陀螺仪原始数据转化为实际值，单位为rad/s
-	gyroX_real = mpu6050_gyro_x / (Gyro_Range * 57.30);			// 关于57.30: 1° = 1/57.30 rad
-	gyroY_real = mpu6050_gyro_y / (Gyro_Range * 57.30);
-	gyroZ_real = mpu6050_gyro_z / (Gyro_Range * 57.30);
-	
-	// 使用加速度计数据计算角度
-	accel_angle = atan2(accelY_real, accelZ_real) * 180 / PI;
-//	accel_angleY = atan2(-accelX_real, sqrt(accelY_real * accelY_real + accelZ_real * accelZ_real)) * 180 / PI;
-//	accel_angleZ = atan2( accelZ_real, sqrt(accelX_real * accelX_real + accelY_real * accelY_real)) * 180 / PI;
-	
-	// 结合陀螺仪数据应用卡尔曼滤波器
-	KalmanFilter(accel_angle, gyroX_real, dt);		// 采样时间为dt, 滤波后可被查看的值:angle
-//	KalmanFilter(accel_angleY, gyroY_real, dt);
-//	KalmanFilter(accel_angleZ, gyroZ_real, dt);
+
+    icm20602_read_registers(ICM20602_GYRO_XOUT_H, dat, 6);
+    icm20602_gyro_x = (int16)(((uint16)dat[0] << 8 | dat[1]));
+    icm20602_gyro_y = (int16)(((uint16)dat[2] << 8 | dat[3]));
+    icm20602_gyro_z = (int16)(((uint16)dat[4] << 8 | dat[5]));
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     将 ICM20602 加速度计数据转换为实际物理数据
+// 参数说明     gyro_value      任意轴的加速度计数据
+// 返回参数     void
+// 使用示例     float data = icm20602_acc_transition(icm20602_acc_x);           // 单位为 g(m/s^2)
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+float icm20602_acc_transition (int16 acc_value)
+{
+    float acc_data = 0;
+    switch(ICM20602_ACC_SAMPLE)
+    {
+        case 0x00: acc_data = (float)acc_value / 16384; break;                  // 0x00 加速度计量程为:±2g     获取到的加速度计数据 除以 16384      可以转化为带物理单位的数据，单位：g(m/s^2)
+        case 0x08: acc_data = (float)acc_value / 8192;  break;                  // 0x08 加速度计量程为:±4g     获取到的加速度计数据 除以 8192       可以转化为带物理单位的数据，单位：g(m/s^2)
+        case 0x10: acc_data = (float)acc_value / 4096;  break;                  // 0x10 加速度计量程为:±8g     获取到的加速度计数据 除以 4096       可以转化为带物理单位的数据，单位：g(m/s^2)
+        case 0x18: acc_data = (float)acc_value / 2048;  break;                  // 0x18 加速度计量程为:±16g    获取到的加速度计数据 除以 2048       可以转化为带物理单位的数据，单位：g(m/s^2)
+        default: break;
+    }
+    return acc_data;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     将 ICM20602 陀螺仪数据转换为实际物理数据
+// 参数说明     gyro_value      任意轴的陀螺仪数据
+// 返回参数     void
+// 使用示例     float data = icm20602_gyro_transition(icm20602_gyro_x);         // 单位为°/s
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+float icm20602_gyro_transition (int16 gyro_value)
+{
+    float gyro_data = 0;
+    switch(ICM20602_GYR_SAMPLE)
+    {
+        case 0x00: gyro_data = (float)gyro_value / 131.0f;  break;              // 0x00 陀螺仪量程为:±250 dps     获取到的陀螺仪数据除以 131           可以转化为带物理单位的数据，单位为：°/s
+        case 0x08: gyro_data = (float)gyro_value / 65.5f;   break;              // 0x08 陀螺仪量程为:±500 dps     获取到的陀螺仪数据除以 65.5          可以转化为带物理单位的数据，单位为：°/s
+        case 0x10: gyro_data = (float)gyro_value / 32.8f;   break;              // 0x10 陀螺仪量程为:±1000dps     获取到的陀螺仪数据除以 32.8          可以转化为带物理单位的数据，单位为：°/s
+        case 0x18: gyro_data = (float)gyro_value / 16.4f;   break;              // 0x18 陀螺仪量程为:±2000dps     获取到的陀螺仪数据除以 16.4          可以转化为带物理单位的数据，单位为：°/s
+        default: break;
+    }
+    return gyro_data;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     初始化 ICM20602
+// 参数说明     void
+// 返回参数     uint8           1-初始化失败 0-初始化成功
+// 使用示例     icm20602_init();
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+uint8 icm20602_init (void)
+{
+    uint8 val = 0x0, return_state = 0;
+    uint16 timeout_count = 0;
+
+    delay_ms(10);                                                        // 上电延时
+
+//#if ICM20602_USE_SOFT_IIC
+//    soft_iic_init(&icm20602_iic_struct, ICM20602_DEV_ADDR, ICM20602_SOFT_IIC_DELAY, ICM20602_SCL_PIN, ICM20602_SDA_PIN);
+//#else
+//    spi_init(ICM20602_SPI, SPI_MODE0, ICM20602_SPI_SPEED, ICM20602_SPC_PIN, ICM20602_SDI_PIN, ICM20602_SDO_PIN, SPI_CS_NULL);
+//    gpio_init(ICM20602_CS_PIN, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+//#endif
+
+    do
+    {
+        if(icm20602_self_check())
+        {
+            // 如果程序在输出了断言信息 并且提示出错位置在这里
+            // 那么就是 ICM20602 自检出错并超时退出了
+            // 检查一下接线有没有问题 如果没问题可能就是坏了
+            
+//			while(1)
+//			{
+				printf("icm20602 self check error.");
+//				delay_ms(200);
+//			}
+            return_state = 1;
+            break;
+        }
+
+        icm20602_write_register(ICM20602_PWR_MGMT_1, 0x80);                     // 复位设备
+        delay_ms(2);
+
+        do
+        {                                                                       // 等待复位成功
+            val = icm20602_read_register(ICM20602_PWR_MGMT_1);
+            if(timeout_count ++ > ICM20602_TIMEOUT_COUNT)
+            {
+                // 如果程序在输出了断言信息 并且提示出错位置在这里
+                // 那么就是 ICM20602 自检出错并超时退出了
+                // 检查一下接线有没有问题 如果没问题可能就是坏了
+//				while(1)
+//				{
+					printf("icm20602 reset error.\r\n");
+//					delay_ms(200);
+//				}
+                return_state = 1;
+                break;
+            }
+        }while(0x41 != val);
+        if(1 == return_state)
+        {
+            break;
+        }
+
+        icm20602_write_register(ICM20602_PWR_MGMT_1,     0x01);                 // 时钟设置
+        icm20602_write_register(ICM20602_PWR_MGMT_2,     0x00);                 // 开启陀螺仪和加速度计
+        icm20602_write_register(ICM20602_CONFIG,         0x01);                 // 176HZ 1KHZ
+        icm20602_write_register(ICM20602_SMPLRT_DIV,     0x07);                 // 采样速率 SAMPLE_RATE = INTERNAL_SAMPLE_RATE / (1 + SMPLRT_DIV)
+        
+		icm20602_write_register(ICM20602_GYRO_CONFIG,    ICM20602_GYR_SAMPLE);  // ±2000 dps
+		// ICM20602_GYRO_CONFIG寄存器
+        // 设置为:0x00 陀螺仪量程为:±250 dps     获取到的陀螺仪数据除以131           可以转化为带物理单位的数据，单位为：°/s
+        // 设置为:0x08 陀螺仪量程为:±500 dps     获取到的陀螺仪数据除以65.5          可以转化为带物理单位的数据，单位为：°/s
+        // 设置为:0x10 陀螺仪量程为:±1000dps     获取到的陀螺仪数据除以32.8          可以转化为带物理单位的数据，单位为：°/s
+        // 设置为:0x18 陀螺仪量程为:±2000dps     获取到的陀螺仪数据除以16.4          可以转化为带物理单位的数据，单位为：°/s
+        
+		icm20602_write_register(ICM20602_ACCEL_CONFIG,   ICM20602_ACC_SAMPLE);  // ±8g
+		// ICM20602_ACCEL_CONFIG寄存器
+        // 设置为:0x00 加速度计量程为:±2g          获取到的加速度计数据 除以16384      可以转化为带物理单位的数据，单位：g(m/s^2)
+        // 设置为:0x08 加速度计量程为:±4g          获取到的加速度计数据 除以8192       可以转化为带物理单位的数据，单位：g(m/s^2)
+        // 设置为:0x10 加速度计量程为:±8g          获取到的加速度计数据 除以4096       可以转化为带物理单位的数据，单位：g(m/s^2)
+        // 设置为:0x18 加速度计量程为:±16g         获取到的加速度计数据 除以2048       可以转化为带物理单位的数据，单位：g(m/s^2)
+       
+		icm20602_write_register(ICM20602_ACCEL_CONFIG_2, 0x03);                 // Average 4 samples   44.8HZ   //0x23 Average 16 samples
+
+
+    }while(0);
+    return return_state;
+}
+

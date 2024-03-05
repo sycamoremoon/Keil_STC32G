@@ -1,49 +1,73 @@
 #include "Kalman_Filter.h"
+#include "gyroscope.h"
 #include <math.h> 
 
-/* 卡尔曼滤波器参数 */
-#define Q_angle		0.001		// 角度的测量噪声方差
-#define Q_bias		0.003		// 角速度偏差的测量噪声方差
-#define R_measure	0.03		// 测量的噪声方差
-/* 定义全局变量，同时初始化 */
-float angle = 0; 					// 卡尔曼滤波器计算的角度
-float bias = 0;  					// 卡尔曼滤波器计算的陀螺仪偏置
-float P_Filt[2][2] = {{0, 0}, {0, 0}}; 	// 误差协方差矩阵
+float Gyro_z=0;
+float fil_Acc_x,fil_Acc_y,fil_Gyro_z;
+float Angle_z=0;
+float Angle_Z=90;
+float coe_Gyro_z=0.2;
+float ICM20602_FIFO[11];
+int moto_flag=0;
+int gyro_i=0;
+#define dt 0.01
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      更新卡尔曼滤波器
-//  @param      filter		指向卡尔曼滤波器结构体的指针
-//  @param      newAngle	陀螺仪测量得到的新角度值
-//  @param      newRate		陀螺仪测量得到的新角速度值
-//  @param      dt			时间间隔，表示两次测量之间的时间差，通常以秒为单位。
-//  @return     void
-//  @since      v1.0
-//  Sample usage:			KalmanFilter(accel_angle, gyroX_real,0.01); 调用滤波后可直接引用全局变量angle	
-//-------------------------------------------------------------------------------------------------------------------
-void KalmanFilter(float newAngle, float newRate, float dt)
+/**************************************************************************
+函数功能：递推平均滤波算法 处理角速度
+入口参数：无
+返回  值：无
+**************************************************************************/
+void ICM20602_newValues()
 {
-	float S, y_Filt;
-	float K_Filt[2] = {0, 0};	// 卡尔曼增益
-	
-    // 预测更新
-    angle += dt * (newRate - bias);
-    P_Filt[0][0] += dt * (dt*P_Filt[1][1] - P_Filt[0][1] - P_Filt[1][0] + Q_angle);
-    P_Filt[0][1] -= dt * P_Filt[1][1];
-    P_Filt[1][0] -= dt * P_Filt[1][1];
-    P_Filt[1][1] += Q_bias * dt;
-
-    // 测量更新
-    S = P_Filt[0][0] + R_measure;
-    K_Filt[0] = P_Filt[0][0] / S;
-    K_Filt[1] = P_Filt[1][0] / S;
-
-    y_Filt = newAngle - angle;
-    angle += K_Filt[0] * y_Filt;
-    bias += K_Filt[1] * y_Filt;
-
-    P_Filt[0][0] -= K_Filt[0] * P_Filt[0][0];
-    P_Filt[0][1] -= K_Filt[0] * P_Filt[0][1];
-    P_Filt[1][0] -= K_Filt[1] * P_Filt[0][0];
-    P_Filt[1][1] -= K_Filt[1] * P_Filt[0][1];
+	 float sum=0;
+	 static float gyro[100],sum_gyro;
+	 static int gyro_flag=0,Gyro_flag;
+	 
+	 get_icm20602_gyro();		
+		if(gyro_flag==0)
+	 {		 
+		  gyro[gyro_i]=icm20602_gyro_z;
+		  fil_Gyro_z=0.0;
+		  gyro_i++;
+		 if(gyro_i==99)
+		 {
+			 moto_flag=1;
+			 for(gyro_i=0;gyro_i<100;gyro_i++)
+			 {
+				 sum_gyro+=gyro[gyro_i];
+			 }
+			 gyro_flag=1;
+		 }
+	 } 
+	 if(gyro_flag==1)
+	 {
+    Gyro_z = (float)(icm20602_gyro_z-sum_gyro/100)/16.3835;
+	  if(abs(Gyro_z)<3)//角速度小于3时  默认为小车静止  
+	  {
+		  Gyro_z=0;
+	  }
+	  for(Gyro_flag=1;Gyro_flag<10;Gyro_flag++)
+		{	
+		  ICM20602_FIFO[Gyro_flag-1]=ICM20602_FIFO[Gyro_flag];//FIFO 操作
+		}
+	  ICM20602_FIFO[9]=Gyro_z;
+	  for(Gyro_flag=0;Gyro_flag<10;Gyro_flag++)
+		{	            
+			sum+=ICM20602_FIFO[Gyro_flag];//求当前数组的合，再取平均值
+		}
+	  fil_Gyro_z=sum/10;
+	}
+}		
+/**************************************************************************
+函数功能：对角速度积分 得到角度
+入口参数：无
+返回  值：无
+**************************************************************************/
+void Get_angle()
+{
+   ICM20602_newValues();
+	 Angle_Z-=fil_Gyro_z*dt;
+	 if(Angle_Z>=360) Angle_Z=Angle_Z-360;
+	 if(Angle_Z<=-360) Angle_Z=Angle_Z+360;
 }
 
