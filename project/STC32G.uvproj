@@ -883,16 +883,6 @@
               <FilePath>..\peripheral\header\exti.h</FilePath>
             </File>
             <File>
-              <FileName>gyroscope.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\peripheral\src\gyroscope.c</FilePath>
-            </File>
-            <File>
-              <FileName>gyroscope.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\peripheral\header\gyroscope.h</FilePath>
-            </File>
-            <File>
               <FileName>screen.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\peripheral\src\screen.c</FilePath>
@@ -952,6 +942,36 @@
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\telemeter.h</FilePath>
             </File>
+            <File>
+              <FileName>gyro_IICsoft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\gyro_IICsoft.c</FilePath>
+            </File>
+            <File>
+              <FileName>gyro_IICsoft.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\gyro_IICsoft.h</FilePath>
+            </File>
+            <File>
+              <FileName>gyro_IIChard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\gyro_IIChard.c</FilePath>
+            </File>
+            <File>
+              <FileName>gyro_IIChard.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\gyro_IIChard.h</FilePath>
+            </File>
+            <File>
+              <FileName>gyroscope.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\gyroscope.c</FilePath>
+            </File>
+            <File>
+              <FileName>gyroscope.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\gyroscope.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -997,11 +1017,6 @@
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
             </File>
-            <File>
-              <FileName>Kalman_Filter.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\user\include\Kalman_Filter.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1046,11 +1061,6 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>Kalman_Filter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user\src\Kalman_Filter.c</FilePath>
             </File>
           </Files>
         </Group>
