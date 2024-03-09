@@ -14,3 +14,7 @@ version : 2024/02/21 编码器外设更新
 version : 2024/03/02 调试外设驱动
 - peripheral：电机PWM驱动、编码器驱动
 - screen.c：调整输出宽度
+
+version : 2024/03/09 陀螺仪读取数据与处理数据文件分离
+- 新增gyro_IICsoft.c/h 和 gyro_IIChard.c/h 用于读取并传输陀螺仪数据
+- gyroscope.c/h 文件重构，用于存放陀螺仪相关算法。本文件中包含的具体算法引用自安徽理工大学智能车icm20602.c
