@@ -8,12 +8,12 @@
 
 //====================================================软件 IIC 驱动====================================================
 #define DL1B_SOFT_IIC_DELAY         ( 0 )                                        // 软件 IIC 的时钟延时周期 数值越小 IIC 通信速率越快
-#define DL1B_SCL_PIN             	(P65 )                                       // 软件 IIC SCL 引脚 连接 DL1A 的 SCL 引脚
-#define DL1B_SDA_PIN             	(P63 )                                       // 软件 IIC SDA 引脚 连接 DL1A 的 SDA 引脚
+#define DL1B_SCL_PIN             	(P25 )                                       // 软件 IIC SCL 引脚 连接 DL1A 的 SCL 引脚
+#define DL1B_SDA_PIN             	(P24 )                                       // 软件 IIC SDA 引脚 连接 DL1A 的 SDA 引脚
 //====================================================软件 IIC 驱动====================================================
 
 
-#define DL1B_XS_PIN                 ( P47 )
+#define DL1B_XS_PIN                 ( P23 )
 
 #define DL1B_TIMEOUT_COUNT          ( 1000 )                                    // DL1B 超时计数
 
@@ -37,8 +37,4 @@ uint16   dl1b_get_distance (void);
 
 void   dl1b_int_handler  (void);
 uint8  dl1b_init         (void);
-
-
-
-
 #endif

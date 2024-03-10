@@ -304,7 +304,7 @@
             <UserClasses>XDATA(0x10000-0x11FFF)
 </UserClasses>
             <CSection></CSection>
-            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?SCREEN,?ED?CEVENT?MAIN</UserSection>
+            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?MAIN</UserSection>
             <CodeBaseAddress></CodeBaseAddress>
             <XDataBaseAddress></XDataBaseAddress>
             <PDataBaseAddress></PDataBaseAddress>
@@ -943,26 +943,6 @@
               <FilePath>..\peripheral\header\telemeter.h</FilePath>
             </File>
             <File>
-              <FileName>gyro_IICsoft.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\peripheral\src\gyro_IICsoft.c</FilePath>
-            </File>
-            <File>
-              <FileName>gyro_IICsoft.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\peripheral\header\gyro_IICsoft.h</FilePath>
-            </File>
-            <File>
-              <FileName>gyro_IIChard.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\peripheral\src\gyro_IIChard.c</FilePath>
-            </File>
-            <File>
-              <FileName>gyro_IIChard.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\peripheral\header\gyro_IIChard.h</FilePath>
-            </File>
-            <File>
               <FileName>gyroscope.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\peripheral\src\gyroscope.c</FilePath>
@@ -971,6 +951,16 @@
               <FileName>gyroscope.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\gyroscope.h</FilePath>
+            </File>
+            <File>
+              <FileName>iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\iic.c</FilePath>
+            </File>
+            <File>
+              <FileName>iic.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\iic.h</FilePath>
             </File>
           </Files>
         </Group>

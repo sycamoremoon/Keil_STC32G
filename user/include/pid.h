@@ -45,7 +45,7 @@ extern "C"{
         unsigned int actual; // 测量的真实值
         unsigned int target; // 目标值
         unsigned int time_delta; // Time since last sample/calculation - should be set when updating state
-        
+								//控制时间间隔，以ms为单位
         unsigned int previous_error;	// The previously calculated error between actual and target (zero initially)
         unsigned int integral; // Sum of integral error over time
         unsigned int output; // the modified output value calculated by the algorithm, to compensate for error

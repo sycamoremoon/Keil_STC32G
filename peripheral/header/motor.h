@@ -5,6 +5,7 @@
 
 #include "config.h"
 
+#define MAXSPEED 	10000
 // 定义电机结构体
 typedef struct {
     u8 L_pwm_channel; 		// PWM输出通道

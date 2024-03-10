@@ -282,7 +282,6 @@ uint8 dl1b_init (void)
     uint8   data_buffer[2 + sizeof(dl1b_default_configuration)]; 
     uint16  time_out_count  = 0;
 
-
     do
     {
         delay_ms(50);

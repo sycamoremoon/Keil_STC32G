@@ -10,8 +10,8 @@
 #define MIN_BIAS          (-100)        //标准化后表示电压大小的最小值
 #define RATIO              MAX_BIAS/(MAX_VOLTAGE-MIN_VOLTAGE)*(MAX_VOLTAGE-MIN_VOLTAGE)*(MAX_VOLTAGE-MIN_VOLTAGE)
                                         //将ADC采集值转化成标准范围的比例
-#define REF_VOLTAGE         5         //参考电压
-#define CAPTURE_LIMIT       4096
+#define REF_VOLTAGE         (3.3)         //参考电压
+#define CAPTURE_LIMIT       (4095.0)
 
 int8 Get_Regularized_Signal_Data(const float * Data_Array);
 void Sample_All_Chanel();
