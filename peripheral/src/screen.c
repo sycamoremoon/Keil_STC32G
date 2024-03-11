@@ -1,8 +1,8 @@
 #include "screen.h"
 
-#pragma userclass (near=CEVENT)	
-	CEVENT_EXPORT(0,Screen_Init,NULL);
-#pragma userclass (near=default)
+//#pragma userclass (near=CEVENT)	
+//	CEVENT_EXPORT(0,Screen_Init,NULL);
+//#pragma userclass (near=default)
 	
 /// @brief 默认使用硬件SPI进行数据传输，速度较快
 /// @param  无
@@ -477,8 +477,8 @@ void Screen_ShowChar(uint16 x,uint16 y,u16 font_color, u16 background_color,cons
 /// @param num 
 void Screen_ShowInt(uint16 x,uint16 y,u16 font_color, u16 background_color,const int16 num)
 {
-	uint8 tmp_str[7] = {0};
-	Screen_Show_String(x,y,font_color,background_color,"      ");
+	uint8 tmp_str[6] = {0};
+	Screen_Show_String(x,y,font_color,background_color,"     ");	
 	sprintf(tmp_str, "%d", num); // 将整数转换为字符串
 	Screen_Show_String(x,y,font_color,background_color,tmp_str);
 
