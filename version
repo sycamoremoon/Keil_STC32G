@@ -2,7 +2,7 @@ version : 2024/02/05 电机外设驱动更新
 - peripheral文件夹更新：motor.c & motor.h更新
 - 功能更新：通过PWM控制左右两电机的速度
 
-verion :2024/02/07 mpu6050陀螺仪、加速度计、卡尔曼滤波更新
+version :2024/02/07 mpu6050陀螺仪、加速度计、卡尔曼滤波更新
 - user文件夹更新：Kalman_Filter.c & Kalman_Filter.h更新：陀螺仪获取的原始数据转化为角度后，可通过卡尔曼滤波处理得到更准确的角度
 - user文件夹更新：config.h新增宏定义圆周率PI和重力加速度G
 - peripheral文件夹更新：gyroscope.c & gyroscope.h更新
@@ -18,3 +18,6 @@ version : 2024/03/02 调试外设驱动
 version : 2024/03/09 陀螺仪读取数据与处理数据文件分离
 - 新增gyro_IICsoft.c/h 和 gyro_IIChard.c/h 用于读取并传输陀螺仪数据
 - gyroscope.c/h 文件重构，用于存放陀螺仪相关算法。本文件中包含的具体算法引用自安徽理工大学智能车icm20602.c
+
+version : 2024/03/15 更新IIC模块
+- 重构IIC模块，使用条件编译确定使用硬件IIC or 软件IIC
