@@ -1,6 +1,7 @@
 #include  "iic.h"
+
 //定义是否使用软件IIC
-#define 	USE_SOFT_IIC		(1)
+#define 	USE_SOFT_IIC		(0)
 
 #if	(USE_SOFT_IIC == 1)
 
@@ -155,7 +156,7 @@ uint8 read_ch(uint8 ack_x)
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      模拟IIC写数据到设备寄存器函数
 //  @param      dev_add			设备地址(低七位地址)
-//  @param      reg				存放目标寄存器地址的数组
+//  @param      reg_add			存放目标寄存器地址的数组
 //	@param		reg_num			寄存器数据字节数
 //  @param      dat				写入的数据
 //  @return     void						
@@ -267,45 +268,115 @@ void simiic_init(void)
 	}
 }
 
-#else    //Use Hardware IIC
+#else  //Use Hardware IIC
 
-/*Hardware IIC code write here*/
+#include "STC32G_I2C.h"
+/*Hardware IIC codes write here*/
 
-#endif   //USE_SOFT_IIC
+//========================================================================
+// 函数: void I2C_Init(I2C_InitTypeDef *I2Cx)
+// 描述: I2C初始化程序.
+// 参数: I2Cx: 结构参数,请参考I2C.h里的定义.
+// 返回: none.
+// 版本: V1.0, 2012-11-22
+//========================================================================
+void hardiic_init(I2C_InitTypeDef I2Cx)
+{
+	if(I2Cx.I2C_Mode == I2C_Mode_Master)
+	{
+		I2C_Master();						//设为主机	
+		I2CMSST = 0x00;						//清除I2C主机状态寄存器
+		I2C_SetSpeed(I2Cx.I2C_Speed);
+		if(I2Cx.I2C_MS_WDTA == ENABLE)		I2C_WDTA_EN();				//使能自动发送
+		else									I2C_WDTA_DIS();			//禁止自动发送
+	}
+	else
+	{
+		I2C_Slave();						//设为从机
+		I2CSLST = 0x00;						//清除I2C从机状态寄存器
+		I2C_Address(I2Cx.I2C_SL_ADR);
+		if(I2Cx.I2C_SL_MA == ENABLE)			I2C_MATCH_EN();			//从机地址比较功能，只接受相匹配地址
+		else									I2C_MATCH_DIS();	//禁止从机地址比较功能，接受所有设备地址
+	}
+	
+	I2C_Function(I2Cx.I2C_Enable);
+}
+
+#endif
 
 
+/* ============================== 可调用函数 ============================ */
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      1. IIC写数据到设备寄存器函数
+//  @param      dev_add			设备地址(低七位地址)
+//  @param      reg_add			存放 目标寄存器地址 的数组
+//	@param		reg_num			寄存器数据字节数
+//  @param      dat				写入的数据
+//  @return     void						
+//  @since      v1.0
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
 void iic_write_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 dat)
 {
-#ifdef USE_SOFT_IIC
-	simiic_write_reg(dev_add,reg_add,reg_num,dat);
+#if USE_SOFT_IIC
+	simiic_write_reg(dev_add, reg_add, reg_num, dat);				/* 设备地址(低七位地址)，存放目标寄存器地址的数组，寄存器数据字节数，写入的数据 */
 #else	//use hardware IIC
-
+	I2C_WriteNbyte(dev_add, reg_add, dat, reg_num);
 #endif	//USE_SOFT_IIC
 }
 
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      2. IIC读数据到设备寄存器函数
+//  @param      dev_add			设备地址(低七位地址)
+//  @param      reg_add			存放目标寄存器地址的数组
+//	@param		reg_num			寄存器数据字节数
+//  @return     void						
+//  @since      v1.0
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
 uint8 iic_read_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num)
 {
-#ifdef USE_SOFT_IIC
-	simiic_read_reg(dev_add,reg_add,reg_num);
+#if USE_SOFT_IIC
+	simiic_read_reg(dev_add, reg_add, reg_num);
 #else	//use hardware IIC
-
+	//I2C_ReadNbyte(dev_add, reg_add, dat, 1);
 #endif	//USE_SOFT_IIC
 }
 
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      3. IIC读取多字节数据
+//  @param      dev_add			设备地址(低七位地址)
+//  @param      reg_add			存放目标寄存器地址的数组
+//	@param		reg_num			寄存器数据字节数
+//  @param      dat_add			数据保存的地址指针
+//  @param      dat_num			读取字节数量
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
 void iic_read_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 *dat_add, uint8 dat_num)
 {
-#ifdef USE_SOFT_IIC
-	simiic_read_regs(dev_add,reg_add,reg_num,dat_add,dat_num);
+#if USE_SOFT_IIC
+	simiic_read_regs(dev_add, reg_add, reg_num, dat_add, dat_num);
 #else	//use hardware IIC
-
+	I2C_ReadNbyte(dev_add, reg_add, *dat_add, dat_num);
 #endif	//USE_SOFT_IIC
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      4. IIC端口初始化
+//  @param      NULL
+//  @return     void	
+//  @since      v1.0
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
 void iic_init(void)
 {
-#ifdef USE_SOFT_IIC
+#if USE_SOFT_IIC
 	simiic_init();
 #else	//use hardware IIC
-
+	I2C_InitTypeDef I2Cx;
+	hardiic_init(I2Cx);
 #endif	//USE_SOFT_IIC
 }
