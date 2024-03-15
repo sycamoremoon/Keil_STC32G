@@ -270,6 +270,7 @@ void simiic_init(void)
 
 #else  //Use Hardware IIC
 
+#include "STC32G_I2C.h"
 /*Hardware IIC codes write here*/
 
 //========================================================================
