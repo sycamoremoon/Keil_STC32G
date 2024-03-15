@@ -1,24 +1,13 @@
 #include  "iic.h"
+<<<<<<< Updated upstream
 
 //定义是否使用软件IIC
 #define 	USE_SOFT_IIC		(0)
+=======
+>>>>>>> Stashed changes
 
 #if	(USE_SOFT_IIC == 1)
 
-//软件 IIC 驱动引脚定义，需要在iic.c初始化中对引脚配置
-#define		SCL_GPIO_PIN	P15
-#define 	SDA_GPIO_PIN	P14
-#define 	IIC_GPIO					GPIO_P1
-#define 	IIC_SCL_PIN   				GPIO_Pin_5				// 软件 IIC SCL 引脚
-#define 	IIC_SDA_PIN  				GPIO_Pin_4				// 软件 IIC SDA 引脚
-
-#define 	SDA0()       SDA_GPIO_PIN=0	//IO口输出低电平
-#define 	SDA1()       SDA_GPIO_PIN=1	//IO口输出高电平  
-#define 	SCL0()       SCL_GPIO_PIN=0	//IO口输出低电平
-#define 	SCL1()       SCL_GPIO_PIN=1	//IO口输出高电平
-#define 	ack 			1      	//主应答
-#define 	no_ack 			0   	//从应答
-	
 static uint16 simiic_delay_time=100;   //ICM等传感器应设置为100
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -270,7 +259,6 @@ void simiic_init(void)
 
 #else  //Use Hardware IIC
 
-#include "STC32G_I2C.h"
 /*Hardware IIC codes write here*/
 
 //========================================================================

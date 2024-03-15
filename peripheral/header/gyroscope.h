@@ -6,8 +6,8 @@
 //================================================定义 ICM20602 内部地址================================================
 #define ICM20602_TIMEOUT_COUNT  	0xFF
 
-#define ICM20602_DEV_ADDR           0x69                                        // SA0接地：0x68 SA0上拉：0x69 模块默认上拉
-#define ICM20602_SPI_W              0x00
+#define ICM20602_DEV_ADDR           0x69                   		// 0x69为低7位地址
+#define ICM20602_SPI_W              0x00						//SA0接地：0x68 SA0上拉：0x69 模块默认上拉
 #define ICM20602_SPI_R              0x80
 
 #define ICM20602_XG_OFFS_TC_H       0x04
