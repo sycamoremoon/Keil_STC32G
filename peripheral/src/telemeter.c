@@ -33,143 +33,6 @@ uint8 dl1b_finsh_flag = 0;			//用来标志测距模块是否成功获得距离数据
 #define dl1b_transfer_8bit_array(tdata, tlen, rdata, rlen)      (dl1b_iic_transfer_8bit_array((tdata), (tlen), (rdata), (rlen)))
 
 
-#define GET_DL1B_SDA   		 		DL1B_SDA_PIN
-#define DL1B_SDA_LOW()         		DL1B_SDA_PIN = 0		//IO口输出低电平
-#define DL1B_SDA_HIGH()        		DL1B_SDA_PIN = 1		//IO口输出高电平
-
-#define DL1B_SCL_LOW()          	DL1B_SCL_PIN = 0		//IO口输出低电平
-#define DL1B_SCL_HIGH()         	DL1B_SCL_PIN = 1		//IO口输出高电平
-
-#define ack 1      //主应答
-#define no_ack 0   //从应答	
-
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      模拟IIC延时
-//  @return     void						
-//  @since      v1.0
-//  Sample usage:				如果IIC通讯失败可以尝试增加j的值
-//-------------------------------------------------------------------------------------------------------------------
-static void dl1b_simiic_delay(void)
-{
-    uint16 j=DL1B_SOFT_IIC_DELAY;   
-	while(j--);
-}
-
-//内部使用，用户无需调用
-static void dl1b_simiic_start(void)
-{
-	DL1B_SDA_HIGH();
-	DL1B_SCL_HIGH();
-	dl1b_simiic_delay();
-	DL1B_SDA_LOW();
-	dl1b_simiic_delay();
-	DL1B_SCL_LOW();
-}
-
-//内部使用，用户无需调用
-static void dl1b_simiic_stop(void)
-{
-	DL1B_SDA_LOW();
-	DL1B_SCL_LOW();
-	dl1b_simiic_delay();
-	DL1B_SCL_HIGH();
-	dl1b_simiic_delay();
-	DL1B_SDA_HIGH();
-	dl1b_simiic_delay();
-}
-
-//主应答(包含ack:SDA=0和no_ack:SDA=0)
-//内部使用，用户无需调用
-static void dl1b_simiic_sendack(unsigned char ack_dat)
-{
-    DL1B_SCL_LOW();
-	dl1b_simiic_delay();
-	if(ack_dat) DL1B_SDA_LOW();
-    else    	DL1B_SDA_HIGH();
-
-    DL1B_SCL_HIGH();
-    dl1b_simiic_delay();
-    DL1B_SCL_LOW();
-    dl1b_simiic_delay();
-}
-
-
-static int dl1b_sccb_waitack(void)
-{
-    DL1B_SCL_LOW();
-
-	dl1b_simiic_delay();
-	
-	DL1B_SCL_HIGH();
-    dl1b_simiic_delay();
-	
-    if(GET_DL1B_SDA)           //应答为高电平，异常，通信失败
-    {
-
-        DL1B_SCL_LOW();
-        return 0;
-    }
-
-    DL1B_SCL_LOW();
-	dl1b_simiic_delay();
-    return 1;
-}
-
-//字节发送程序
-//发送c(可以是数据也可是地址)，送完后接收从应答
-//不考虑从应答位
-//内部使用，用户无需调用
-static void dl1b_send_ch(uint8 c)
-{
-	uint8 i = 8;
-    while(i--)
-    {
-        if(c & 0x80)	DL1B_SDA_HIGH();//SDA 输出数据
-        else			DL1B_SDA_LOW();
-        c <<= 1;
-        dl1b_simiic_delay();
-        DL1B_SCL_HIGH();                //SCL 拉高，采集信号
-        dl1b_simiic_delay();
-        DL1B_SCL_LOW();                //SCL 时钟线拉低
-    }
-	dl1b_sccb_waitack();
-}
-
-
-//字节接收程序
-//接收器件传来的数据，此程序应配合|主应答函数|使用
-//内部使用，用户无需调用
-static uint8 dl1b_read_ch(uint8 ack_x)
-{
-    uint8 i;
-    uint8 c;
-    c=0;
-    DL1B_SCL_LOW();
-    dl1b_simiic_delay();
-    DL1B_SDA_HIGH();             
-
-    for(i=0;i<8;i++)
-    {
-        dl1b_simiic_delay();
-        DL1B_SCL_LOW();         //置时钟线为低，准备接收数据位
-        dl1b_simiic_delay();
-        DL1B_SCL_HIGH();         //置时钟线为高，使数据线上数据有效
-        dl1b_simiic_delay();
-        c<<=1;
-        if(GET_DL1B_SDA) 
-        {
-            c+=1;   //读数据位，将接收的数据存c
-        }
-    }
-
-	DL1B_SCL_LOW();
-	dl1b_simiic_delay();
-	dl1b_simiic_sendack(ack_x);
-	
-    return c;
-}
-
-
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     软件 IIC 接口传输 8bit 数组 先写后读取
 // 参数说明     *write_data     发送数据存放缓冲区
@@ -180,23 +43,10 @@ static uint8 dl1b_read_ch(uint8 ack_x)
 // 使用示例     iic_transfer_8bit_array(IIC_1, addr, data, 64, data, 64);
 // 备注信息     
 //-------------------------------------------------------------------------------------------------------------------
-void dl1b_iic_transfer_8bit_array (const uint8 *write_data, uint32 write_len, uint8 *read_data, uint32 read_len)
+void dl1b_iic_transfer_8bit_array (uint8 *write_data, uint32 write_len, uint8 *read_data, uint32 read_len)
 {
-
-    dl1b_simiic_start();
-    dl1b_send_ch(DL1B_DEV_ADDR << 1);
-    while(write_len --)
-    {
-        dl1b_send_ch(*write_data ++);
-    }
-    dl1b_simiic_start();
-    dl1b_send_ch(DL1B_DEV_ADDR << 1 | 0x01);
-    while(read_len --)
-    {
-		// 前面7位需要回复ack，最后1位不需要回复ack.
-        *read_data ++ = dl1b_read_ch(read_len != 0);
-    }
-    dl1b_simiic_stop();
+	iic_write_regs (DL1B_DEV_ADDR,NULL,0,write_data,write_len);
+	iic_read_regs(DL1B_DEV_ADDR,NULL,0,read_data,read_len);
 }
 
 
