@@ -45,7 +45,7 @@ void Signal_Acq_Init(unsigned char GPIO_PX, unsigned int GPIO_pin)
 /// @return ADC转化数据，右对齐
 uint16 Get_DMA_ADC_Result(uint8 channel)
 {
-	uint16 * ADC_Data;
+	uint8 * ADC_Data;
 	uint16 adc;
 	ADC_Data = &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
@@ -85,13 +85,16 @@ int8 Get_Regularized_Signal_Data(const float * Data_Array)
 	int8 i;
 	float answer = 0;
 	float diff ,sum;
-	for(i=0;i<(CHANNEL_NUM/2);i++)			//用两端的数据进行比较，作差之后进行函数变化，得到线性结果
+	uint8 channel = CHANNEL_NUM;
+	if (channel <= 1) channel = 2;		//防止div 0
+	for(i=0;i<(channel/2);i++)			//用两端的数据进行比较，作差之后进行函数变化，得到线性结果
 	{
-		diff = *(Data_Array+i)-*(Data_Array+CHANNEL_NUM-1-i);
-		sum = *(Data_Array+i)+*(Data_Array+CHANNEL_NUM-1-i);
+		diff = *(Data_Array+i)-*(Data_Array+channel-1-i);
+		sum = *(Data_Array+i)+*(Data_Array+channel-1-i);
 		answer += diff/(sum*sum)*RATIO;
 	}
-	return (int8)(answer/(CHANNEL_NUM/2));
+	
+	return (int8)(answer/(channel/2));
 }
 
 

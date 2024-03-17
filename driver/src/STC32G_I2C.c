@@ -196,9 +196,9 @@ void I2C_WriteNbyte(u8 dev_addr, u8 * mem_addr, uint8 mem_num ,u8 * dat_add, u8 
 	while(mem_num--)
     {
 		SendData(*mem_addr);					//发送存储地址
+		RecvACK();
 		mem_addr++;
     } 
-	RecvACK();
 	do
 	{
 		SendData(*dat_add++);
@@ -215,7 +215,7 @@ void I2C_WriteNbyte(u8 dev_addr, u8 * mem_addr, uint8 mem_num ,u8 * dat_add, u8 
 // 返回: none.
 // 版本: V1.0, 2020-09-15
 //========================================================================
-void I2C_ReadNbyte(u8 dev_addr, u8 * mem_addr, uint8 * mem_num , u8 * dat_add, u8 dat_num)   /*  DeviceAddress,WordAddress,First Data Address,Byte lenth   */
+void I2C_ReadNbyte(u8 dev_addr, u8 * mem_addr, uint8 mem_num , u8 * dat_add, u8 dat_num)   /*  DeviceAddress,WordAddress,First Data Address,Byte lenth   */
 {
 	Start();                                //发送起始命令
 	SendData((dev_addr<<1) | 0x00);         	//发送设备地址+写命令
@@ -223,9 +223,9 @@ void I2C_ReadNbyte(u8 dev_addr, u8 * mem_addr, uint8 * mem_num , u8 * dat_add, u
 	while(mem_num--)
     {
 		SendData(*mem_addr);					//发送存储地址
+		RecvACK();
 		mem_addr++;
     }         
-	RecvACK();
 	Start();                                //发送起始命令
 	SendData((dev_addr<<1) | 0x01);          //发送设备地址+读命令
 	RecvACK();

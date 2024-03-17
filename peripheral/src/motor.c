@@ -71,7 +71,7 @@ void Set_Lmotor_Speed(long speed)
 		duty_cycle = (PWM_Peri / MAXSPEED) * speed; 		// 计算占空比
 		pwmA_duty.PWM3_Duty = duty_cycle;
 	}
-	else if(speed < 0)
+	else 	//if(speed < 0)
 	{
 		Lmotor_direction = 0;							// 电机反转
 		duty_cycle = (PWM_Peri / MAXSPEED) * -speed; 		// 计算占空比
@@ -105,7 +105,7 @@ void Set_Rmotor_Speed(long speed)
 		duty_cycle = (PWM_Peri / MAXSPEED) * speed; 		// 计算占空比
 		pwmA_duty.PWM4_Duty = duty_cycle;
 	}
-	else if(speed < 0)
+	else 	//if(speed < 0)
 	{
 		Rmotor_direction = 0;							// 电机反转
 		duty_cycle = (PWM_Peri / MAXSPEED) * -speed; 		// 计算占空比

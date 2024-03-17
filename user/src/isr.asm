@@ -56,7 +56,6 @@
         JMP     I2STDMA_ISR
         CSEG    AT  0203H           ;I2SRDMA_VECTOR
         JMP     I2SRDMA_ISR
-
 RTC_VECTOR:
 P0INT_ISR:
 P1INT_ISR:

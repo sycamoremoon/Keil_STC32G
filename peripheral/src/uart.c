@@ -1,7 +1,7 @@
 #include "uart.h"
 
 #pragma userclass (near=CEVENT)	
-	CEVENT_EXPORT(0,UART_init,NULL);
+	CEVENT_EXPORT(0,uart_init,NULL);
 #pragma userclass (near=default)
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
@@ -41,7 +41,7 @@ uint8 busy[5];				 //接收忙标志位
 //								编码器采集数据也需要定时器作为外部计数。
 //								如果不同的串口，使用同一个定时器，串口的波特率以最后一个初始化为准
 //-------------------------------------------------------------------------------------------------------------------
-void UART_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud, TIMN_enum tim_n)
+void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud, TIMN_enum tim_n)
 {
     uint16 brt;
 

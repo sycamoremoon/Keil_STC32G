@@ -89,7 +89,7 @@ extern bit DisplayFlag;
 
 void I2C_Init(I2C_InitTypeDef *I2Cx);
 void I2C_WriteNbyte(u8 dev_addr, u8 * mem_addr, uint8 mem_num ,u8 * dat_add, u8 dat_num);
-void I2C_ReadNbyte(u8 dev_addr, u8 * mem_addr, uint8 * mem_num , u8 * dat_add, u8 dat_num);
+void I2C_ReadNbyte(u8 dev_addr, u8 * mem_addr, uint8 mem_num , u8 * dat_add, u8 dat_num);
 u8 Get_MSBusy_Status(void);
 void SendCmdData(u8 cmd, u8 dat);
 

@@ -1,4 +1,5 @@
 #include "telemeter.h"
+
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,dl1b_init,NULL);
 //#pragma userclass (near=default)
@@ -43,12 +44,10 @@ uint8 dl1b_finsh_flag = 0;			//用来标志测距模块是否成功获得距离数据
 // 使用示例     iic_transfer_8bit_array(IIC_1, addr, data, 64, data, 64);
 // 备注信息     
 //-------------------------------------------------------------------------------------------------------------------
-void dl1b_iic_transfer_8bit_array (uint8 *write_data, uint32 write_len, uint8 *read_data, uint32 read_len)
+void dl1b_iic_transfer_8bit_array (const uint8 *write_data, uint8 write_len, uint8 *read_data, uint8 read_len)
 {
-	iic_write_regs (DL1B_DEV_ADDR,NULL,0,write_data,write_len);
-	iic_read_regs(DL1B_DEV_ADDR,NULL,0,read_data,read_len);
+	iic_transfer(DL1B_DEV_ADDR,write_data,write_len,read_data,read_len);
 }
-
 
 
 
@@ -131,8 +130,7 @@ uint8 dl1b_init (void)
     uint8   return_state    = 0;
     uint8   data_buffer[2 + sizeof(dl1b_default_configuration)]; 
     uint16  time_out_count  = 0;
-
-    do
+	do
     {
         delay_ms(50);
         DL1B_XS_PIN = 0;
@@ -174,7 +172,6 @@ uint8 dl1b_init (void)
 
         dl1b_init_flag = 1;
     }while(0);
-
-
+	
     return return_state;
 }

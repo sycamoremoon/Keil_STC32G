@@ -13,6 +13,7 @@
 
 CpostHandler cposhHandlers[CPOST_MAX_HANDLER_SIZE] = {0};           //定义了一个总的句柄合集
 
+CpostParam cpostparam;                 		//定义了一个参数结构体,在多次添加Cpost的时候被重复使用
 /**
  * @brief cpost 添加handler
  * 
@@ -147,7 +148,6 @@ void cpostProcess(void)
 */
 CpostParam * cpostparaminit(void * handler,void * param,size_t delay,unsigned char flag,unsigned char paramDiff)
 {
-	CpostParam cpostparam;                 //定义了一个参数结构体
     size_t i;
     for ( i = 0; i < CPOST_MAX_HANDLER_SIZE; i++)
     {
