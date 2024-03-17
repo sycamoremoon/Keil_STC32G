@@ -54,7 +54,7 @@ u8 NVIC_Timer1_Init(u8 State, u8 Priority)
 u8 NVIC_Timer2_Init(u8 State, u8 Priority)
 {
 	if(State <= ENABLE) Timer2_Interrupt(State); else  return FAIL;
-	Priority = NULL;
+	Priority = Priority_0;
 	return SUCCESS;
 }
 
@@ -69,7 +69,7 @@ u8 NVIC_Timer2_Init(u8 State, u8 Priority)
 u8 NVIC_Timer3_Init(u8 State, u8 Priority)
 {
 	if(State <= ENABLE) Timer3_Interrupt(State); else  return FAIL;
-	Priority = NULL;
+	Priority = Priority_0;
 	return SUCCESS;
 }
 
@@ -84,7 +84,7 @@ u8 NVIC_Timer3_Init(u8 State, u8 Priority)
 u8 NVIC_Timer4_Init(u8 State, u8 Priority)
 {
 	if(State <= ENABLE) Timer4_Interrupt(State); else  return FAIL;
-	Priority = NULL;
+	Priority = Priority_0;
 	return SUCCESS;
 }
 
@@ -129,7 +129,7 @@ u8 NVIC_INT1_Init(u8 State, u8 Priority)
 u8 NVIC_INT2_Init(u8 State, u8 Priority)
 {
 	if(State <= ENABLE) INT2_Interrupt(State); else  return FAIL;
-	Priority = NULL;
+	Priority = Priority_0;
 	return SUCCESS;
 }
 
@@ -144,7 +144,7 @@ u8 NVIC_INT2_Init(u8 State, u8 Priority)
 u8 NVIC_INT3_Init(u8 State, u8 Priority)
 {
 	if(State <= ENABLE) INT3_Interrupt(State); else  return FAIL;
-	Priority = NULL;
+	Priority = Priority_0;
 	return SUCCESS;
 }
 
@@ -159,7 +159,7 @@ u8 NVIC_INT3_Init(u8 State, u8 Priority)
 u8 NVIC_INT4_Init(u8 State, u8 Priority)
 {
 	if(State <= ENABLE) INT4_Interrupt(State); else  return FAIL;
-	Priority = NULL;
+	Priority = Priority_0;
 	return SUCCESS;
 }
 
@@ -344,7 +344,7 @@ u8 NVIC_PWM_Init(u8 Channel, u8 State, u8 Priority)
 
 		default:
 			PWMB_IER = State;
-			Priority = NULL;
+			Priority = Priority_0;
 		break;
 	}
 	return SUCCESS;

@@ -53,7 +53,7 @@ void  Screen_WriteCommand(uchar c)
 	CS=1;    
 }
 //向液晶屏写一个8位数据
-void  Screen_WriteData(uchar d)
+void  Screen_WriteData(uint8 d)
 {
 	CS=0;
 	DC=1;
@@ -61,12 +61,12 @@ void  Screen_WriteData(uchar d)
 	CS=1;
 }
 //向液晶屏写一个16位数据
-void Screen_WriteData_16Bit(int Data)
+void Screen_WriteData_16Bit(uint16 Data)
 {
 	CS=0;
 	DC=1;
-	SPI_WriteByte(Data>>8);
-	SPI_WriteByte(Data);
+	SPI_WriteByte((uint8)(Data>>8));
+	SPI_WriteByte((uint8)Data);
 	CS=1;
 	
 }
@@ -204,19 +204,19 @@ void Lcd_Init()
 /// @param y_start 
 /// @param x_end 
 /// @param y_end 
-void Screen_SetRegion(unsigned int x_start,unsigned int y_start,unsigned int x_end,unsigned int y_end)
+void Screen_SetRegion(uint16 x_start,uint16 y_start,uint16 x_end,uint16 y_end)
 {	
     Screen_WriteCommand(0x2a);
     Screen_WriteData(0x00);
-    Screen_WriteData(x_start+2);
+    Screen_WriteData((uint8)(x_start+2));
     Screen_WriteData(0x00);
-    Screen_WriteData(x_end+2);
+    Screen_WriteData((uint8)(x_end+2));
 
     Screen_WriteCommand(0x2b);
     Screen_WriteData(0x00);
-    Screen_WriteData(y_start+3);
+    Screen_WriteData((uint8)(y_start+2));
     Screen_WriteData(0x00);
-    Screen_WriteData(y_end+3);	
+    Screen_WriteData((uint8)(y_end+2));	
 
     Screen_WriteCommand(0x2c);
 }

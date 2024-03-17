@@ -146,15 +146,11 @@ uint8 read_ch(uint8 ack_x)
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void simiic_write_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 dat)
+void simiic_write_reg(uint8 dev_add, uint8 reg_add, uint8 dat)
 {
 	simiic_start();
     send_ch( (dev_add<<1) | 0x00);   //发送器件地址加写位
-    while(reg_num--)
-    {
-		send_ch(*reg_add);
-		reg_add++;
-    }
+	send_ch(reg_add);
 	send_ch( dat );   				 //发送需要写入的数据
 	simiic_stop();
 }
@@ -170,15 +166,11 @@ void simiic_write_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 dat)
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void simiic_write_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 * dat_add, uint8 dat_num)
+void simiic_write_regs(uint8 dev_add, uint8 reg, uint8 * dat_add, uint8 dat_num)
 {
 	simiic_start();
-    send_ch( (dev_add<<1) | 0x00);   //发送器件地址加写位
-    while(reg_num--)
-    {
-		send_ch(*reg_add);
-		reg_add++;
-    }
+    send_ch((dev_add<<1) | 0x00);   //发送器件地址加写位
+	send_ch(reg);
 	while(dat_num--)
     {
 		send_ch(*dat_add);   				 //发送需要写入的数据
@@ -196,16 +188,12 @@ void simiic_write_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 * da
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-uint8 simiic_read_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num)
+uint8 simiic_read_reg(uint8 dev_add, uint8 reg_add)
 {
 	uint8 dat;
 	simiic_start();
     send_ch( (dev_add<<1) | 0x00);  //发送器件地址加写位
-    while(reg_num--)
-    {
-		send_ch(*reg_add);
-		reg_add++;
-    }
+	send_ch(reg_add);
 	
 	simiic_start();
 	send_ch( (dev_add<<1) | 0x01);  //发送器件地址加读位
@@ -214,7 +202,6 @@ uint8 simiic_read_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num)
 	
 	return dat;
 }
-
 
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -226,15 +213,12 @@ uint8 simiic_read_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num)
 //  @param      dat_num			读取字节数量
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void simiic_read_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 *dat_add, uint8 dat_num)
+void simiic_read_regs(uint8 dev_add, uint8 reg, uint8 *dat_add, uint8 dat_num)
 {
 	simiic_start();
     send_ch( (dev_add<<1) | 0x00);  //发送器件地址加写位
-    while(reg_num--)
-    {
-		send_ch(*reg_add);
-		reg_add++;
-    }
+	send_ch(reg);
+
 	simiic_start();
 	send_ch( (dev_add<<1) | 0x01);  //发送器件地址加读位
     while(--dat_num)
@@ -245,7 +229,33 @@ void simiic_read_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 *dat_
     *dat_add = read_ch(no_ack); //读取数据
 	simiic_stop();
 }
-
+#define DL1B_DEV_ADDR                                           ( 0x52 >> 1 )
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      模拟IIC读写传输数据
+//  @param      dev_add			设备地址(低七位地址)
+//  @param      write_add			发送数据存放缓冲区
+//	@param		write_num			发送缓冲区长度
+//  @param      read_add			读取数据存放缓冲区
+//  @param      read_num			读取缓冲区长度
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
+void simiic_transfer(const uint8 dev_add, const uint8 *write_add, uint8 write_num, uint8 *read_add, uint8 read_num)
+{
+	simiic_start();
+    send_ch(dev_add << 1);
+    while(write_num --)
+    {
+        send_ch(*write_add ++);
+    }
+    simiic_start();
+    send_ch(dev_add << 1 | 0x01);
+    while(read_num --)
+    {
+		// 前面7位需要回复ack，最后1位不需要回复ack.
+        *read_add ++ = read_ch(read_num != 0);
+    }
+    simiic_stop();
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      模拟IIC端口初始化
@@ -289,27 +299,30 @@ void simiic_init(void)
 // 返回: none.
 // 版本: V1.0, 2012-11-22
 //========================================================================
+
 void hardiic_init()
 {
-	I2C_InitTypeDef		I2C_InitStructure;
-
-	I2C_InitStructure.I2C_Mode      = I2C_Mode_Master;	//主从选择   I2C_Mode_Master, I2C_Mode_Slave
-	I2C_InitStructure.I2C_Enable    = ENABLE;			//I2C功能使能,   ENABLE, DISABLE
-	I2C_InitStructure.I2C_MS_WDTA   = DISABLE;			//主机使能自动发送,  ENABLE, DISABLE
-	I2C_InitStructure.I2C_Speed     = 63;				//总线速度=Fosc/2/(Speed*2+4),      0~63
-	I2C_Init(&I2C_InitStructure);
-	NVIC_I2C_Init(I2C_Mode_Master,DISABLE,Priority_0);		//主从模式, I2C_Mode_Master, I2C_Mode_Slave; 中断使能
+	//输出模式配置为开漏输出
+	GPIO_InitTypeDef IIC_PIN;
+	IIC_PIN.Mode = GPIO_OUT_OD;		
+	IIC_PIN.Pin = IIC_SCL_PIN;
+	GPIO_Inilize(IIC_GPIO,&IIC_PIN);
 	
+	IIC_PIN.Pin = IIC_SDA_PIN;
+	GPIO_Inilize(IIC_GPIO,&IIC_PIN);	
+	
+	//开漏输出设置上拉电阻
 	switch (IIC_GPIO){
-	case GPIO_P1 :I2C_SW(I2C_P14_P15);;
-		break;
-	case GPIO_P2 :I2C_SW(I2C_P24_P25);;
-		break;
-	case GPIO_P3 :I2C_SW(I2C_P33_P32);;
-		break;
-	default : 
-		break;
+		case GPIO_P1 :P1_PULL_UP_ENABLE(IIC_SCL_PIN | IIC_SDA_PIN);
+			break;
+		case GPIO_P2 :P2_PULL_UP_ENABLE(IIC_SCL_PIN | IIC_SDA_PIN);
+			break;
+		case GPIO_P3 :P3_PULL_UP_ENABLE(IIC_SCL_PIN | IIC_SDA_PIN);
+			break;
+		default : 
+			break;
 	}
+	Zf_IIC_init(IIC_2, IIC2_SCL_P25,IIC2_SDA_P24,500);
 }
 
 #endif
@@ -327,12 +340,12 @@ void hardiic_init()
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void iic_write_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 dat)
+void iic_write_reg(uint8 dev_add, uint8 reg, uint8 dat)
 {
 #if USE_SOFT_IIC
-	simiic_write_reg(dev_add, reg_add, reg_num, dat);				/* 设备地址(低七位地址)，存放目标寄存器地址的数组，寄存器数据字节数，写入的数据 */
+	simiic_write_reg(dev_add, reg, dat);				/* 设备地址(低七位地址)，存放目标寄存器地址的数组，寄存器数据字节数，写入的数据 */
 #else	//use hardware IIC
-	I2C_WriteNbyte(dev_add, reg_add, reg_num，dat, 1);
+	Zf_IIC_write_reg(dev_add, reg, dat);
 #endif	//USE_SOFT_IIC
 }
 
@@ -347,15 +360,32 @@ void iic_write_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 dat)
 //  @param      dat_num			读取字节数量
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void iic_write_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 *dat_add, uint8 dat_num)
+void iic_write_regs(uint8 dev_add, uint8 reg, uint8 *dat_add, uint8 dat_num)
 {
 #if USE_SOFT_IIC
-	simiic_write_regs(dev_add, reg_add, reg_num, dat_add, dat_num);
+	simiic_write_regs(dev_add, reg, dat_add, dat_num);
 #else	//use hardware IIC
-	I2C_WriteNbyte(dev_add, reg_add, reg_num, dat_add, dat_num);
+	//I2C_WriteNbyte(dev_add, reg_add, reg_num, dat_add, dat_num);
 #endif	//USE_SOFT_IIC
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      IIC读写传输数据
+//  @param      dev_add			设备地址(低七位地址)
+//  @param      write_add			发送数据存放缓冲区
+//	@param		write_num			发送缓冲区长度
+//  @param      read_add			读取数据存放缓冲区
+//  @param      read_num			读取缓冲区长度
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
+void iic_transfer(const uint8 dev_add, const uint8 *write_add, uint8 write_num, uint8 *read_add, uint8 read_num)
+{
+#if USE_SOFT_IIC
+	simiic_transfer(dev_add, write_add, write_num, read_add, read_num);
+#else	//use hardware IIC
+
+#endif	//USE_SOFT_IIC
+}
 
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -367,13 +397,13 @@ void iic_write_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 *dat_ad
 //  @since      v1.0
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-uint8 iic_read_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num)
+uint8 iic_read_reg(uint8 dev_add, uint8 reg)
 {
 	uint8 recive = 0;
 #if USE_SOFT_IIC
-	recive = simiic_read_reg(dev_add, reg_add, reg_num);
+	recive = simiic_read_reg(dev_add, reg);
 #else	//use hardware IIC
-	I2C_ReadNbyte(dev_add, reg_add, reg_num, &recive, 1);
+	Zf_IIC_read_reg(dev_add, reg, &recive);
 #endif	//USE_SOFT_IIC
 	return recive;
 }
@@ -388,12 +418,12 @@ uint8 iic_read_reg(uint8 dev_add, uint8 * reg_add, uint8 reg_num)
 //  @param      dat_num			读取字节数量
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
-void iic_read_regs(uint8 dev_add, uint8 * reg_add, uint8 reg_num, uint8 *dat_add, uint8 dat_num)
+void iic_read_regs(uint8 dev_add, uint8 reg, uint8 *dat_add, uint8 dat_num)
 {
 #if USE_SOFT_IIC
-	simiic_read_regs(dev_add, reg_add, reg_num, dat_add, dat_num);
+	simiic_read_regs(dev_add, reg, dat_add, dat_num);
 #else	//use hardware IIC
-	I2C_ReadNbyte(dev_add, reg_add, reg_num, dat_add, dat_num);
+	Zf_IIC_read_reg_bytes(dev_add, reg, dat_add, dat_num);
 #endif	//USE_SOFT_IIC
 }
 

@@ -82,7 +82,7 @@ typedef enum //Ã¶¾Ù´®¿ÚÒý½Å
 extern uint8 busy[5];
 
 
-void UART_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud,TIMN_enum tim_n);
+void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud,TIMN_enum tim_n);
 void uart_putchar(UARTN_enum uart_n,uint8 dat);
 void uart_putstr(UARTN_enum uart_n,uint8 *str);
 void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint32 len);
