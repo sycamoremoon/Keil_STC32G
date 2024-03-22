@@ -1,6 +1,8 @@
 #include "config.h"
 #include "iic.h"
 #include "telemeter.h"
+#include "gyroscope.h"
+#include "timer.h"
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
@@ -16,6 +18,8 @@ int main(void)
 	ceventPost(0);
 	iic_init();
 	dl1b_init();
+	icm20602_init();
+	pit_timer_ms(TIM_0, 1000);
 	//初始化结束
 	/******************************************************************/
 	EA =1;
@@ -23,8 +27,9 @@ int main(void)
 	//主循环
 	while(1)
 	{	
-		printf("distance : %d\n",dl1b_get_distance());
-		delay_ms(50);
+		printf("gyro_x : %d,gyro_y: %d,gyro_z:%d\n",gyro_gyro_x,gyro_gyro_y,gyro_gyro_z);
+		printf("Angle: %.2f\n",Angle_Z);
+		delay_ms(10);
 	}
 
 }
