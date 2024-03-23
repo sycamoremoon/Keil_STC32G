@@ -322,7 +322,7 @@ void hardiic_init()
 		default : 
 			break;
 	}
-	Zf_IIC_init(IIC_2, IIC2_SCL_P25,IIC2_SDA_P24,500);
+	Zf_IIC_init(IIC_2, IIC2_SCL_P25,IIC2_SDA_P24,63);
 }
 
 #endif
@@ -383,7 +383,7 @@ void iic_transfer(const uint8 dev_add, const uint8 *write_add, uint8 write_num, 
 #if USE_SOFT_IIC
 	simiic_transfer(dev_add, write_add, write_num, read_add, read_num);
 #else	//use hardware IIC
-
+	Zf_IIC_transfer(dev_add, write_add, write_num, read_add, read_num);
 #endif	//USE_SOFT_IIC
 }
 

@@ -4,7 +4,7 @@
 #include "config.h"
 
 //定义是否使用软件IIC
-#define 	USE_SOFT_IIC		(1)
+#define 	USE_SOFT_IIC		(0)
 	
 #ifdef USE_SOFT_IIC
 

@@ -33,7 +33,6 @@ static uint8 icm20602_self_check (void)
             break;
         }
         dat = iic_read_reg(ICM20602_DEV_ADDR, ICM20602_WHO_AM_I);
-
         delay_ms(10);
     }
     return return_state;
@@ -71,7 +70,7 @@ uint8 icm20602_init (void)
             
 			while(1)
 			{
-				printf("icm20602 self check error.");
+				printf("icm20602 self check error");
 				delay_ms(200);
 			}
             return_state = 1;

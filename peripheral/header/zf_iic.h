@@ -56,5 +56,5 @@ uint8 Zf_IIC_write_reg(uint8 dev_add, uint8 reg, uint8 dat);
 uint8 Zf_IIC_read_reg(uint8 dev_add, uint8 reg, uint8 *dat);
 uint8 Zf_IIC_read_reg_bytes(uint8 dev_add, uint8 reg, uint8 *dat, uint8 num);
 void Zf_IIC_change_pin(IICN_enum iic_n,IIC_PIN_enum scl_pin,IIC_PIN_enum sda_pin);
-
+uint8 Zf_IIC_transfer(const uint8 dev_add, const uint8 *write_add, uint8 write_num, uint8 *read_add, uint8 read_num);
 #endif

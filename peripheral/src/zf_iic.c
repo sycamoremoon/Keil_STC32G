@@ -137,11 +137,13 @@ uint8 send_ack(void)
 //  @return     void
 //  Sample usage:               无需用户调用，用户请使用h文件中的宏定义
 //-------------------------------------------------------------------------------------------------------------------
-void send_nak(void)
+uint8 send_nak(void)
 {
+	uint8 ret;
     I2CMSST = 0x01;                             //设置NAK信号
     I2CMSCR = 0x05;                             //发送ACK命令
-    wait();
+    ret = wait();
+    return ret;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -272,7 +274,7 @@ uint8 Zf_IIC_read_reg(uint8 dev_add, uint8 reg, uint8 *dat)
     *dat = recv_data(); //读取数据
 
 	
-    if(send_ack() != IIC_SEND_OK)
+    if(send_nak() != IIC_SEND_OK)
         return IIC_SEND_FAIL;
 	
     if(stop() != IIC_SEND_OK)
@@ -309,6 +311,9 @@ uint8 Zf_IIC_read_reg_bytes(uint8 dev_add, uint8 reg
     if(recv_ack() != IIC_SEND_OK)
         return IIC_SEND_FAIL;
 
+	if(start() != IIC_SEND_OK)
+        return IIC_SEND_FAIL;
+		
 	if(send_data((dev_add<<1) | 0x01) != IIC_SEND_OK)
 		return IIC_SEND_FAIL;
 	if(recv_ack() != IIC_SEND_OK)
@@ -326,7 +331,7 @@ uint8 Zf_IIC_read_reg_bytes(uint8 dev_add, uint8 reg
 	
 	*dat = recv_data();
 	
-	if(send_ack() != IIC_SEND_OK)
+	if(send_nak() != IIC_SEND_OK)
 		return IIC_SEND_FAIL;
 	
 	if(stop() != IIC_SEND_OK)
@@ -335,6 +340,55 @@ uint8 Zf_IIC_read_reg_bytes(uint8 dev_add, uint8 reg
 	return IIC_SEND_OK;
 }
 
+
+uint8 Zf_IIC_transfer(const uint8 dev_add, const uint8 *write_add, uint8 write_num, uint8 *read_add, uint8 read_num)
+{
+	if(start() != IIC_SEND_OK)
+		return IIC_SEND_FAIL;
+	
+	if(send_data((dev_add<<1) | 0x00) != IIC_SEND_OK)
+        return IIC_SEND_FAIL;
+	
+	if(recv_ack() != IIC_SEND_OK)
+			return IIC_SEND_FAIL;
+	
+	while(write_num --)
+    {
+		if(send_data(*write_add++) != IIC_SEND_OK)
+			return IIC_SEND_FAIL;
+		if(recv_ack() != IIC_SEND_OK)
+			return IIC_SEND_FAIL;
+    }
+	
+	if(start() != IIC_SEND_OK)
+		return IIC_SEND_FAIL;
+	
+	if(send_data((dev_add<<1) | 0x01) != IIC_SEND_OK)
+        return IIC_SEND_FAIL;
+	
+	if(recv_ack() != IIC_SEND_OK)
+		return IIC_SEND_FAIL;
+	
+    while(--read_num)
+    {
+        *read_add = recv_data(); //读取数据
+		if(send_ack() != IIC_SEND_OK)
+		{
+			return IIC_SEND_FAIL;
+		}
+        read_add++;
+    }
+	
+	*read_add = recv_data();
+	
+	if(send_nak() != IIC_SEND_OK)
+		return IIC_SEND_FAIL;
+	
+	if(stop() != IIC_SEND_OK)
+		return IIC_SEND_FAIL;
+	
+	return IIC_SEND_OK;
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      硬件IIC引脚切换函数
