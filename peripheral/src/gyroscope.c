@@ -11,9 +11,10 @@ float fil_Acc_x,fil_Acc_y;		//定义处理后的加速度值
 float fil_Gyro_z;				//定义处理后的角速度值
 float Gyro_z=0;					//定义的处理角速度的中间变量
 float Angle_Z=90;				//设置初始角度为90度
-float Gyroscope_FIFO[11];
+float Gyroscope_FIFO[11]={0};
 int gyro_i=0;
 
+static float gyro[100],sum_gyro;	// 平均滤波算法的初始值
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     ICM20602 自检
 // 参数说明     void
@@ -126,7 +127,10 @@ uint8 icm20602_init (void)
 
 
     }while(0);
-    return return_state;
+	
+	init_gyrodata();	// 使陀螺仪保持绝对稳定，等待约20ms，获取100个float类型的初始值，存入gyro[gyro_i]数组。该数组为 平均滤波算法 的初始值
+    
+	return return_state;
 }
 
 
@@ -164,49 +168,54 @@ void Get_gyro_gyro(void)
 }
 
 /**************************************************************************
-函数功能：递推平均滤波算法 处理角速度
+函数功能：	初始化过程中需使陀螺仪保持绝对稳定，等待约20ms获取100个float类型的初始值，存入gyro[gyro_i]数组。
+			该数组为 平均滤波算法 的初始值
+入口参数：无
+返回  值：无
+**************************************************************************/
+void init_gyrodata()
+{
+	Get_gyro_gyro();		// 获取角速度数据
+		 
+	gyro[gyro_i]=gyro_gyro_z;
+	fil_Gyro_z=0.0;
+	gyro_i++;
+	if(gyro_i==99)
+	{
+		for(gyro_i=0;gyro_i<100;gyro_i++)
+		{
+			sum_gyro+=gyro[gyro_i];
+		}
+	}
+}
+
+/**************************************************************************
+函数功能：递推平均滤波算法 处理角速度。gyro[]数组的初值由init_gyrodata()获取
 入口参数：无
 返回  值：无
 **************************************************************************/
 void Gyroscope_newValues()
 {
-	int16 sum=0;
-	static int16 gyro[50],sum_gyro;
-	static int gyro_flag=0,Gyro_flag;
+	float sum=0;
+	static int Gyro_flag;
 
 	Get_gyro_gyro();		// 获取角速度数据
-	if(gyro_flag==0)
-	{		 
-		gyro[gyro_i]=gyro_gyro_z;
-		fil_Gyro_z=0.0;
-		gyro_i++;
-		if(gyro_i==99)
-		{
-			for(gyro_i=0;gyro_i<100;gyro_i++)
-			{
-				sum_gyro+=gyro[gyro_i];
-			}
-			gyro_flag=1;
-		}
-	} 
-	if(gyro_flag==1)
+
+	Gyro_z = (float)(gyro_gyro_z-sum_gyro/100)/16.3835;
+	if(abs(Gyro_z)<3)//角速度小于3时  默认为小车静止  
 	{
-		Gyro_z = (float)(gyro_gyro_z-sum_gyro/100)/16.3835;
-		if(abs(Gyro_z)<3)//角速度小于3时  默认为小车静止  
-		{
-			Gyro_z=0;
-		}
-		for(Gyro_flag=1;Gyro_flag<10;Gyro_flag++)
-		{	
-			Gyroscope_FIFO[Gyro_flag-1]=Gyroscope_FIFO[Gyro_flag];//FIFO 操作
-		}
-		Gyroscope_FIFO[9]=Gyro_z;
-		for(Gyro_flag=0;Gyro_flag<10;Gyro_flag++)
-		{	            
-			sum+=Gyroscope_FIFO[Gyro_flag];//求当前数组的合，再取平均值
-		}
-		fil_Gyro_z=sum/10;
+		Gyro_z=0;
 	}
+	for(Gyro_flag=1;Gyro_flag<10;Gyro_flag++)
+	{	
+		Gyroscope_FIFO[Gyro_flag-1]=Gyroscope_FIFO[Gyro_flag];//FIFO 操作
+	}
+	Gyroscope_FIFO[9]=Gyro_z;
+	for(Gyro_flag=0;Gyro_flag<10;Gyro_flag++)
+	{	            
+		sum+=Gyroscope_FIFO[Gyro_flag];//求当前数组的合，再取平均值
+	}
+	fil_Gyro_z=sum/10;
 }		
 
 /**************************************************************************
@@ -221,5 +230,3 @@ void Get_angle()
 	if(Angle_Z>=360) Angle_Z=Angle_Z-360;
 	if(Angle_Z<=-360) Angle_Z=Angle_Z+360;
 }
-
-

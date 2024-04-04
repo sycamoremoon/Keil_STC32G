@@ -94,6 +94,7 @@ void Get_angle(void);
 void Gyroscope_newValues(void);
 void Get_gyro_accdata(void);
 void Get_gyro_gyro(void);
+void init_gyrodata(void);
 uint8 icm20602_init (void);
 /************************************************************************************************************************************/
 

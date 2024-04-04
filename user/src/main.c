@@ -4,6 +4,7 @@
 #include "gyroscope.h"
 #include "motor.h"
 #include "encoder.h"
+
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
@@ -16,8 +17,8 @@ int main(void)
 	ceventPost(0);
 	iic_init();
 	icm20602_init();
-//	dl1b_init();
-	pit_timer_ms(TIM_0,10);
+	pit_timer_ms(TIM_0, 10);
+
 	//≥ı ºªØΩ· ¯
 	/******************************************************************/
 	EA =1;
