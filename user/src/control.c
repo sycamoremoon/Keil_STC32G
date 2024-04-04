@@ -4,9 +4,9 @@ PID_Calibration Left_Speed_PID = {0,0,0};		//左电机速度PID参数
 PID_Calibration Right_Speed_PID = {0,0,0};		//右电机速度PID参数
 PID_Calibration Turn_PID = {0,0,0};			    //转向PID参数
 
-PID_State Left_Speed_State = {0,0,10,0,0};				//左电机速度状态参数,设置时间间隔为10ms
-PID_State Right_Speed_State = {0,0,10,0,0};				//右电机速度状态参数，设置时间间隔为10ms
-PID_State Turn_State = {0,0,10,0,0};				    //转向状态参数，设置时间间隔为10ms
+PID_State Left_Speed_State = {0};				//左电机速度状态参数,设置时间间隔为10ms
+PID_State Right_Speed_State = {0};				//右电机速度状态参数，设置时间间隔为10ms
+PID_State Turn_State = {0};				        //转向状态参数，设置时间间隔为10ms
 
 
 /// @brief 通过PID算法调整电机速度达到目标速度
@@ -22,8 +22,8 @@ void Speed_Ctrl(unsigned int Left_Speed,unsigned int Right_Speed)
 	Left_Speed_State.target = Left_Speed;
 	Right_Speed_State.target = Right_Speed;
 	
-	pid_iterate(&Left_Speed_PID,&Left_Speed_State);
-	pid_iterate(&Right_Speed_PID,&Right_Speed_State);
+	pid_increase(&Left_Speed_PID,&Left_Speed_State);
+	pid_increase(&Right_Speed_PID,&Right_Speed_State);
 	Update_Motors(&Left_Speed_State,&Right_Speed_State,&Turn_State);
 }
 
@@ -31,7 +31,7 @@ void Speed_Ctrl(unsigned int Left_Speed,unsigned int Right_Speed)
 /// @param Gyro 参数给出小车的目标角度
 void Turn_Ctrl(unsigned int Gyro)
 {
-	pid_iterate(&Turn_PID,&Turn_State);	
+	pid_increase(&Turn_PID,&Turn_State);	
 	Update_Motors(&Left_Speed_State,&Right_Speed_State,&Turn_State);
 }
 

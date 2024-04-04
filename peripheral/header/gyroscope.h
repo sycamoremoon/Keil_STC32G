@@ -90,13 +90,12 @@
 extern int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
 extern float Angle_Z;
 //================================================外部调用接口函数================================================
-float Get_angle(void);
+void Get_angle(void);
 void Gyroscope_newValues(void);
 void Get_gyro_accdata(void);
 void Get_gyro_gyro(void);
 uint8 icm20602_init (void);
 /************************************************************************************************************************************/
-
 
 
 

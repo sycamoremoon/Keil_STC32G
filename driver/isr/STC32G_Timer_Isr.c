@@ -21,7 +21,8 @@
 //========================================================================
 void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 {
-	P22 = ~P22;
+
+
 }
 
 //========================================================================
@@ -46,6 +47,7 @@ void Timer1_ISR_Handler (void) interrupt TMR1_VECTOR		//进中断时已经清除标志
 //========================================================================
 void Timer2_ISR_Handler (void) interrupt TMR2_VECTOR		//进中断时已经清除标志
 {
+	AUXINTIF &= ~0x01;	// 清中断标志
 	// TODO: 在此处添加用户代码
 	P65 = ~P65;
 }
@@ -59,8 +61,9 @@ void Timer2_ISR_Handler (void) interrupt TMR2_VECTOR		//进中断时已经清除标志
 //========================================================================
 void Timer3_ISR_Handler (void) interrupt TMR3_VECTOR		//进中断时已经清除标志
 {
+	AUXINTIF &= ~0x02;	// 清中断标志
 	// TODO: 在此处添加用户代码
-	P64 = ~P64;
+
 }
 
 //========================================================================
@@ -72,6 +75,7 @@ void Timer3_ISR_Handler (void) interrupt TMR3_VECTOR		//进中断时已经清除标志
 //========================================================================
 void Timer4_ISR_Handler (void) interrupt TMR4_VECTOR		//进中断时已经清除标志
 {
+	AUXINTIF &= ~0x04;	// 清中断标志
 	// TODO: 在此处添加用户代码
 	P63 = ~P63;
 }

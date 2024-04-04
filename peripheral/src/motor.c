@@ -1,10 +1,6 @@
 #include "config.h"
 #include "motor.h"
 
-#define	PWM_Peri			65535	// PWM周期设定
-#define Lmotor_direction	P35		// 左电机方向控制引脚
-#define Rmotor_direction	P70		// 右电机方向控制引脚
-
 Motor motor;				// 定义电机结构体
 PWMx_Duty pwmA_duty;		// 定义PWMA结构体
 
