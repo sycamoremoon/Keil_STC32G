@@ -17,6 +17,8 @@ void Encoder_init()
 
 	P0_MODE_IO_PU(GPIO_Pin_6);			//P06初始化为双向口
 	ctimer_count_init(CTIM4_P06);		//定时器4初始化作为外部计数
+	
+	P2_MODE_IO_PU(GPIO_Pin_0|GPIO_Pin_2);			//P20,P22初始化为双向口记录方向
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -26,14 +28,16 @@ void Encoder_init()
 //  @since      v1.0
 //  Sample usage:	调用函数之后，直接使用变量Encoder1_cnt, speedL
 //-------------------------------------------------------------------------------------------------------------------
-u16 get_EncoderL()
+int16 get_EncoderL()
 {
-	u16 EncoderL_cnt;
+	int16 EncoderL_cnt;
 	
-	EncoderL_cnt = ctimer_count_read(CTIM3_P04);
+	EncoderL_cnt = (int16)ctimer_count_read(CTIM3_P04);
 	ctimer_count_clean(CTIM3_P04);					// 清除计数
-	
-	return EncoderL_cnt;
+	if(Dir_Encode_L == 1)
+		return EncoderL_cnt;
+	else
+		return (-EncoderL_cnt);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -43,12 +47,15 @@ u16 get_EncoderL()
 //  @since      v1.0
 //  Sample usage:	调用函数之后，直接使用变量Encoder2_cnt, speedR
 //-------------------------------------------------------------------------------------------------------------------
-u16 get_EncoderR()
+int16 get_EncoderR()
 {
-	u16 EncoderR_cnt;
+	int16 EncoderR_cnt;
 
-	EncoderR_cnt = ctimer_count_read(CTIM4_P06);
+	EncoderR_cnt = (int16)ctimer_count_read(CTIM4_P06);
 	ctimer_count_clean(CTIM4_P06);			// 清除计数
 	
-	return EncoderR_cnt;
+	if(Dir_Encode_R == 1)
+		return EncoderR_cnt;
+	else
+		return (-EncoderR_cnt);
 }

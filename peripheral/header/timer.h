@@ -27,16 +27,11 @@ typedef enum    // 枚举ADC通道
 }TIMN_enum;
 
 
-#define TIM2_CLEAR_FLAG		AUXINTIF &= ~0x01; 
-#define TIM3_CLEAR_FLAG		AUXINTIF &= ~0x02; // 清中断标志
-#define TIM4_CLEAR_FLAG		AUXINTIF &= ~0x04; // 清中断标志
-
-
 void   ctimer_count_init(CTIMN_enum tim_n);
 void   ctimer_count_clean(CTIMN_enum tim_n);
 uint16 ctimer_count_read(CTIMN_enum tim_n);
 
 void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms);
-
+void timer_init(void);
 
 #endif

@@ -134,6 +134,9 @@ void cpostProcess(void)
                     ? tick - cposhHandlers[i].startTime >= cposhHandlers[i].delay
                     : CPOST_MAX_TICK - cposhHandlers[i].startTime + tick >= cposhHandlers[i].delay))        //判断本次读取的系统时间是否和添加句柄的时间是否在一个周期里面
             {
+				if(cposhHandlers[i].param == NULL)
+					((void(*)(void))(cposhHandlers[i].handler))();
+				else
                 cposhHandlers[i].handler(cposhHandlers[i].param);
                 cposhHandlers[i].handler = NULL;
             }

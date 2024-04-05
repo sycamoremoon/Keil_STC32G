@@ -6,11 +6,15 @@
 #include "config.h"
 
 #define MAXENCODER 		(3000.0)
+#define Encode_L		P04
+#define Encode_R		P06
+#define Dir_Encode_L	P20
+#define Dir_Encode_R	P22
 
 //函数原型
 void Encoder_init();
-u16 get_EncoderL();
-u16 get_EncoderR();
+int16 get_EncoderL();
+int16 get_EncoderR();
 
 // 内部函数声明	用户无需关心
 void EncoderL();

@@ -1,5 +1,9 @@
 #include  "iic.h"
 
+//#pragma userclass (near=CEVENT)	
+//	CEVENT_EXPORT(0,iic_init,NULL);
+//#pragma userclass (near=default)
+//	
 #if	(USE_SOFT_IIC == 1)
 
 static uint16 simiic_delay_time=100;   //ICM等传感器应设置为100

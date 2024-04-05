@@ -1,9 +1,9 @@
 #include "board.h"
 #include "timer.h"
 
-#pragma userclass (near=CEVENT)	
-//	CEVENT_EXPORT(0,Timer_config,NULL);
-#pragma userclass (near=default)
+//#pragma userclass (near=CEVENT)	
+//	CEVENT_EXPORT(0,timer_init,NULL);
+//#pragma userclass (near=default)
 
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
@@ -239,3 +239,10 @@ void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 	}
 }
 
+//定时器初始化
+void timer_init(void)
+{
+	T0x12 = 0;	//配置为12分频
+	T0_CT = 0;
+
+}

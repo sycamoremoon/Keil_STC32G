@@ -1,4 +1,5 @@
 #include "gyroscope.h"
+#include "timer.h"
 
 #define dt 0.01
 
@@ -222,12 +223,10 @@ void Gyroscope_newValues()
 入口参数：无
 返回  值：无
 **************************************************************************/
-float Get_angle()
+void Get_angle()
 {
 	Gyroscope_newValues();			//使用陀螺仪获取角速度
 	Angle_Z-=fil_Gyro_z*dt;
 	if(Angle_Z>=360) Angle_Z=Angle_Z-360;
 	if(Angle_Z<=-360) Angle_Z=Angle_Z+360;
-	
-	return Angle_Z;
 }

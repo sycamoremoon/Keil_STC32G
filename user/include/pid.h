@@ -25,9 +25,9 @@ extern "C"{
          * These are used for tuning the algorithm and the values they take are
          * dependent upon the application - (in other words, YMMV...)
          */
-        float kp; // Proportional gain
-        float ki; // Integral gain
-        float kd; // Derivative gain
+        unsigned int kp; // Proportional gain
+        unsigned int ki; // Integral gain
+        unsigned int kd; // Derivative gain
     } PID_Calibration;
 
 // PID当前状态，输入值
@@ -42,13 +42,12 @@ extern "C"{
          * NOTE: The output field in this struct is set by the PID algorithm function, and
          * is ignored in the actual calculations.
          */
-        unsigned int actual; // 测量的真实值
-        unsigned int target; // 目标值
-        unsigned int time_delta; // Time since last sample/calculation - should be set when updating state
-								//控制时间间隔，以ms为单位
-        unsigned int previous_error;	// The previously calculated error between actual and target (zero initially)
-        unsigned int integral; // Sum of integral error over time
-        unsigned int output; // the modified output value calculated by the algorithm, to compensate for error
+        unsigned int actual;                // 测量的真实值
+        unsigned int target;                // 目标值
+        unsigned int previous_error;        // 上一次误差
+		unsigned int pre_previous_error;	// 上上次误差，只在增量式pid中使用
+        unsigned int integral;              // 误差积分，只在位置式pid中使用
+        unsigned int output;                // 最终通过pid处理得到的修正输出
     } PID_State;
 
 
@@ -59,8 +58,8 @@ extern "C"{
      * state of the PID controller, calculate the new state for the PID Controller and set
      * the output state to compensate for any error as defined by the algorithm
      */
-    PID_State* pid_iterate(PID_Calibration * calibration, PID_State * state);
-
+    PID_State* pid_location(PID_Calibration * calibration, PID_State * state);
+	PID_State* pid_increase(PID_Calibration * calibration, PID_State * state);
 
 #ifdef __cplusplus
 } // extern "C"
