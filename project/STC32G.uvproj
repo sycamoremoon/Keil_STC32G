@@ -1002,16 +1002,6 @@
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\iic.h</FilePath>
             </File>
-            <File>
-              <FileName>zf_iic.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\peripheral\header\zf_iic.h</FilePath>
-            </File>
-            <File>
-              <FileName>zf_iic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\peripheral\src\zf_iic.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

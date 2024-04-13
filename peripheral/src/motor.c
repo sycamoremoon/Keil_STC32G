@@ -22,12 +22,12 @@ void motor_init(void)
 	
 	PWMx_InitStructure.PWM_Mode    =	CCMRn_PWM_MODE1;		//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
 	PWMx_InitStructure.PWM_Duty    = pwmA_duty.PWM3_Duty;		//PWM占空比时间, 0~Period
-	PWMx_InitStructure.PWM_EnoSelect   = ENO3P | ENO3N;			//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
+	PWMx_InitStructure.PWM_EnoSelect   = ENO3P;			//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
 	PWM_Configuration(PWM3, &PWMx_InitStructure);				//初始化PWM3
 
 	PWMx_InitStructure.PWM_Mode    =	CCMRn_PWM_MODE1;		//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
 	PWMx_InitStructure.PWM_Duty    = pwmA_duty.PWM4_Duty;		//PWM占空比时间, 0~Period
-	PWMx_InitStructure.PWM_EnoSelect   = ENO4P | ENO4N;			//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
+	PWMx_InitStructure.PWM_EnoSelect   = ENO4P;			//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
 	PWM_Configuration(PWM4, &PWMx_InitStructure);				//初始化PWM4
 
 	PWMx_InitStructure.PWM_Period   = PWM_Peri;					//周期时间,   0~65535
@@ -122,6 +122,6 @@ void Set_Rmotor_Speed(long speed)
 void GPIO_PU_Init(void)
 {
 	P1_MODE_IO_PU(GPIO_Pin_4|GPIO_Pin_6);	//P1.4和P1.6输出PWM的波形
-	P3_MODE_IO_PU(GPIO_Pin_5);				//P3.5控制电机方向
-	P7_MODE_IO_PU(GPIO_Pin_0);				//P7.0控制电机方向
+	P3_MODE_OUT_PP(GPIO_Pin_5);				//P3.5控制电机方向
+	P7_MODE_OUT_PP(GPIO_Pin_0);				//P7.0控制电机方向
 }
