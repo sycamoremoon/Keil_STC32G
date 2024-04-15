@@ -45,7 +45,7 @@
 #include 	"STC32G_PWM.h"
 #include  	"stc32_stc8_usb.h"
 #include 	"STC32G_PWM.h"
-#include 	"zf_iic.h"
+
 /******************************系统头文件*************************************/
 #include <stdlib.h>
 #include <stdio.h>

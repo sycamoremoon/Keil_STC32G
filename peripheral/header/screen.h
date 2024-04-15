@@ -4,12 +4,12 @@
 #define __SCREEN_H__
 
 //引脚定义
-#define BLK         P26
-#define SCL         P25
-#define SDA         P23
-#define CS          P22
-#define RST         P21
-#define DC          P20
+#define SCL         P43
+#define SDA         P40
+#define RST         P13
+#define DC          P07
+#define CS          P21
+#define BLK         P05
 
 //屏幕数据定义
 #define X_MAX_PIXEL	        128

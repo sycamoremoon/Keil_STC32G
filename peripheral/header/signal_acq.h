@@ -16,6 +16,6 @@
 int8 Get_Regularized_Signal_Data(const float * Data_Array);
 void Sample_All_Chanel();
 uint16 Get_DMA_ADC_Result(uint8 channel);
-void Signal_Acq_Init(unsigned char GPIO_PX, unsigned int GPIO_pin);
+void Signal_Init(void);
 float Get_Voltage();
 #endif

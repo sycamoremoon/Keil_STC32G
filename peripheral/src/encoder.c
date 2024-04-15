@@ -28,16 +28,14 @@ void Encoder_init()
 //  @since      v1.0
 //  Sample usage:	调用函数之后，直接使用变量Encoder1_cnt, speedL
 //-------------------------------------------------------------------------------------------------------------------
-int16 get_EncoderL()
+uint16 get_EncoderL()
 {
 	int16 EncoderL_cnt;
 	
 	EncoderL_cnt = (int16)ctimer_count_read(CTIM3_P04);
 	ctimer_count_clean(CTIM3_P04);					// 清除计数
-	if(Dir_Encode_L == 1)
-		return EncoderL_cnt;
-	else
-		return (-EncoderL_cnt);
+
+	return EncoderL_cnt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -47,15 +45,12 @@ int16 get_EncoderL()
 //  @since      v1.0
 //  Sample usage:	调用函数之后，直接使用变量Encoder2_cnt, speedR
 //-------------------------------------------------------------------------------------------------------------------
-int16 get_EncoderR()
+uint16 get_EncoderR()
 {
-	int16 EncoderR_cnt;
+	uint16 EncoderR_cnt;
 
 	EncoderR_cnt = (int16)ctimer_count_read(CTIM4_P06);
 	ctimer_count_clean(CTIM4_P06);			// 清除计数
 	
-	if(Dir_Encode_R == 1)
-		return EncoderR_cnt;
-	else
-		return (-EncoderR_cnt);
+	return EncoderR_cnt;
 }
