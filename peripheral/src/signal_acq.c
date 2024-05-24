@@ -1,7 +1,7 @@
 #include "signal_acq.h"
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
-static float All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
+extern float All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
 
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,Signal_Init,NULL);
@@ -45,9 +45,9 @@ void Signal_Acq_Config(unsigned char GPIO_PX, unsigned int GPIO_pin)
 /// @return ADC转化数据，右对齐
 uint16 Get_DMA_ADC_Result(uint8 channel)
 {
-	uint8 * ADC_Data;
+	uint16 * ADC_Data;
 	uint16 adc;
-	ADC_Data = &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
+	ADC_Data = (uint16 *) &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
 	{
 		adc = *ADC_Data;						//由于ADC_data是16位的格式，所以直接取地址
@@ -80,7 +80,7 @@ void Sample_All_Chanel()
 /// @brief 将电压数据经过运算成关于偏移量的线性函数，并且转化成车身偏差
 /// @param Data_Array 参数为存入电压值的数组
 /// @return 返回一个在指定范围内的，表示偏移量的有符号整形数据
-int8 Get_Regularized_Signal_Data(const float * Data_Array)
+int8 Get_Regularized_Signal_Data(void)
 {
 	int8 i;
 	float answer = 0;
@@ -89,8 +89,8 @@ int8 Get_Regularized_Signal_Data(const float * Data_Array)
 	if (channel <= 1) channel = 2;		//防止div 0
 	for(i=0;i<(channel/2);i++)			//用两端的数据进行比较，作差之后进行函数变化，得到线性结果
 	{
-		diff = *(Data_Array+i)-*(Data_Array+channel-1-i);
-		sum = *(Data_Array+i)+*(Data_Array+channel-1-i);
+		diff = *(All_Signal_Data+i)-*(All_Signal_Data+channel-1-i);
+		sum = *(All_Signal_Data+i)+*(All_Signal_Data+channel-1-i);
 		answer += diff/(sum*sum)*RATIO;
 	}
 	

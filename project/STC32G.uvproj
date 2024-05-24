@@ -1047,6 +1047,11 @@
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
             </File>
+            <File>
+              <FileName>kalman.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\kalman.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1091,6 +1096,11 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\kalman.c</FilePath>
             </File>
           </Files>
         </Group>

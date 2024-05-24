@@ -2,19 +2,23 @@
 #include "timer.h"
 
 #define dt 0.01
+#define filter_num 100	// 平均滤波算法的数据量
 
 int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
 int16 gyro_acc_x,gyro_acc_y,gyro_acc_z;
 
-
-float fil_Acc_x,fil_Acc_y;		//定义处理后的加速度值
 float fil_Gyro_z;				//定义处理后的角速度值
 float Gyro_z=0;					//定义的处理角速度的中间变量
 float Angle_Z=90;				//设置初始角度为90度
 float Gyroscope_FIFO[11]={0};
 int gyro_i=0;
-
 static float gyro[100],sum_gyro;	// 平均滤波算法的初始值
+
+float fil_acc_y;				//定义处理后的加速度值
+float acc_y = 0;
+float accy_FIFO[11]={0};
+int accy_i=0;
+static float accy_arr[filter_num],sum_acc_y;	// 平均滤波算法的初始值
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     ICM20602 自检
 // 参数说明     void
@@ -150,6 +154,58 @@ void Get_gyro_accdata(void)
     gyro_acc_y = (int16)(((uint16)dat[2]<<8 | dat[3]));
     gyro_acc_z = (int16)(((uint16)dat[4]<<8 | dat[5]));
 }
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     初始化过程中需使陀螺仪保持绝对稳定，等待约20ms获取filter_num个float类型的初始值，存入acc_y[accy_i]数组
+// 参数说明     
+// 返回参数     
+// 使用示例     
+// 备注信息		
+//-------------------------------------------------------------------------------------------------------------------
+void init_accy_data()
+{
+	Get_gyro_accdata();		// 获取加速度数据
+	accy_arr[accy_i]=gyro_acc_y;
+	fil_acc_y=0.0;
+	accy_i++;
+	if(accy_i==(filter_num-1))
+	{
+		for(accy_i=0;accy_i<filter_num;accy_i++)
+		{
+			sum_acc_y+=accy_arr[accy_i];
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     递推平均滤波算法 处理y加速度。acc_y[]数组的初值由init_accy_data()获取
+// 参数说明     
+// 返回参数     
+// 使用示例     
+// 备注信息		
+//-------------------------------------------------------------------------------------------------------------------
+void accy_filter()
+{
+	float sum=0;
+	static int acct_flag;
+
+	Get_gyro_accdata();		// 获取加速度数据
+
+	if(abs(acc_y)<10)	//加速度小于10时  默认为小车静止  
+	{
+		acc_y=0;
+	}
+	for(acct_flag=1;acct_flag<10;acct_flag++)
+	{	
+		accy_FIFO[acct_flag-1]=accy_FIFO[acct_flag];//FIFO 操作
+	}
+	accy_FIFO[9]=acc_y;
+	for(acct_flag=0;acct_flag<10;acct_flag++)
+	{	            
+		sum+=accy_FIFO[acct_flag];//求当前数组的合，再取平均值
+	}
+	fil_acc_y=sum/10;
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      获取ICM20602陀螺仪数据
@@ -194,6 +250,7 @@ void init_gyrodata()
 入口参数：无
 返回  值：无
 **************************************************************************/
+// 滤波次数与灵敏度相关
 void Gyroscope_newValues()
 {
 	float sum=0;
@@ -216,7 +273,7 @@ void Gyroscope_newValues()
 		sum+=Gyroscope_FIFO[Gyro_flag];//求当前数组的合，再取平均值
 	}
 	fil_Gyro_z=sum/10;
-}		
+}
 
 /**************************************************************************
 函数功能：对角速度积分 得到角度

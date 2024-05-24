@@ -2,7 +2,7 @@
 #define __SIGNAL_ACQ_H__
 
 #include "config.h"
-#define CHANNEL_NUM         1           //一共需要采集的通道数目
+#define CHANNEL_NUM         4           //一共需要采集的通道数目
 #define CONVERT_TIMES       4           //DMA_ADC采集的次数
 #define MAX_VOLTAGE         2.5           //小车能采集的最大电压
 #define MIN_VOLTAGE         1.6           //小车能采集的最小电压
@@ -13,7 +13,9 @@
 #define REF_VOLTAGE         (3.3)         //参考电压
 #define CAPTURE_LIMIT       (4095.0)
 
-int8 Get_Regularized_Signal_Data(const float * Data_Array);
+extern float All_Signal_Data[CHANNEL_NUM];
+
+int8 Get_Regularized_Signal_Data(void);
 void Sample_All_Chanel();
 uint16 Get_DMA_ADC_Result(uint8 channel);
 void Signal_Init(void);
