@@ -1,7 +1,7 @@
 #include "signal_acq.h"
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
-static float All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
+uint16 All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
 
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,Signal_Init,NULL);
@@ -50,11 +50,11 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 	ADC_Data = &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
 	{
-		adc = *ADC_Data;						//由于ADC_data是16位的格式，所以直接取地址
+		adc = *(uint16 *)ADC_Data;						//由于ADC_data是16位的格式，所以直接取地址
 	}
 	else		//转换结果左对齐。 
 	{
-		adc = *ADC_Data;
+		adc = *(uint16 *)ADC_Data;
 		adc = adc>>4;
 	}
 	if(channel == CHANNEL_NUM-1)
@@ -72,7 +72,7 @@ void Sample_All_Chanel()
 	uint8 channel;
 	for(channel = 0 ; channel < CHANNEL_NUM ; channel++)
 	{
-		All_Signal_Data[channel] = (Get_DMA_ADC_Result(channel)/CAPTURE_LIMIT)*REF_VOLTAGE;
+		All_Signal_Data[channel] = Get_DMA_ADC_Result(channel);
 	}
 }
 
@@ -80,21 +80,47 @@ void Sample_All_Chanel()
 /// @brief 将电压数据经过运算成关于偏移量的线性函数，并且转化成车身偏差
 /// @param Data_Array 参数为存入电压值的数组
 /// @return 返回一个在指定范围内的，表示偏移量的有符号整形数据
-int8 Get_Regularized_Signal_Data(const float * Data_Array)
+int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 {
-	int8 i;
-	float answer = 0;
-	float diff ,sum;
-	uint8 channel = CHANNEL_NUM;
-	if (channel <= 1) channel = 2;		//防止div 0
-	for(i=0;i<(channel/2);i++)			//用两端的数据进行比较，作差之后进行函数变化，得到线性结果
+	int32 answer = 0;
+	int32 diff1,diff2 ,sum1,sum2;
+	int32 strai=453000;
+	int32 turn =968411L;
+
+	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
 	{
-		diff = *(Data_Array+i)-*(Data_Array+channel-1-i);
-		sum = *(Data_Array+i)+*(Data_Array+channel-1-i);
-		answer += diff/(sum*sum)*RATIO;
+		if(*(Data_Array+1)>*(Data_Array+2))
+		{
+			diff2 = *(Data_Array+1)-*(Data_Array+2);
+			sum2 = *(Data_Array+1)+*(Data_Array+2);
+			answer = (diff2*turn)/(sum2*sum2);
+		}
+		else
+		{
+			diff2 = *(Data_Array+2)-*(Data_Array+1);
+			sum2 = *(Data_Array+2)+*(Data_Array+1);
+			answer = -(diff2*turn)/(sum2*sum2);
+		}
+		printf("%d\n",diff2*turn);
+		printf("%d\n",sum2*sum2);
 	}
-	
-	return (int8)(answer/(channel/2));
+	else
+	{
+		if(*(Data_Array)>*(Data_Array+3))
+		{
+			diff1 = *Data_Array-*(Data_Array+3);
+			sum1 = *Data_Array+*(Data_Array+3);
+			answer = (diff1*strai)/(sum1*sum1);
+		}
+		else
+		{
+			diff1 = *(Data_Array+3)-*(Data_Array);
+			sum1 = *Data_Array+*(Data_Array+3);
+			answer = -(diff1*strai)/(sum1*sum1);
+		}
+	}
+
+	return answer;
 }
 
 
