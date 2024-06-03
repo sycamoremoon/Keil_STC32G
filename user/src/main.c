@@ -3,14 +3,15 @@
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
+extern uint16 All_Signal_Data[4];
 
 int main(void)
 {	
-	uint16 speed = 0;
 	/******************************************************************/
 	ceventInit();
 	ceventPost(0);
-
+	Screen_Init();
+	Signal_Init();
 	//≥ı ºªØΩ· ¯
 	/******************************************************************/
 	EA =1;
@@ -20,7 +21,7 @@ int main(void)
 	
 	while(1)
 	{	
-
+		
 	}
 
 }

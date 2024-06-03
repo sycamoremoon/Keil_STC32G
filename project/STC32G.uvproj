@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>0</UseSimulator>
+            <UseSimulator>1</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>1</UseTarget>
+            <UseTarget>0</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -339,6 +339,11 @@
               <FileName>SEEKFREE_CONFIG.LIB</FileName>
               <FileType>4</FileType>
               <FilePath>..\driver\lib\SEEKFREE_CONFIG.LIB</FilePath>
+            </File>
+            <File>
+              <FileName>STC32_MDU32_LARGE_V1.1.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driver\lib\STC32_MDU32_LARGE_V1.1.LIB</FilePath>
             </File>
           </Files>
         </Group>
