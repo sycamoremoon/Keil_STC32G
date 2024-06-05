@@ -31,6 +31,11 @@ unsigned int output_right = 0;
 // 
 void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志 
 {
+	output_left = pid1_output + pid2_output + pid3_output_left;
+	output_right = pid1_output + pid2_output + pid3_output_right;
+	Update_Motors_2(100+output_left,100+output_right);		// 更新电机PWM = 基准速度 + pid_in(error) + pid_mid(error) +pid_out(error) 
+	cnt++;
+	P60 = 0;
 	if(cnt % 1 == 0)
 	{
 	//内环pid 处理gyro数据，PID, I可以小，D的作用稍微大一点。或者使用PD
@@ -44,15 +49,13 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	//Get_gyro_accdata();			// 获取加速度
 	
 		accy_filter();			// 获取滤波后的accy
-		Speed_Ctrl_in(0);
+		Speed_Ctrl_in(0);		// PID的target为0
 		pid1_output = accy_state.output;
-		Update_Motors_2(100,100);	// 基准PWM输出
 		
-		cnt++;
 	}
 
 
-	if(cnt % 4 == 0)	// 中环pid adc处理，每一小段的偏移，PID
+	if(cnt % 1 == 0)	// 中环pid adc处理，每一小段的偏移，PID
 	{
 		// adc获取
 		// error_mid = pid(error_in) - adc获取值   （注意可能减反）
@@ -66,7 +69,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	}
 	
 	
-	if(cnt % 20 == 0)	// 外环pid 速度环，用PI
+	if(cnt % 1 == 0)	// 外环pid 速度环，用PI
 	{
 		// PID输入：中环的两个输出数据
 		// error = 中环的输出 - 实际速度
@@ -77,14 +80,8 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		pid3_output_right = Right_Speed_State.output;
 	}
 	
-	// 更新电机PWM = 基准速度 + pid_in(error) + pid_mid(error) +pid_out(error) 
-	output_left = pid1_output + pid2_output + pid3_output_left;
-	output_right = pid1_output + pid2_output + pid3_output_right;
 
-	Update_Motors_2(100+output_left,100+output_right);
-	
-
-	if(output_left > 500 | output_right > 500)	// 保险,防止PWM过大
+	if(output_left > 1500 | output_right > 1500)	// 保险,防止PWM过大
 		{
 			Stop_Car();
 		}
@@ -92,7 +89,8 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		{
 			
 		}
-	
+		
+		P60 = 1;
 }
 
 //========================================================================
@@ -105,7 +103,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 void Timer1_ISR_Handler (void) interrupt TMR1_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	
+	P60 = ~P60;
 }
 
 //========================================================================

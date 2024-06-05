@@ -18,6 +18,7 @@ extern PID_State Turn_State = {0};				        //转向状态参数
 // 内环 error_in = y_acc - 0
 void Speed_Ctrl_in(unsigned int accy_target)
 {
+	extern float fil_acc_y;
 	//获取真实accy
 	accy_state.actual = fil_acc_y;
 	//获取目标accy
@@ -32,7 +33,7 @@ void Speed_Ctrl_mid(unsigned int adc_target)
 {
 	//获取真实adc
 	adc_state.actual = (unsigned int)Get_Regularized_Signal_Data();
-	
+	//adc_state.actual = 0;
 	//获取目标adc
 	adc_state.target = adc_target;
 
@@ -96,31 +97,5 @@ void Stop_Car(void)		// 小车停止
 	Set_Rmotor_Speed(0);
 	Set_Lmotor_Speed(0);
 }
-
-void run(void)     //小车前行
-{ 
-	Set_Lmotor_Speed(1000);
-	Set_Rmotor_Speed(1000);
- } 
-
-void back(void)   //小车后退
-{ 
-	Set_Lmotor_Speed(-1000);
-	Set_Rmotor_Speed(-1000);
-} 
-
-void left(void)   //小车左转
-{ 
-	Set_Lmotor_Speed(0);
-	Set_Rmotor_Speed(1000);
-} 
-
- void right(void) //小车右转
-{ 
-	Set_Lmotor_Speed(1000);
-	Set_Rmotor_Speed(0);
-}
-
-
 
 

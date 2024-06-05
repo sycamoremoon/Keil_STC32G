@@ -2,7 +2,7 @@
 #include "timer.h"
 
 #define dt 0.01
-#define filter_num 100	// 平均滤波算法的数据量
+#define FILTER_NUM 100	// 平均滤波算法的数据量
 
 int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
 int16 gyro_acc_x,gyro_acc_y,gyro_acc_z;
@@ -12,13 +12,13 @@ float Gyro_z=0;					//定义的处理角速度的中间变量
 float Angle_Z=90;				//设置初始角度为90度
 float Gyroscope_FIFO[11]={0};
 int gyro_i=0;
-static float gyro[100],sum_gyro;	// 平均滤波算法的初始值
+static float gyro[FILTER_NUM],sum_gyro;	// 平均滤波算法的初始值
 
-float fil_acc_y;				//定义处理后的加速度值
-float acc_y = 0;
+float fil_acc_y = 0;				//定义处理后的加速度值
+float Acc_y = 0;
 float accy_FIFO[11]={0};
 int accy_i=0;
-static float accy_arr[filter_num],sum_acc_y;	// 平均滤波算法的初始值
+static float accy_arr[FILTER_NUM],sum_acc_y;	// 平均滤波算法的初始值
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     ICM20602 自检
 // 参数说明     void
@@ -54,11 +54,11 @@ static uint8 icm20602_self_check (void)
 //-------------------------------------------------------------------------------------------------------------------
 uint8 icm20602_init (void)
 {
+	
     uint8 val = 0x0, return_state = 0;
     uint16 timeout_count = 0;
 
     delay_ms(10);                                                        // 上电延时
-
 //#if ICM20602_USE_SOFT_IIC
 //    soft_iic_init(&icm20602_iic_struct, ICM20602_DEV_ADDR, ICM20602_SOFT_IIC_DELAY, ICM20602_SCL_PIN, ICM20602_SDA_PIN);
 //#else
@@ -107,7 +107,6 @@ uint8 icm20602_init (void)
         {
             break;
         }
-
         iic_write_reg(ICM20602_DEV_ADDR, ICM20602_PWR_MGMT_1,0x01);                 // 时钟设置
         iic_write_reg(ICM20602_DEV_ADDR, ICM20602_PWR_MGMT_2,0x00);                 // 开启陀螺仪和加速度计
         iic_write_reg(ICM20602_DEV_ADDR, ICM20602_CONFIG,0x01);                 // 176HZ 1KHZ
@@ -131,9 +130,10 @@ uint8 icm20602_init (void)
 
 
     }while(0);
-	
+
 	init_gyrodata();	// 使陀螺仪保持绝对稳定，等待约20ms，获取100个float类型的初始值，存入gyro[gyro_i]数组。该数组为 平均滤波算法 的初始值
-    
+    init_accy_data();	// 获取初始的accy值
+	printf("icm20602 init done.\r\n");
 	return return_state;
 }
 
@@ -166,13 +166,9 @@ void init_accy_data()
 	Get_gyro_accdata();		// 获取加速度数据
 	accy_arr[accy_i]=gyro_acc_y;
 	fil_acc_y=0.0;
-	accy_i++;
-	if(accy_i==(filter_num-1))
+	for(accy_i=0;accy_i<FILTER_NUM;accy_i++)
 	{
-		for(accy_i=0;accy_i<filter_num;accy_i++)
-		{
-			sum_acc_y+=accy_arr[accy_i];
-		}
+		sum_acc_y+=accy_arr[accy_i];
 	}
 }
 
@@ -189,16 +185,17 @@ void accy_filter()
 	static int acct_flag;
 
 	Get_gyro_accdata();		// 获取加速度数据
-
-	if(abs(acc_y)<10)	//加速度小于10时  默认为小车静止  
+	
+	Acc_y = (float)(gyro_acc_y-sum_acc_y/FILTER_NUM);
+	if(abs(Acc_y)<10)	//加速度小于10时  默认为小车静止  
 	{
-		acc_y=0;
+		Acc_y=0;
 	}
 	for(acct_flag=1;acct_flag<10;acct_flag++)
 	{	
 		accy_FIFO[acct_flag-1]=accy_FIFO[acct_flag];//FIFO 操作
 	}
-	accy_FIFO[9]=acc_y;
+	accy_FIFO[9]=Acc_y;
 	for(acct_flag=0;acct_flag<10;acct_flag++)
 	{	            
 		sum+=accy_FIFO[acct_flag];//求当前数组的合，再取平均值
@@ -231,17 +228,13 @@ void Get_gyro_gyro(void)
 **************************************************************************/
 void init_gyrodata()
 {
-	Get_gyro_gyro();		// 获取角速度数据
-		 
+ 
 	gyro[gyro_i]=gyro_gyro_z;
 	fil_Gyro_z=0.0;
-	gyro_i++;
-	if(gyro_i==99)
+	for(gyro_i=0;gyro_i<FILTER_NUM;gyro_i++)
 	{
-		for(gyro_i=0;gyro_i<100;gyro_i++)
-		{
-			sum_gyro+=gyro[gyro_i];
-		}
+		Get_gyro_gyro();		// 获取角速度数据
+		sum_gyro+=gyro[gyro_i];
 	}
 }
 

@@ -1,9 +1,9 @@
 #include "board.h"
 #include "timer.h"
 
-//#pragma userclass (near=CEVENT)	
-//	CEVENT_EXPORT(0,timer_init,NULL);
-//#pragma userclass (near=default)
+#pragma userclass (near=CEVENT)	
+	CEVENT_EXPORT(0,timer_init,NULL);
+#pragma userclass (near=default)
 
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
@@ -198,7 +198,7 @@ void ctimer_count_clean(CTIMN_enum tim_n)
 void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 {
 	uint16 temp;
-	temp = (uint16)65536 - (uint16)(sys_clk / (12 * (1000 / time_ms)));
+	temp = (uint16)65536 - (uint16)(sys_clk / (12 * (1000 / time_ms)));		// 1~23
 	
 	if(TIM_0 == tim_n)
 	{
@@ -242,7 +242,6 @@ void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 //定时器初始化
 void timer_init(void)
 {
-	T0x12 = 0;	//配置为12分频
-	T0_CT = 0;
-
+	pit_timer_ms(TIM_0,20);
+	// pit_timer_ms(TIM_1,10);
 }
