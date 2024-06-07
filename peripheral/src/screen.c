@@ -241,6 +241,7 @@ void Screen_Init(void)
     HardWare_SPI_Config();
     GPIO_SPI_Init();
     Lcd_Init();
+		Fill_With_Color(WHITE);
 }
 
 /// @brief 将指定颜色填充整个屏幕
