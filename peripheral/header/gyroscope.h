@@ -87,14 +87,16 @@
 // 设置为:0x18 陀螺仪量程为:±2000dps     获取到的陀螺仪数据除以16.4          可以转化为带物理单位的数据，单位为：°/s
 /************************************************************************************************************************************/
 
-extern int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
-extern float Angle_Z;
+extern float fil_acc_y;
 //================================================外部调用接口函数================================================
 void Get_angle(void);
 void Gyroscope_newValues(void);
 void Get_gyro_accdata(void);
+void init_accy_data(void);
+void accy_filter(void);
 void Get_gyro_gyro(void);
 void init_gyrodata(void);
+void Get_gyro_accdata(void);
 uint8 icm20602_init (void);
 /************************************************************************************************************************************/
 

@@ -1,7 +1,7 @@
 #include "signal_acq.h"
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
-uint16 All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
+uint16 All_Signal_Data[CHANNEL_NUM] = {0};
 
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,Signal_Init,NULL);
@@ -45,9 +45,9 @@ void Signal_Acq_Config(unsigned char GPIO_PX, unsigned int GPIO_pin)
 /// @return ADC转化数据，右对齐
 uint16 Get_DMA_ADC_Result(uint8 channel)
 {
-	uint8 * ADC_Data;
+	uint16 * ADC_Data;
 	uint16 adc;
-	ADC_Data = &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
+	ADC_Data = (uint16 *) &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
 	{
 		adc = *(uint16 *)ADC_Data;						//由于ADC_data是16位的格式，所以直接取地址
@@ -80,6 +80,7 @@ void Sample_All_Chanel()
 /// @brief 将电压数据经过运算成关于偏移量的线性函数，并且转化成车身偏差
 /// @param Data_Array 参数为存入电压值的数组
 /// @return 返回一个在指定范围内的，表示偏移量的有符号整形数据
+
 int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 {
 	int32 answer = 0;
@@ -122,7 +123,6 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 
 	return answer;
 }
-
 
 /// @brief 测试ADC采集准确性使用
 /// @return 采集的一个通道电压

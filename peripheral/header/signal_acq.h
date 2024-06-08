@@ -13,6 +13,8 @@
 #define REF_VOLTAGE         (3.3)         //²Î¿¼µçÑ¹
 #define CAPTURE_LIMIT       (4095.0)
 
+extern uint16 All_Signal_Data[CHANNEL_NUM];
+
 int32 Get_Regularized_Signal_Data(const uint16 * Data_Array);
 void Sample_All_Chanel();
 uint16 Get_DMA_ADC_Result(uint8 channel);

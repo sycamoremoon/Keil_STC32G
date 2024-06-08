@@ -47,7 +47,7 @@ void motor_init(void)
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      设置左电机速度
-//  @param      speed	参数选择区间为-10000~10000	正数为正转，负数为反转
+//  @param      speed	参数选择区间为-3500~3500正数为正转，负数为反转
 //  @return     void				
 //  @since      v1.0
 //  Sample usage:	Set_Lmotor_Speed(5000)
@@ -56,7 +56,7 @@ void Set_Lmotor_Speed(long speed)
 {
 	u16 duty_cycle = 0;
 	
-    if (speed < -MAXSPEED)				// 限制速度在-10000到10000之间
+    if (speed < -MAXSPEED)				// 限制速度在-3500到3500之间
         speed = -MAXSPEED;
 	else if (speed > MAXSPEED)
         speed = MAXSPEED;
@@ -81,7 +81,7 @@ void Set_Lmotor_Speed(long speed)
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      设置右电机速度
-//  @param      speed		参数选择区间为-10000~10000	正数为正转，负数为反转
+//  @param      speed		参数选择区间为-3500~3500正数为正转，负数为反转
 //  @return     void				
 //  @since      v1.0
 //  Sample usage:	Set_Rmotor_Speed(5000)
@@ -90,7 +90,7 @@ void Set_Rmotor_Speed(long speed)
 {
 	u16 duty_cycle = 0;
 	
-    if (speed < -MAXSPEED)					// 限制速度在-10000到10000之间
+    if (speed < -MAXSPEED)					// 限制速度在-3500到3500之间
         speed = -MAXSPEED;
 	else if (speed > MAXSPEED)
         speed = MAXSPEED;

@@ -48,7 +48,7 @@ PID_State* pid_increase(PID_Calibration * calibration, PID_State * state)
 {
 	unsigned int error,derivative;
 	
-    error = state->target - state->actual;		//计算当前误差				
+    error = state->target - state->actual;		//计算当前误差
     derivative = (error - 2*state->previous_error + state->pre_previous_error);
     state->output = (
 		state->output

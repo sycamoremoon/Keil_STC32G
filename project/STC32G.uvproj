@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -304,7 +304,7 @@
             <UserClasses>XDATA(0x10000-0x11FFF)
 </UserClasses>
             <CSection></CSection>
-            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?MAIN</UserSection>
+            <UserSection>?ED?CEVENT?BOARD(0x800),?ED?CEVENT?TIMER,?ED?CEVENT?MAIN</UserSection>
             <CodeBaseAddress></CodeBaseAddress>
             <XDataBaseAddress></XDataBaseAddress>
             <PDataBaseAddress></PDataBaseAddress>
@@ -339,11 +339,6 @@
               <FileName>SEEKFREE_CONFIG.LIB</FileName>
               <FileType>4</FileType>
               <FilePath>..\driver\lib\SEEKFREE_CONFIG.LIB</FilePath>
-            </File>
-            <File>
-              <FileName>STC32_MDU32_LARGE_V1.1.LIB</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\driver\lib\STC32_MDU32_LARGE_V1.1.LIB</FilePath>
             </File>
           </Files>
         </Group>
@@ -1052,6 +1047,11 @@
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
             </File>
+            <File>
+              <FileName>kalman.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\kalman.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1096,6 +1096,11 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\kalman.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,4 +1,9 @@
 #include "config.h"
+#include "signal_acq.h"
+#include "encoder.h"
+#include "motor.h"
+#include "control.h"
+#include "timer.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
@@ -10,18 +15,24 @@ int main(void)
 	/******************************************************************/
 	ceventInit();
 	ceventPost(0);
-	Screen_Init();
+//	Screen_Init();
 	Signal_Init();
-	//初始化结束
+	timer_init();
+	motor_init();
+	Encoder_init();
 	/******************************************************************/
 	EA =1;
 	/******************************************************************/
-
-	//主循环
 	
+	
+	//初始化结束
+
+	/******************************************************************/
+	//主循环
+
 	while(1)
 	{	
-		
+		//Set_Motors(300,300);
 	}
 
 }
