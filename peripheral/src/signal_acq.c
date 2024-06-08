@@ -1,7 +1,7 @@
 #include "signal_acq.h"
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
-uint16 All_Signal_Data[CHANNEL_NUM] = {0};		//私有变量，不提供对外接口
+uint16 All_Signal_Data[CHANNEL_NUM] = {0};
 
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,Signal_Init,NULL);

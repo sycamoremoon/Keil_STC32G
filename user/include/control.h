@@ -10,15 +10,18 @@
 
 #define MAXTURN		1000
 
-extern PID_State accy_state;				//
-extern PID_State adc_state;					//
-extern PID_State Turn_State;				//转向状态参数
+extern PID_State accy_state;
+extern PID_State adc_state;
 extern PID_State Left_Speed_State;
 extern PID_State Right_Speed_State;
 
+extern PID_Calibration PID_accy;
+extern PID_Calibration PID_adc;
+extern PID_Calibration PID_out_left;
+extern PID_Calibration PID_out_right;
 
 void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gyro_state);
-void Update_Motors_2(unsigned int left, unsigned int right);
+void Set_Motors(unsigned int left, unsigned int right);
 void Speed_Ctrl_in(unsigned int accy_target);
 void Speed_Ctrl_mid(unsigned int adc_target);
 void Speed_Ctrl_out(unsigned int Left_Speed,unsigned int Right_Speed);

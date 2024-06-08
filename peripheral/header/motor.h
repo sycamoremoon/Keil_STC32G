@@ -6,12 +6,13 @@
 #include "config.h"
 
 #define MAXSPEED 	(3500)
+#define SAFESPEED 	(300)
 
 #define	PWM_Peri			65535	// PWM周期设定
 #define Lmotor_direction	P35		// 左电机方向控制引脚
 #define Rmotor_direction	P70		// 右电机方向控制引脚
-#define Lmotor_PWM			P14		// 左电机方向控制引脚
-#define Rmotor_PWM			P16		// 右电机方向控制引脚
+#define Lmotor_PWM			P14		// 左电机PWM
+#define Rmotor_PWM			P16		// 右电机PWM
 // 定义电机结构体
 typedef struct {
     u8 L_pwm_channel; 		// PWM输出通道

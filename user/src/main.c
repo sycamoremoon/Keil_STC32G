@@ -1,10 +1,9 @@
 #include "config.h"
 #include "signal_acq.h"
-#include "gyroscope.h"
 #include "encoder.h"
 #include "motor.h"
-#include "screen.h"
-#include "iic.h"
+#include "control.h"
+#include "timer.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
@@ -16,17 +15,15 @@ int main(void)
 	/******************************************************************/
 	ceventInit();
 	ceventPost(0);
-	Screen_Init();
+//	Screen_Init();
 	Signal_Init();
-
+	timer_init();
+	motor_init();
+	Encoder_init();
 	/******************************************************************/
 	EA =1;
 	/******************************************************************/
 	
-	Signal_Init();
-	iic_init();
-	icm20602_init();
-//	Encoder_init();
 	
 	//≥ı ºªØΩ· ¯
 
@@ -35,8 +32,7 @@ int main(void)
 
 	while(1)
 	{	
-
-		
+		//Set_Motors(300,300);
 	}
 
 }
