@@ -22,9 +22,12 @@
  * @Taobao   		https://seekfree.taobao.com/
  * @date       		2020-4-14
  ********************************************************************************************************************/
-   
-uint8 busy[5];				 //接收忙标志位
-
+static uint8 wireless_uart_buffer[WIRELESS_BUFFER_SIZE];  // 数据存放数组
+static uint8 wireless_uart_data;
+uint8 busy[5];				//接收忙标志位
+uchar RecBuff[WIRELESS_BUFFER_SIZE];			//接收缓冲		
+//无线模块类型
+WIRELESS_TYPE_enum wireless_type = NO_WIRELESS_MODE;
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      串口初始化
 //  @param      uart_n          串口模块号(USART_1,USART_2,USART_3,USART_4)
@@ -253,4 +256,63 @@ void uart_putstr(UARTN_enum uart_n,uint8 *str)
     {
         uart_putchar(uart_n, *str++);
     }
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      串口接收字符串
+//  @param      uart_n          串口模块号(USART_1,USART_2,USART_3,USART_4)
+//  @param      *str            要发送的字符串地址
+//  @return     void
+//  Sample usage:               uart_putstr(UART_1,"i lvoe you"); 
+//-------------------------------------------------------------------------------------------------------------------
+u8* UART3_RecByte(void)
+{
+	u8 i = 0;
+
+	if(COM3.RX_TimeOut > 0)		//超时计数
+		{
+			if(--COM3.RX_TimeOut == 0)
+			{
+				if(COM3.RX_Cnt > 0)
+				{
+					for(i=0; i<COM3.RX_Cnt; i++)	
+					if(i < WIRELESS_BUFFER_SIZE)
+					{
+						RecBuff[i] = RX1_Buffer[i];	//收到的数据存到RecBuff里
+					}
+					else 
+					{
+						COM3.RX_Cnt = 0;
+                        return NULL;
+					}
+						
+				}
+				COM3.RX_Cnt = 0;
+			}
+		}
+
+	return RecBuff;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      无线串口模块初始化 使用UART_3
+//  @param      NULL
+//  @return     void					
+//  @since      v1.0
+//  Sample usage:	
+//  @note       
+//-------------------------------------------------------------------------------------------------------------------
+void wireless_uart_init(void)
+{
+	GPIO_InitTypeDef	GPIO_InitStructure;		//结构定义
+
+	GPIO_InitStructure.Pin  = GPIO_Pin_0 | GPIO_Pin_1;		//指定要初始化的IO, GPIO_Pin_0 ~ GPIO_Pin_7
+	GPIO_InitStructure.Mode = GPIO_PullUp;	//指定IO的输入或输出方式,GPIO_PullUp,GPIO_HighZ,GPIO_OUT_OD,GPIO_OUT_PP
+	GPIO_Inilize(GPIO_P0,&GPIO_InitStructure);	//初始化
+	
+	WIRELESS_RTS_PIN = 0;
+	wireless_type = WIRELESS_SI24R1;
+	uart_init(UART_3, UART3_RX_P00, UART3_TX_P01, 115200, TIM_2);
+	
 }

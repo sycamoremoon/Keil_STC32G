@@ -20,9 +20,9 @@ int main(void)
 
 	Screen_Init();
 	Signal_Init();
-//	timer_init();
-//	motor_init();
-//	Encoder_init();
+	timer_init();
+	motor_init();
+	Encoder_init();
 	EA =1;
 	/******************************************************************/
 
@@ -46,8 +46,8 @@ int main(void)
 		Screen_ShowInt(80,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
 		Screen_ShowInt(80,64,BLACK,WHITE,Get_DMA_ADC_Result(0)-Get_DMA_ADC_Result(3));
 		Sample_All_Chanel();
-		Screen_ShowInt(80,80,BLACK,WHITE,Get_Regularized_Signal_Data(All_Signal_Data));
-//		printf("F: %d,%d,%d,%d,%d\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
+		Screen_ShowInt(80,80,BLACK,WHITE,(int16)Get_Regularized_Signal_Data(All_Signal_Data));
+		//printf("F: %d,%d,%d,%d,%ld\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
 
 	}
 

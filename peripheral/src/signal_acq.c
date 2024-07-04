@@ -88,21 +88,30 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	int32 strai=453000;
 	int32 turn =968411L;
 
-	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
+	if( (*(Data_Array+1)>STANDERD || *(Data_Array+2)>STANDERD) && (*(Data_Array)<1000 || *(Data_Array+3)<1000))
 	{
-//		beeing();
+		
 		if(*(Data_Array+1)>*(Data_Array+2))
 		{
-			diff2 = *(Data_Array+1)-*(Data_Array+2);
-			sum2 = *(Data_Array+1)+*(Data_Array+2);
-			answer = +(diff2*turn)/(sum2*sum2*3);
+			answer = 100;
 		}
-		else
-		{
-			diff2 = *(Data_Array+2)-*(Data_Array+1);
-			sum2 = *(Data_Array+2)+*(Data_Array+1);
-			answer = -(diff2*turn)/(sum2*sum2*3);
-		}
+		else 
+			answer = -100;
+		
+		
+//		beeing();
+//		if(*(Data_Array+1)>*(Data_Array+2))
+//		{
+//			diff2 = *(Data_Array+1)-*(Data_Array+2);
+//			sum2 = *(Data_Array+1)+*(Data_Array+2);
+//			answer = (diff2*turn)/(sum2*sum2*3);
+//		}
+//		else
+//		{
+//			diff2 = *(Data_Array+2)-*(Data_Array+1);
+//			sum2 = *(Data_Array+2)+*(Data_Array+1);
+//			answer = (diff2*turn)/(sum2*sum2*3);
+//		}
 	}
 	else
 	{
