@@ -2,6 +2,7 @@
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
 uint16 All_Signal_Data[CHANNEL_NUM] = {0};
+void Stop_Car();
 
 //#pragma userclass (near=CEVENT)	
 //	CEVENT_EXPORT(0,Signal_Init,NULL);
@@ -86,8 +87,8 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	int32 answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
 	int32 strai=453000;
-	int32 turn =968411L;
-
+	int32 turn =968411;
+	
 	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
 	{
 //		beeing();
@@ -119,7 +120,12 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 			answer = -(diff1*strai)/(sum1*sum1);
 		}
 	}
-
+		//冲出赛道停车
+	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 800)
+		Stop_Car();
+	
+	if(answer > 120 || answer < -120) answer = 0;
+	
 	return answer;
 }
 

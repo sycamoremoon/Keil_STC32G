@@ -331,14 +331,54 @@
               <FilePath>..\driver\lib\stc_usb_hid_32.LIB</FilePath>
             </File>
             <File>
-              <FileName>STC32_MDU32_V1.1.LIB</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\driver\lib\STC32_MDU32_V1.1.LIB</FilePath>
-            </File>
-            <File>
               <FileName>SEEKFREE_CONFIG.LIB</FileName>
               <FileType>4</FileType>
               <FilePath>..\driver\lib\SEEKFREE_CONFIG.LIB</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>2</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules>SEEKFREE_CONFIG</IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251/>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>STC32_MDU32_LARGE_V1.1.LIB</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driver\lib\STC32_MDU32_LARGE_V1.1.LIB</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>2</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules>STC_MDU32</IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                  <BankNo>65535</BankNo>
+                </CommonProperty>
+                <File251/>
+              </FileOption>
             </File>
           </Files>
         </Group>
@@ -1047,11 +1087,6 @@
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
             </File>
-            <File>
-              <FileName>kalman.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\kalman.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1096,11 +1131,6 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>kalman.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\kalman.c</FilePath>
             </File>
           </Files>
         </Group>
