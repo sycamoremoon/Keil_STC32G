@@ -25,9 +25,9 @@ extern "C"{
          * These are used for tuning the algorithm and the values they take are
          * dependent upon the application - (in other words, YMMV...)
          */
-        unsigned int kp; // Proportional gain
-        unsigned int ki; // Integral gain
-        unsigned int kd; // Derivative gain
+        long kp; // Proportional gain
+        long ki; // Integral gain
+        long kd; // Derivative gain
     } PID_Calibration;
 
 // PID当前状态，输入值
@@ -42,12 +42,12 @@ extern "C"{
          * NOTE: The output field in this struct is set by the PID algorithm function, and
          * is ignored in the actual calculations.
          */
-        unsigned int actual;                // 测量的真实值
-        unsigned int target;                // 目标值
-        unsigned int previous_error;        // 上一次误差
-		unsigned int pre_previous_error;	// 上上次误差，只在增量式pid中使用
-        unsigned int integral;              // 误差积分，只在位置式pid中使用
-        unsigned int output;                // 最终通过pid处理得到的修正输出
+        long actual;                // 测量的真实值
+        long target;                // 目标值
+        long previous_error;        // 上一次误差
+		long pre_previous_error;	// 上上次误差，只在增量式pid中使用
+        long integral;              // 误差积分，只在位置式pid中使用
+        long output;                // 最终通过pid处理得到的修正输出
     } PID_State;
 
 

@@ -2,11 +2,11 @@
 
 
 
-PID_Calibration PID_accy 		= {50,0,50};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {50,50,100};	// 中环adc的PID参数
-PID_Calibration PID_out_left 	= {80,0,0};	// 外环左速度的PID参数
-PID_Calibration PID_out_right 	= {80,0,0};	// 外环右速度的PID参数
-
+PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
+PID_Calibration PID_adc 		= {-8,0,0};	// 中环adc的PID参数 20
+PID_Calibration PID_out_left 	= {6,0,26};	// 外环左速度的PID参数
+PID_Calibration PID_out_right 	= {6,0,26};	// 外环右速度的PID参数
+//P: 32max
 PID_State accy_state		= {0};				        //accy状态参数
 PID_State adc_state 		= {0};				        //adc状态参数
 PID_State Left_Speed_State 	= {0};				//左电机速度状态参数
@@ -32,21 +32,21 @@ void Speed_Ctrl_in(unsigned int accy_target)
 void Speed_Ctrl_mid(unsigned int adc_target)
 {
 	//获取真实adc
-	adc_state.actual = (int16) Get_Regularized_Signal_Data(All_Signal_Data);
+	adc_state.actual = (long) Get_Regularized_Signal_Data(All_Signal_Data);
 	//adc_state.actual = 0;
 	//获取目标adc
 	adc_state.target = adc_target;
 
-	pid_increase(&PID_adc,&adc_state);
-//	Update_Motors(&adc_state,&adc_state,&Turn_State);
+	pid_location(&PID_adc,&adc_state);
+
 }
 
 // 外环
 void Speed_Ctrl_out(unsigned int Left_Speed,unsigned int Right_Speed)
 {
-	//获取真实速度
-	Left_Speed_State.actual = (get_EncoderL()/MAXENCODER)*MAXSPEED;
-	Right_Speed_State.actual = (get_EncoderR()/MAXENCODER)*MAXSPEED;
+	//获取真实速度*MAXSPEED/MAXENCODER
+	Left_Speed_State.actual = get_EncoderL()* 10;
+	Right_Speed_State.actual = get_EncoderR() *10;
 	
 	//获取目标速度
 	Left_Speed_State.target = Left_Speed;
@@ -84,21 +84,17 @@ void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gy
 	Set_Lmotor_Speed(left_state->output + gyro_state->output);
 }
 
-void Set_Motors(unsigned int left, unsigned int right)
+void Set_Motors(long left, long right)
 {
-	if(left > SAFESPEED || right > SAFESPEED)
-	{
-		left = SAFESPEED;
-		right = SAFESPEED;
-	}
-	Set_Lmotor_Speed(right);
-	Set_Rmotor_Speed(left);
+	Set_Lmotor_Speed(left);
+	Set_Rmotor_Speed(right);
 }
 
 void Stop_Car(void)		// 小车停止
 {
 	Set_Rmotor_Speed(0);
 	Set_Lmotor_Speed(0);
+	for(;;);
 }
 
 

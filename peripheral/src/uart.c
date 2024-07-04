@@ -1,4 +1,5 @@
 #include "uart.h"
+#include "STC32G_NVIC.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,uart_init,NULL);
@@ -88,6 +89,7 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 			}
 			busy[1] = 0;
 			ES = 1;
+			NVIC_UART1_Init(ENABLE,Priority_3);
 			break;
 		}
 		
@@ -113,6 +115,7 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 			
 			IE2 |= 0x01 << 0;	//允许串行口2中断
 			busy[2] = 0;
+			NVIC_UART2_Init(ENABLE,Priority_3);
 			break;
 		}
 		
@@ -145,6 +148,7 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 			
 			IE2 |= 0x01<<3;	//允许串行口3中断
 			busy[3] = 0;
+			NVIC_UART3_Init(ENABLE,Priority_3);
 			break;
 		}
 		
@@ -178,6 +182,7 @@ void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx
 			}
 			IE2 |= 0x01<<4;	//允许串行口4中断
 			busy[4] = 0;
+			NVIC_UART4_Init(ENABLE,Priority_3);
 			break;
 		}
 		
@@ -249,4 +254,3 @@ void uart_putstr(UARTN_enum uart_n,uint8 *str)
         uart_putchar(uart_n, *str++);
     }
 }
-

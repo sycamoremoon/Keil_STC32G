@@ -56,20 +56,20 @@ void Set_Lmotor_Speed(long speed)
 {
 	u16 duty_cycle = 0;
 	
-    if (speed < -MAXSPEED)				// 限制速度在-3500到3500之间
-        speed = -MAXSPEED;
-	else if (speed > MAXSPEED)
-        speed = MAXSPEED;
+    if (speed < -SAFESPEED)				// 限制速度在-3500到3500之间
+        speed = -SAFESPEED;
+	else if (speed > SAFESPEED)
+        speed = SAFESPEED;
 
 	if(speed >= 0)
     {
-		Lmotor_direction = 1;							// 电机正转
+		Lmotor_direction = 0;							// 电机正转
 		duty_cycle = (PWM_Peri / MAXSPEED) * speed; 		// 计算占空比
 		pwmA_duty.PWM3_Duty = duty_cycle;
 	}
 	else 	//if(speed < 0)
 	{
-		Lmotor_direction = 0;							// 电机反转
+		Lmotor_direction = 1;							// 电机反转
 		duty_cycle = (PWM_Peri / MAXSPEED) * -speed; 		// 计算占空比
 		pwmA_duty.PWM3_Duty = duty_cycle;
 	}
@@ -90,20 +90,21 @@ void Set_Rmotor_Speed(long speed)
 {
 	u16 duty_cycle = 0;
 	
-    if (speed < -MAXSPEED)					// 限制速度在-3500到3500之间
-        speed = -MAXSPEED;
-	else if (speed > MAXSPEED)
-        speed = MAXSPEED;
+    if (speed < -SAFESPEED)					// 限制速度在-3500到3500之间
+        speed = -SAFESPEED;
+	else if (speed > SAFESPEED)
+        speed = SAFESPEED;
 
 	if(speed >= 0)
     {
-		Rmotor_direction = 1;							// 电机正转
+		Rmotor_direction = 0;							// 电机正转
 		duty_cycle = (PWM_Peri / MAXSPEED) * speed; 		// 计算占空比
 		pwmA_duty.PWM4_Duty = duty_cycle;
 	}
 	else 	//if(speed < 0)
 	{
-		Rmotor_direction = 0;							// 电机反转
+
+		Rmotor_direction = 1;							// 电机反转
 		duty_cycle = (PWM_Peri / MAXSPEED) * -speed; 		// 计算占空比
 		pwmA_duty.PWM4_Duty = duty_cycle;
 	}

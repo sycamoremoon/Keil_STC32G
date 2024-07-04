@@ -25,5 +25,6 @@ void board_init(void);
 void DisableGlobalIRQ(void);
 void EnableGlobalIRQ(void);
 
+void beeing();
 
 #endif 

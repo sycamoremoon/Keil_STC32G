@@ -5,8 +5,8 @@
 
 #include "config.h"
 
-#define MAXSPEED 	(3500)
-#define SAFESPEED 	(300)
+#define MAXSPEED 	(10000)
+#define SAFESPEED 	(4000)
 
 #define	PWM_Peri			65535	// PWM周期设定
 #define Lmotor_direction	P35		// 左电机方向控制引脚
