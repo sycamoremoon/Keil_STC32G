@@ -1,5 +1,6 @@
 #include "board.h"
 #include "timer.h"
+#include "STC32G_NVIC.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,timer_init,NULL);
@@ -71,7 +72,7 @@ void ctimer_count_init(CTIMN_enum tim_n)
 		{
 			T3L = 0; 
 			T3H = 0;
-			T4T3M |= 0x0c; // 设置外部计数模式并启动定时器
+			T4T3M |= 0x0e; // 设置外部计数模式并启动定时器
 			break;
 		}
 		
@@ -79,7 +80,7 @@ void ctimer_count_init(CTIMN_enum tim_n)
 		{
 			T4L = 0;
 			T4H = 0;
-			T4T3M |= 0xc0; // 设置外部计数模式并启动定时器
+			T4T3M |= 0xe0; // 设置外部计数模式并启动定时器
 			break;
 		}
 	

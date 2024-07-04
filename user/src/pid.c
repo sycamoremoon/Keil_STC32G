@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------------------------------------------------------
 PID_State* pid_location(PID_Calibration * calibration, PID_State * state) 
 {
-	unsigned int error,derivative;
+	long error,derivative;
     // calculate difference between desired and actual values (the error)
     error = state->target - state->actual;
     // calculate and update integral
@@ -46,15 +46,15 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
 //-------------------------------------------------------------------------------------------------------------------
 PID_State* pid_increase(PID_Calibration * calibration, PID_State * state) 
 {
-	unsigned int error,derivative;
+	long int error,derivative;
 	
     error = state->target - state->actual;		//计算当前误差
     derivative = (error - 2*state->previous_error + state->pre_previous_error);
     state->output = (
 		state->output
-        + (calibration->kp * (error - state -> previous_error)) 
-		+ (calibration->ki * error) 
-		+ (calibration->kd * derivative)
+        + (calibration->kp * (error - state -> previous_error) / 10) 
+		+ (calibration->ki * error * 10 / 10000) 
+		+ (calibration->kd * derivative / 10)
 		);
 	
 	//更新上次误差和上上次误差

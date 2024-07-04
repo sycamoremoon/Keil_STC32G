@@ -90,20 +90,19 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 
 	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
 	{
+//		beeing();
 		if(*(Data_Array+1)>*(Data_Array+2))
 		{
 			diff2 = *(Data_Array+1)-*(Data_Array+2);
 			sum2 = *(Data_Array+1)+*(Data_Array+2);
-			answer = (diff2*turn)/(sum2*sum2);
+			answer = +(diff2*turn)/(sum2*sum2*3);
 		}
 		else
 		{
 			diff2 = *(Data_Array+2)-*(Data_Array+1);
 			sum2 = *(Data_Array+2)+*(Data_Array+1);
-			answer = -(diff2*turn)/(sum2*sum2);
+			answer = -(diff2*turn)/(sum2*sum2*3);
 		}
-		printf("%d\n",diff2*turn);
-		printf("%d\n",sum2*sum2);
 	}
 	else
 	{
@@ -111,7 +110,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		{
 			diff1 = *Data_Array-*(Data_Array+3);
 			sum1 = *Data_Array+*(Data_Array+3);
-			answer = (diff1*strai)/(sum1*sum1);
+			answer = +(diff1*strai)/(sum1*sum1);
 		}
 		else
 		{

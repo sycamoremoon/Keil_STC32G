@@ -5,7 +5,7 @@
 
 #include "config.h"
 
-#define MAXENCODER 		(65000)
+#define MAXENCODER 		(1650)	//10ms的1024线编码器最大获取脉冲数
 #define Encode_L		P04
 #define Encode_R		P06
 #define Dir_Encode_L	P20

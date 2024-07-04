@@ -189,3 +189,9 @@ void EnableGlobalIRQ(void)
 	EA = 1;
 }
 
+void beeing()
+{
+	P34 = 1;
+	delay_ms(100);
+	P34 = 0;
+};
