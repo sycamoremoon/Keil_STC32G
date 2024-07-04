@@ -34,7 +34,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	output_left = pid1_output - pid2_output + pid3_output_left;
 	output_right = pid1_output + pid2_output + pid3_output_right;
 
-	Set_Motors(output_left,output_right);		// 更新电机PWM = 基准速度 + pid_in(error) + pid_mid(error) +pid_out(error) 
+	Set_Motors(output_left,output_right);		// 更新电机PWM
 	cnt++;
 	
 //	if(cnt % 1 == 0)
@@ -67,14 +67,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		Sample_All_Chanel();
 		Speed_Ctrl_mid(0);
 		pid2_output = adc_state.output;
-//		if(pid2_output>=1500)
-//		{
-//			pid2_output = 1500;
-//		}
-//		if(pid2_output<=-1500)
-//		{
-//			pid2_output = -1500;
-//		}
+
 	}
 	
 	if(cnt % 1 == 0)	// 外环pid 速度环，用PI
@@ -83,21 +76,14 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		// error = 中环的输出 - 实际速度
 		// 更新电机PWM = pid(error)
 		// 爬坡下坡和适应电压的
-		Speed_Ctrl_out(1500,1500);
+		Speed_Ctrl_out(TargetSpeed,TargetSpeed);
+//		printf("F: %d,%d\n",get_EncoderL(), get_EncoderR());
 		printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
 		pid3_output_left = Left_Speed_State.output;
 		pid3_output_right = Right_Speed_State.output;
 
 	}
-//	
-//	if(output_left > 1500 | output_right > 1500)	// 保险,防止PWM过大
-//		{
-//			Stop_Car();
-//		}
-//		else 
-//		{
-//			
-//		}
+
 }
 
 //========================================================================

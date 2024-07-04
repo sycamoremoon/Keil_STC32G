@@ -20,11 +20,13 @@ extern PID_Calibration PID_adc;
 extern PID_Calibration PID_out_left;
 extern PID_Calibration PID_out_right;
 
+extern int TargetSpeed;	//目标速度，PID控制
+
 void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gyro_state);
 void Set_Motors(long left, long right);
 void Speed_Ctrl_in(unsigned int accy_target);
-void Speed_Ctrl_mid(unsigned int adc_target);
-void Speed_Ctrl_out(unsigned int Left_Speed,unsigned int Right_Speed);
+void Speed_Ctrl_mid(long adc_target);
+void Speed_Ctrl_out(long Left_Speed,long Right_Speed);
 void Turn_Ctrl(unsigned int Gyro);
 void Regularization(PID_State * left_state,PID_State * right_state);
 void Stop_Car(void);

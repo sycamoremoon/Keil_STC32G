@@ -3,14 +3,16 @@
 
 
 PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {-8,0,0};	// 中环adc的PID参数 20
-PID_Calibration PID_out_left 	= {6,0,26};	// 外环左速度的PID参数
-PID_Calibration PID_out_right 	= {6,0,26};	// 外环右速度的PID参数
+PID_Calibration PID_adc 		= {0,0,0};	// 中环adc的PID参数 20
+PID_Calibration PID_out_left 	= {20,0,25};	// 外环左速度的PID参数
+PID_Calibration PID_out_right 	= {20,0,25};	// 外环右速度的PID参数
 //P: 32max
 PID_State accy_state		= {0};				        //accy状态参数
 PID_State adc_state 		= {0};				        //adc状态参数
 PID_State Left_Speed_State 	= {0};				//左电机速度状态参数
 PID_State Right_Speed_State = {0};				//右电机速度状态参数
+
+int TargetSpeed = 10000;
 
 /// @brief 通过PID算法调整电机速度达到目标速度
 /// @param Left_Speed 参数给出左电机的目标速度
@@ -29,7 +31,7 @@ void Speed_Ctrl_in(unsigned int accy_target)
 }
 
 // 中环
-void Speed_Ctrl_mid(unsigned int adc_target)
+void Speed_Ctrl_mid(long adc_target)
 {
 	//获取真实adc
 	adc_state.actual = (long) Get_Regularized_Signal_Data(All_Signal_Data);
@@ -42,15 +44,15 @@ void Speed_Ctrl_mid(unsigned int adc_target)
 }
 
 // 外环
-void Speed_Ctrl_out(unsigned int Left_Speed,unsigned int Right_Speed)
+void Speed_Ctrl_out(long Left_Speed,long Right_Speed)
 {
 	//获取真实速度*MAXSPEED/MAXENCODER
-	Left_Speed_State.actual = get_EncoderL()* 10;
-	Right_Speed_State.actual = get_EncoderR() *10;
+	Left_Speed_State.actual = get_EncoderL();
+	Right_Speed_State.actual = get_EncoderR();
 	
 	//获取目标速度
-	Left_Speed_State.target = Left_Speed;
-	Right_Speed_State.target = Right_Speed;
+	Left_Speed_State.target = Left_Speed * MAXENCODER_L / MAXSPEED;
+	Right_Speed_State.target = Right_Speed * MAXENCODER_R / MAXSPEED;
 	
 	pid_increase(&PID_out_left,&Left_Speed_State);
 	pid_increase(&PID_out_right,&Right_Speed_State);
@@ -86,15 +88,13 @@ void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gy
 
 void Set_Motors(long left, long right)
 {
-	Set_Lmotor_Speed(left);
-	Set_Rmotor_Speed(right);
+	Set_Lmotor_Speed(left * MAXSPEED / MAXENCODER_L);
+	Set_Rmotor_Speed(right * MAXSPEED / MAXENCODER_R);
 }
 
 void Stop_Car(void)		// 小车停止
 {
-	Set_Rmotor_Speed(0);
-	Set_Lmotor_Speed(0);
-	for(;;);
+	TargetSpeed = 0;
 }
 
 
