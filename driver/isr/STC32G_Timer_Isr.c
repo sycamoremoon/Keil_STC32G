@@ -55,7 +55,8 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 //		
 //	}
 
-
+	Get_angle();
+	
 	if(cnt % 1 == 0)	// 中环pid adc处理，每一小段的偏移，PID
 	{
 		// adc获取
@@ -80,7 +81,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		Speed_Ctrl_out(TargetSpeed,TargetSpeed);
 //		printf("F: %d,%d\n",get_EncoderL(), get_EncoderR());
 
-		printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
+		//printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
 		pid3_output_left = Left_Speed_State.output;
 		pid3_output_right = Right_Speed_State.output;
 

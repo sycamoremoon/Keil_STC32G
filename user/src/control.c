@@ -63,18 +63,18 @@ void Speed_Ctrl_out(long Left_Speed,long Right_Speed)
 
 /// @brief 通过PID算法调整电机速度达到目标速度和目标角度
 /// @param Gyro 参数给出小车的目标角度
-void Turn_Ctrl(unsigned int Gyro)
-{
-	
-}
+//void Turn_Ctrl(unsigned int Gyro)
+//{
+//	
+//}
 
 /// @brief 标准化最后的输出结果，视具体情况而定。如：缩放，限幅，归一化等操作
 /// @param left_state 
 /// @param right_state 
-void Regularization(PID_State * left_state,PID_State * right_state)
-{
-	
-}
+//void Regularization(PID_State * left_state,PID_State * right_state)
+//{
+//	
+//}
 
 /// @brief 更新电机PWM转速
 /// @param left_state 

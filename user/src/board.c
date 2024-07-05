@@ -191,6 +191,7 @@ void EnableGlobalIRQ(void)
 
 void beeing()
 {
+	P3_MODE_OUT_PP(GPIO_Pin_4);		//P3.4
 	P34 = 1;
 	delay_ms(100);
 	P34 = 0;

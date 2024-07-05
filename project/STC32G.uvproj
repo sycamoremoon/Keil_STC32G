@@ -1097,6 +1097,11 @@
               <FileType>5</FileType>
               <FilePath>..\user\include\interupt.h</FilePath>
             </File>
+            <File>
+              <FileName>zf_fifo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\user\include\zf_fifo.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1141,6 +1146,11 @@
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user\src\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>zf_fifo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\src\zf_fifo.c</FilePath>
             </File>
           </Files>
         </Group>

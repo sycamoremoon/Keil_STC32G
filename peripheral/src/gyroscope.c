@@ -76,7 +76,7 @@ uint8 icm20602_init (void)
             
 			while(1)
 			{
-				printf("icm20602 self check error");
+				beeing();
 				delay_ms(200);
 			}
             return_state = 1;
@@ -96,7 +96,8 @@ uint8 icm20602_init (void)
                 // 检查一下接线有没有问题 如果没问题可能就是坏了
 				while(1)
 				{
-					printf("icm20602 reset error.\r\n");
+					beeing();
+					//printf("icm20602 reset error.\r\n");
 					delay_ms(200);
 				}
                 return_state = 1;
@@ -133,7 +134,7 @@ uint8 icm20602_init (void)
 
 	init_gyrodata();	// 使陀螺仪保持绝对稳定，等待约20ms，获取100个float类型的初始值，存入gyro[gyro_i]数组。该数组为 平均滤波算法 的初始值
     init_accy_data();	// 获取初始的accy值
-	printf("icm20602 init done.\r\n");
+	//printf("icm20602 init done.\r\n");
 	return return_state;
 }
 

@@ -1,55 +1,68 @@
 #include "config.h"
-#include "signal_acq.h"
-#include "encoder.h"
-#include "motor.h"
+#include "uart.h"
+#include "wireless.h"
 #include "control.h"
 #include "timer.h"
 #include "screen.h"
+#include "gyroscope.h"
+#include "iic.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
-extern uint16 All_Signal_Data[4];
 
+#define LED P34
 int main(void)
 {	
+	
+	uint8 send_buf[] = {0x11, 0x22, 0x33};
+	uint8 read_buf[10];
 
+	uint32 dat_len = 0;
+	uint8 test_str[] = "seekfree.taobao.com\n";
 	/******************************************************************/
 	ceventInit();
 	ceventPost(0);
-
-	Screen_Init();
+//	Screen_Init();
+	wireless_uart_init();
+	
 	Signal_Init();
-	timer_init();
 	motor_init();
 	Encoder_init();
-	EA =1;
+	iic_init();
+	beeing();
+	EA = 1;
+	
+	icm20602_init();
+	timer_init();
+	printf("wireless init done\n");
 	/******************************************************************/
 
 	/******************************************************************/
-//	Screen_Show_String(0,0,BLACK,WHITE,"channel 3:");
-//	Screen_Show_String(0,16,BLACK,WHITE,"channel 2:");
-//	Screen_Show_String(0,32,BLACK,WHITE,"channel 1:");
-//	Screen_Show_String(0,48,BLACK,WHITE,"channel 0:");
-//	Screen_Show_String(0,64,BLACK,WHITE,"diff :");
-//	Screen_Show_String(0,80,BLACK,WHITE,"result :");
-	
+
+
 	//初始化结束
 	
 	/******************************************************************/
+
 	//主循环
 	while(1)
 	{	
+		//printf("angle:%f\n",Angle_Z);
+		beeing();
+		//wireless_uart_send_buff("hello", 5);
+		delay_ms(100);
 
-		Screen_ShowInt(80,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
-		Screen_ShowInt(80,16,BLACK,WHITE,Get_DMA_ADC_Result(1));
-		Screen_ShowInt(80,32,BLACK,WHITE,Get_DMA_ADC_Result(2));
-		Screen_ShowInt(80,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
-		Screen_ShowInt(80,64,BLACK,WHITE,Get_DMA_ADC_Result(0)-Get_DMA_ADC_Result(3));
-		Sample_All_Chanel();
-		Screen_ShowInt(80,80,BLACK,WHITE,(int16)Get_Regularized_Signal_Data(All_Signal_Data));
-		//printf("F: %d,%d,%d,%d,%ld\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
-
+        // 翻转LED
+//        LED = !LED;
+//        // 读取fifo中的内容
+//        dat_len = wireless_uart_read_buff(read_buf, 10);
+//        // 如果读取到数据
+//        if(dat_len != 0)
+//        {
+//            // 将读取到的fifo发送出去
+//            
+////        }
 
 	}
 

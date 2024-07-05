@@ -29,7 +29,7 @@
 
 #define	UART_QUEUE_MODE	0           //设置串口发送模式，0：阻塞模式，1：队列模式
 
-#define	PRINTF_SELECT  UART1		//选择 printf 函数所使用的串口，参数 UART1~UART4
+#define	PRINTF_SELECT  UART4		//选择 printf 函数所使用的串口，参数 UART1~UART4
 
 #ifdef UART1
 #define	COM_TX1_Lenth	128         //设置串口1发送数据缓冲区大小，如果长度定义大于256，需要将程序中与该长度比较的变量类型由u8改为u16.

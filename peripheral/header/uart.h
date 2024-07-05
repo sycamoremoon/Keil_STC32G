@@ -45,21 +45,6 @@
 #define UART3_GET_TX_FLAG   (S3CON & 0x02)
 #define UART4_GET_TX_FLAG   (S4CON & 0x02)
 
-//============无线模块==============//
-#define WIRELESS_UART        		UART_4         //无线转串口模块 所使用到的串口     
-#define WIRELESS_UART_TX_PIN    	UART4_TX_P03
-#define WIRELESS_UART_RX_PIN    	UART4_RX_P02
-#define WIRELESS_TIMER_N    		TIM_2
-#define WIRELESS_UART_BAUD   		115200
-#define WIRELESS_DATA_BUF           S4BUF
-
-
-#define WIRELESS_RTS_PIN P07 			//定义流控位引脚  指示当前模块是否可以接受数据  0可以继续接收  1不可以继续接收
-//#define WIRELESS_CMD_PIN P05 			//定义命令引脚
-
-#define WIRELESS_BUFFER_SIZE       64
-#define WIRELESS_TIMEOUT_COUNT     500
-
 
 //此枚举定义不允许用户修改
 typedef enum //枚举串口号
@@ -91,24 +76,14 @@ typedef enum //枚举串口引脚
 	
 }UARTPIN_enum;
 
-
-typedef enum //无线模块
-{
-    NO_WIRELESS_MODE = 0,   //没有无线模块
-    WIRELESS_SI24R1 = 1,    //无线转串口
-    WIRELESS_CH9141 = 2,    //蓝牙转串口
-    WIRELESS_CH573 = 3      //CH573模块
-}WIRELESS_TYPE_enum;
-
-extern WIRELESS_TYPE_enum wireless_type;
-extern uchar RecBuff[WIRELESS_BUFFER_SIZE];
 extern uint8 busy[5];
 
-u8* UART1_RecByte(void);
+
 void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud,TIMN_enum tim_n);
 void uart_putchar(UARTN_enum uart_n,uint8 dat);
 void uart_putstr(UARTN_enum uart_n,uint8 *str);
 void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint32 len);
-void wireless_uart_init(void);
+//void wireless_uart_init(void);
+//void UART1_get_data(void);
 
 #endif
