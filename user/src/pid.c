@@ -27,9 +27,9 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
     derivative = (error - state->previous_error);
     // calculate output value according to algorithm
     state->output = (
-        (calibration->kp * error) 
-		+ (calibration->ki * state->integral) 
-		+ (calibration->kd * derivative)
+        (calibration->kp * error / 100) 
+		+ (calibration->ki * state->integral * 10 / 10000) 
+		+ (calibration->kd * derivative / 10)
 		);
     // update state.previous_error to the error value calculated on this iteration
     state->previous_error = error;
@@ -52,8 +52,8 @@ PID_State* pid_increase(PID_Calibration * calibration, PID_State * state)
     derivative = (error - 2*state->previous_error + state->pre_previous_error);
     state->output = (
 		state->output
-        + (calibration->kp * (error - state -> previous_error) / 10) 
-		+ (calibration->ki * error * 10 / 10000) 
+        + (calibration->kp * (error - state -> previous_error) / 100) 
+		+ (calibration->ki * error * 10 / 100000) 
 		+ (calibration->kd * derivative / 10)
 		);
 	

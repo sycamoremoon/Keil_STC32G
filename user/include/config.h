@@ -51,6 +51,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include <math.h>
 
 /******************************自定义头文件*************************************/
 #include "cpost.h"

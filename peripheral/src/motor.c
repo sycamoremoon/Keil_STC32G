@@ -60,7 +60,10 @@ void Set_Lmotor_Speed(long speed)
         speed = -SAFESPEED;
 	else if (speed > SAFESPEED)
         speed = SAFESPEED;
-
+	
+    if (abs((int)speed) < 100)				
+		speed = 0;
+	
 	if(speed >= 0)
     {
 		Lmotor_direction = 0;							// 电机正转
@@ -94,7 +97,10 @@ void Set_Rmotor_Speed(long speed)
         speed = -SAFESPEED;
 	else if (speed > SAFESPEED)
         speed = SAFESPEED;
-
+	
+    if (abs((int)speed) < 100)				
+		speed = 0;
+	
 	if(speed >= 0)
     {
 		Rmotor_direction = 0;							// 电机正转
