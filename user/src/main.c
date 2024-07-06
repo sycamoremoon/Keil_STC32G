@@ -18,17 +18,17 @@ int main(void)
 	ceventInit();
 	ceventPost(0);
 
-	Screen_Init();
+//	Screen_Init();
 	wireless_uart_init();
 	
 	Signal_Init();
 	motor_init();
 	Encoder_init();
 	iic_init();
-	
+	Exti_config();
 	EA = 1;
 
-	icm20602_init();
+//	icm20602_init();
 	timer_init();
 	
 	/******************************************************************/
@@ -41,11 +41,19 @@ int main(void)
 	//Ö÷Ñ­»·
 	while(1)
 	{	
+		
+		wireless_PID();
+		delay_ms(20);
 //		Set_Motors(10000,10000);
-		Screen_ShowInt(80,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
-		Screen_ShowInt(80,16,BLACK,WHITE,Get_DMA_ADC_Result(1));
-		Screen_ShowInt(80,32,BLACK,WHITE,Get_DMA_ADC_Result(2));
-		Screen_ShowInt(80,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
+//		Screen_Show_String(0, 0,BLACK, WHITE, "HELLO");
+//		Screen_ShowInt(0,0,BLACK,WHITE,12345);
+//		Screen_ShowInt(0,16,BLACK,WHITE,12345);
+//		Screen_ShowInt(0,32,BLACK,WHITE,9999);
+//		Screen_ShowInt(0,48,BLACK,WHITE,12431);
+//		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
+//		Screen_ShowInt(0,16,BLACK,WHITE,Get_DMA_ADC_Result(1));
+//		Screen_ShowInt(0,32,BLACK,WHITE,Get_DMA_ADC_Result(2));
+//		Screen_ShowInt(0,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
 //		printf("F: %d,",Get_DMA_ADC_Result(0));
 //		printf("%d,",Get_DMA_ADC_Result(1));
 //		printf("%d,",Get_DMA_ADC_Result(2));

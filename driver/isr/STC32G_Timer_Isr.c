@@ -31,9 +31,13 @@ long output_right = 0;
 // 
 void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志 
 {
-	output_left = pid1_output - pid2_output + pid3_output_left;
-	output_right = pid1_output + pid2_output + pid3_output_right;
-
+	output_left = pid3_output_left;
+	output_right = pid3_output_right;
+	
+	if(TargetSpeed != 0){
+	output_left = output_left - pid2_output - pid1_output;
+	output_right = output_right + pid2_output + pid1_output; 
+	}
 	Set_Motors(output_left,output_right);		// 更新电机PWM
 	cnt++;
 	
@@ -79,7 +83,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		// 爬坡下坡和适应电压的
 		Speed_Ctrl_out(TargetSpeed,TargetSpeed);
 //		printf("F: %d,%d\n",get_EncoderL(), get_EncoderR());
-		printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
+//		printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
 		pid3_output_left = Left_Speed_State.output;
 		pid3_output_right = Right_Speed_State.output;
 

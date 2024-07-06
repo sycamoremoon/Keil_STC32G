@@ -41,9 +41,9 @@ void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 void INT1_ISR_Handler (void) interrupt INT1_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-//	TargetSpeed = 4000;
-//	memset((void*)&Left_Speed_State,0,sizeof(PID_State));
-//	memset((void*)&Right_Speed_State,0,sizeof(PID_State));
+	TargetSpeed = 2600;
+	memset((void*)&Left_Speed_State,0,sizeof(PID_State));
+	memset((void*)&Right_Speed_State,0,sizeof(PID_State));
 }
 
 //========================================================================

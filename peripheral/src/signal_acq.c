@@ -84,7 +84,7 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
     }
 	
 	ADC_Value_Sum = ADC_Value_Sum / (WEIGHTSUM);
-	if(abs((int)ADC_Value_Sum) < 200) ADC_Value_Sum = 0;
+	if(abs((int)ADC_Value_Sum) < 100) ADC_Value_Sum = 0;
 	
 	return ADC_Value_Sum;
 }
@@ -116,28 +116,28 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	
 	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
 	{
-		
-		if(*(Data_Array+1)>*(Data_Array+2))
-		{
-			answer = 100;		// 转直角弯时写死100，根据不同的速度需要调整该值
-		}
-		else 
-			answer = -100;
-		
-		
-//		beeing();
+//		
 //		if(*(Data_Array+1)>*(Data_Array+2))
 //		{
-//			diff2 = *(Data_Array+1)-*(Data_Array+2);
-//			sum2 = *(Data_Array+1)+*(Data_Array+2);
-//			answer = (diff2*turn)/(sum2*sum2*3);
+//			answer = 100;		// 转直角弯时写死100，根据不同的速度需要调整该值
 //		}
-//		else
-//		{
-//			diff2 = *(Data_Array+2)-*(Data_Array+1);
-//			sum2 = *(Data_Array+2)+*(Data_Array+1);
-//			answer = (diff2*turn)/(sum2*sum2*3);
-//		}
+//		else 
+//			answer = -100;
+//		
+//		
+//		beeing();
+		if(*(Data_Array+1)>*(Data_Array+2))
+		{
+			diff2 = *(Data_Array+1)-*(Data_Array+2);
+			sum2 = *(Data_Array+1)+*(Data_Array+2);
+			answer = +(diff2*turn)/(sum2*sum2*3);
+		}
+		else
+		{
+			diff2 = *(Data_Array+2)-*(Data_Array+1);
+			sum2 = *(Data_Array+2)+*(Data_Array+1);
+			answer = -(diff2*turn)/(sum2*sum2*3);
+		}
 	}
 	else
 	{
@@ -159,6 +159,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		Stop_Car();
 
 	if(abs((int)answer) > 120) answer = 0;
+	if(abs((int)answer) < 20) answer = 0;
 	
 	return answer;
 }

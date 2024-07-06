@@ -206,6 +206,7 @@ void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 		TMOD |= 0x00; 	// 模式 0
 		TL0 = temp; 	
 		TH0 = temp >> 8;
+		NVIC_Timer0_Init(ENABLE,Priority_2);
 		TR0 = 1; 		// 启动定时器
 		ET0 = 1; 		// 使能定时器中断
 	}
@@ -243,6 +244,6 @@ void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 //定时器初始化
 void timer_init(void)
 {
-//	pit_timer_ms(TIM_0,10);
+	pit_timer_ms(TIM_0,10);
 	// pit_timer_ms(TIM_1,10);
 }

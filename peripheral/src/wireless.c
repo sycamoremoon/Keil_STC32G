@@ -121,7 +121,7 @@ long get_data(void)
 //  @param      NULL
 //  @return     void					
 //  @since      v1.0
-//  Sample usage:	
+//  Sample usage:	上位机传输格式，例：AP=58!，则将ADC_kp更改为58
 //  @note       
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -173,12 +173,17 @@ void PID_Adjust(void)
 		{
 			PID_out_right.kd = data_return;
 		}
+		else if (data_buffer[0] == 'V' && data_buffer[1] == 'E') 
+		{
+			TargetSpeed = data_return;
+		}
 		
 		// 显示三组PID参数
-		printf("ADC:%ld,%ld,%ld\nL:%ld,%ld,%ld\nR:%ld,%ld,%ld\n",\
+		printf("ADC:%ld,%ld,%ld\nL:%ld,%ld,%ld\nR:%ld,%ld,%ld\n%ld\n\n",\
 		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
 		PID_out_left.kp, 	PID_out_left.ki, 	PID_out_left.kd,\
-		PID_out_right.kp, 	PID_out_right.ki, 	PID_out_right.kd);
+		PID_out_right.kp, 	PID_out_right.ki, 	PID_out_right.kd,\
+		TargetSpeed);
 		
 		pid_changed = 0;
 	}
