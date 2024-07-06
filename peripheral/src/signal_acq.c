@@ -1,7 +1,14 @@
 #include "signal_acq.h"
+#define BUFFERLENGTH 10
+#define WEIGHTSUM 	55
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
+uint16 ADC_DataBuffer[CHANNEL_NUM][BUFFERLENGTH] = {0};
+static uint16 ADC_counter[CHANNEL_NUM] = {0};
 uint16 All_Signal_Data[CHANNEL_NUM] = {0};
+uint16 Weight[BUFFERLENGTH] = {1,2,3,4,5,6,7,8,9,10};
+int filled = 0;
+
 void Stop_Car();
 
 //#pragma userclass (near=CEVENT)	
@@ -46,8 +53,10 @@ void Signal_Acq_Config(unsigned char GPIO_PX, unsigned int GPIO_pin)
 /// @return ADC转化数据，右对齐
 uint16 Get_DMA_ADC_Result(uint8 channel)
 {
+	uint32 ADC_Value_Sum = 0;
 	uint16 * ADC_Data;
 	uint16 adc;
+	uint8 j;
 	ADC_Data = (uint16 *) &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
 	{
@@ -58,12 +67,26 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 		adc = *(uint16 *)ADC_Data;
 		adc = adc>>4;
 	}
+	
 	if(channel == CHANNEL_NUM-1)
 	{
 		DMA_ADC_STA &= ~0x01;	//清标志位
 		DMA_ADC_TRIG();		//触发启动转换
 	}
-	return adc;
+	//return adc;
+	
+	ADC_DataBuffer[channel][ADC_counter[channel]] = adc;
+	ADC_counter[channel] = ADC_counter[channel]+1;
+	if(ADC_counter[channel] == BUFFERLENGTH) ADC_counter[channel] = 0;
+	for(j = 0; j < 10; j++)
+    {
+        ADC_Value_Sum += ADC_DataBuffer[channel][j] * Weight[j];
+    }
+	
+	ADC_Value_Sum = ADC_Value_Sum / (WEIGHTSUM);
+	if(abs((int)ADC_Value_Sum) < 200) ADC_Value_Sum = 0;
+	
+	return ADC_Value_Sum;
 }
 
 /// @brief 采集所有通道的ADC数值，放置在一个文件作用域的私有数组中
@@ -71,6 +94,8 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 void Sample_All_Chanel()
 {
 	uint8 channel;
+	static int count = 0;
+	if (count++ > 10) filled = 1;
 	for(channel = 0 ; channel < CHANNEL_NUM ; channel++)
 	{
 		All_Signal_Data[channel] = Get_DMA_ADC_Result(channel);
@@ -130,10 +155,10 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}
 	}
 		//冲出赛道停车
-	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 800)
+	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 1000 && filled == 1)
 		Stop_Car();
-	
-	if(answer > 120 || answer < -120) answer = 0;
+
+	if(abs((int)answer) > 120) answer = 0;
 	
 	return answer;
 }

@@ -31,7 +31,6 @@ void Encoder_init()
 int16 get_EncoderL()
 {
 	int16 EncoderL_cnt;
-
 	if(Dir_Encode_L)
 		EncoderL_cnt = (int16)ctimer_count_read(CTIM3_P04);
 	else
@@ -50,7 +49,6 @@ int16 get_EncoderL()
 int16 get_EncoderR()
 {
 	int16 EncoderR_cnt;
-
 	if(Dir_Encode_R == 0)
 		EncoderR_cnt = (int16)ctimer_count_read(CTIM4_P06);
 	else
