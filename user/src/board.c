@@ -1,4 +1,5 @@
 #include "board.h"
+#include "wireless.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,board_init,NULL);
@@ -21,9 +22,6 @@
  * @Taobao   		https://seekfree.taobao.com/
  * @date       		2020-4-14
  ********************************************************************************************************************/
- 
- 
-#include "board.h"
 
 //22.11MHz的IRC参数寄存器 0xFB
 //24MHz的IRC参数寄存器 0xFB
@@ -174,6 +172,7 @@ void board_init(void)
 	TMOD = 0;
 
 	uart_init(DEBUG_UART, DEBUG_UART_RX_PIN, DEBUG_UART_TX_PIN, DEBUG_UART_BAUD, DEBUG_UART_TIM);
+	wireless_uart_init();
 	DisableGlobalIRQ();
 }
 
@@ -191,6 +190,7 @@ void EnableGlobalIRQ(void)
 
 void beeing()
 {
+	P3_MODE_OUT_PP(GPIO_Pin_4);		//P3.4
 	P34 = 1;
 	delay_ms(100);
 	P34 = 0;

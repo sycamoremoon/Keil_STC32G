@@ -7,7 +7,6 @@
 #include "signal_acq.h"
 #include "gyroscope.h"
 
-
 #define MAXTURN		1000
 
 extern PID_State accy_state;

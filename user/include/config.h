@@ -58,10 +58,19 @@
 #include "cevent.h"
 #include "board.h"
 #include "interupt.h"
-
 //========================================================================
 //                             外部函数和变量声明
 //========================================================================
+
+typedef enum //无线模块
+{
+    NO_WIRELESS_MODE = 0,   //没有无线模块
+    WIRELESS_SI24R1 = 1,    //无线转串口
+    WIRELESS_CH9141 = 2,    //蓝牙转串口
+    WIRELESS_CH573 = 3      //CH573模块
+}WIRELESS_TYPE_enum;
+
+extern WIRELESS_TYPE_enum wireless_type;
 
 
 

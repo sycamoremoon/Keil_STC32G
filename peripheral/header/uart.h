@@ -24,6 +24,9 @@
 #include "config.h"
 #include "timer.h"
 
+#define UART1_RX_BUFFER_SIZE	100
+#define UART1_TX_BUFFER_SIZE	100
+
 #define	UART1_CLEAR_RX_FLAG (SCON  &= ~0x01)
 #define	UART2_CLEAR_RX_FLAG (S2CON &= ~0x01)
 #define	UART3_CLEAR_RX_FLAG (S3CON &= ~0x01)
@@ -76,15 +79,13 @@ typedef enum //枚举串口引脚
 	
 }UARTPIN_enum;
 
-
-
-
+extern uint8 uart1_tx_buff[UART1_TX_BUFFER_SIZE];	//发送缓冲
+extern uint8 uart1_rx_buff[UART1_RX_BUFFER_SIZE];	//接收缓冲
 extern uint8 busy[5];
-
 
 void uart_init(UARTN_enum uart_n, UARTPIN_enum uart_rx_pin, UARTPIN_enum uart_tx_pin, uint32 baud,TIMN_enum tim_n);
 void uart_putchar(UARTN_enum uart_n,uint8 dat);
 void uart_putstr(UARTN_enum uart_n,uint8 *str);
-void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint32 len);
+void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint16 len);
 
 #endif

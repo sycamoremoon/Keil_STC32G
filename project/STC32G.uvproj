@@ -1042,6 +1042,16 @@
               <FileType>5</FileType>
               <FilePath>..\peripheral\header\iic.h</FilePath>
             </File>
+            <File>
+              <FileName>wireless.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\peripheral\src\wireless.c</FilePath>
+            </File>
+            <File>
+              <FileName>wireless.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\peripheral\header\wireless.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
