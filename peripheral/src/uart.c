@@ -1,4 +1,5 @@
 #include "uart.h"
+#include "board.h"
 #include "STC32G_NVIC.h"
 
 #pragma userclass (near=CEVENT)	
@@ -24,6 +25,8 @@
  ********************************************************************************************************************/
 uint8 busy[5];				//接收忙标志位
 
+uint8 uart1_tx_buff[UART1_TX_BUFFER_SIZE];	//发送缓冲
+uint8 uart1_rx_buff[UART1_RX_BUFFER_SIZE];	//接收缓冲
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      串口初始化
 //  @param      uart_n          串口模块号(USART_1,USART_2,USART_3,USART_4)
@@ -232,7 +235,7 @@ void uart_putchar(UARTN_enum uart_n,uint8 dat)
 //  @return     void
 //  Sample usage:               uart_putbuff(UART_1,&a[0],5);
 //-------------------------------------------------------------------------------------------------------------------
-void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint32 len)
+void uart_putbuff(UARTN_enum uart_n,uint8 *p,uint16 len)
 {
     while(len--)
         uart_putchar(uart_n,*p++);

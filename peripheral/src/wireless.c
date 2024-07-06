@@ -28,79 +28,10 @@
 #include "wireless.h"
 #include "control.h"
 
-static  fifo_struct     wireless_uart_fifo;
-static  uint8 	wireless_uart_buffer[WIRELESS_BUFFER_SIZE];  // 数据存放数组
-static  uint8	wireless_uart_data;
-
-uint8 data_buffer[32];		// 数据存储在data_buffer中
+uint8 data_buffer[32] = {0};		// 数据存储在data_buffer中
 uint8 pid_changed = 0;
+
 WIRELESS_TYPE_enum wireless_type = WIRELESS_SI24R1;
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      无线转串口模块回调函数
-//  @param      NULL
-//  @return     void					
-//  @since      v1.0
-//  Sample usage:	
-//  @note       
-//-------------------------------------------------------------------------------------------------------------------
-void wireless_uart_callback(void)
-{
-    //接到一个字节后单片机将会进入串口中断，通过在此处读取wireless_uart_data可以取走数据
-	wireless_uart_data = WIRELESS_DATA_BUF;
-    fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data, 1);       // 存入 FIFO
-}
-
-
-
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      无线转串口模块 发送函数
-//  @param      buff        需要发送的数据地址
-//  @param      len         发送长度
-//  @return     uint32      剩余未发送的字节数   
-//  @since      v1.0
-//  Sample usage:	
-//  @note       
-//-------------------------------------------------------------------------------------------------------------------
-uint32 wireless_uart_send_buff(uint8 *buff, uint32 len)
-{
-    while(len>30)
-    {
-        if(WIRELESS_RTS_PIN == 1)  
-        {
-            return len;//模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-        }
-        //while(RTS_PIN);  //如果RTS为低电平，则继续发送数据
-        uart_putbuff(WIRELESS_UART,buff,30);
-
-        buff += 30; //地址偏移
-        len -= 30;//数量
-    }
-    
-    if(WIRELESS_RTS_PIN == 1)  
-    {
-        return len;//模块忙,如果允许当前程序使用while等待 则可以使用后面注释的while等待语句替换本if语句
-    }
-    //while(WIRELESS_RTS_PIN);  //如果RTS为低电平，则继续发送数据
-    uart_putbuff(WIRELESS_UART,buff,len);//发送最后的数据
-    
-    return 0;
-}
-
-
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      无线转串口模块 读取函数
-//  @param      buff            存储的数据地址
-//  @param      len             长度
-//  @return     uint32          实际读取字节数
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-uint32 wireless_uart_read_buff (uint8 *buff, uint32 len)
-{
-    uint32 data_len = len;
-    fifo_read_buffer(&wireless_uart_fifo, buff, &data_len, FIFO_READ_AND_CLEAN);
-    return data_len;
-}
-
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      无线转 串口模块初始化
@@ -114,10 +45,7 @@ void wireless_uart_init(void)
 {
     WIRELESS_RTS_PIN = 0;
     wireless_type = WIRELESS_SI24R1;
-    //本函数使用的波特率为115200，为无线转串口模块的默认波特率，如需其他波特率请自行配置模块并修改串口的波特率
-    fifo_init(&wireless_uart_fifo, wireless_uart_buffer, WIRELESS_BUFFER_SIZE);
 	uart_init(WIRELESS_UART, WIRELESS_UART_RX_PIN, WIRELESS_UART_TX_PIN, WIRELESS_UART_BAUD, WIRELESS_TIMER_N);	//初始化串口    
-    
 }
 
 
@@ -131,20 +59,25 @@ void wireless_uart_init(void)
 //-------------------------------------------------------------------------------------------------------------------
 long get_data(void)
 {
-    uint8 data_len = (uint8)wireless_uart_read_buff(data_buffer, 32);	// 记录数据位数
-    uint8 data_start	= 0;	// 记录数据位开始的地方
-	uint8 data_end		= 0;	// 记录数据位结束的地方
-	uint8 minus_Flag 	= 0; 	// 判断负数标志位
-	uint8 data_Num 		= 0; 	// 记录数据位数
-	long  data_return	= 0;	// 解析得到的数据
-	uint8 i = 0;
+    int		data_len 	= 0;	// 记录数据位数
+    uint8 	data_start	= 0;	// 记录数据位开始的地方
+	uint8 	data_end	= 0;	// 记录数据位结束的地方
+	uint8 	minus_Flag 	= 0; 	// 判断负数标志位
+	uint8 	data_Num 	= 0; 	// 记录数据位数
+	long  	data_return	= 0;	// 解析得到的数据
+	uint8 	i = 0;
 	
+	data_len = strlen(data_buffer);	// 获取data_buffer的长度
+
     if (data_len != 0) 
 	{
 		pid_changed = 1;
 		for (i = 0; i < data_len; i++)	// 查找'='和'!'的位置
 		{
-			if (data_buffer[i] == '=') data_start = i + 1;	//定位到数据起始位
+			if (data_buffer[i] == '=') 
+			{
+				data_start = i + 1;	//定位到数据起始位
+			}
 			if (data_buffer[i] == '!')
 			{
 				data_end = i - 1;	// 定位到数据结束位
@@ -161,11 +94,19 @@ long get_data(void)
 
 		if (data_Num == 1) // 数据共1位
 		{
-			data_return = data_buffer[data_start];
+			data_return = data_buffer[data_start]-48;	//减去'0'的ASCII码48
 		}
 		else if (data_Num == 2) // 数据共2位
 		{
-			data_return = (data_buffer[data_start])*10 + (data_buffer[data_end]);
+			data_return = (data_buffer[data_start]-48)*10 + (data_buffer[data_end]-48);	
+		}
+		else if (data_Num == 3)	// 数据共3位
+		{
+			data_return = (data_buffer[data_start]-48)*100 + (data_buffer[data_start+1]-48)*10 + (data_buffer[data_end]-48);
+		}
+		else if (data_Num == 4)	// 数据共4位
+		{
+			data_return = (data_buffer[data_start]-48)*1000 + (data_buffer[data_start+1]-48)*100 + (data_buffer[data_start+2]-48)*10 + (data_buffer[data_end]-48);
 		}
 		
 		if (minus_Flag == 1)	data_return = -data_return;	// 判断负数
@@ -188,48 +129,89 @@ void PID_Adjust(void)
 {
 	long data_return = 0;
 	data_return = get_data();
-	// PID_adc
-	if 		(data_buffer[0] == 'A' && data_buffer[1] == 'P') 
-	{
-        PID_adc.kp = data_return;
-    }
-	else if (data_buffer[0] == 'A' && data_buffer[1] == 'I') 
-	{
-        PID_adc.ki = data_return;
-    }
-	else if (data_buffer[0] == 'A' && data_buffer[1] == 'D') 
-	{
-        PID_adc.kd = data_return;
-    }
 	
-	// PID_out_left
-	else if (data_buffer[0] == 'L' && data_buffer[1] == 'P') 
+	if(pid_changed)
 	{
-        PID_out_left.kp = data_return;
-    }
-	else if (data_buffer[0] == 'L' && data_buffer[1] == 'I') 
-	{
-        PID_out_left.ki = data_return;
-    }
-	else if (data_buffer[0] == 'L' && data_buffer[1] == 'D') 
-	{
-        PID_out_left.kd = data_return;
-    }
-	
-	// PID_out_right
-	else if (data_buffer[0] == 'R' && data_buffer[1] == 'P') 
-	{
-        PID_out_right.kp = data_return;
-    }
-	else if (data_buffer[0] == 'R' && data_buffer[1] == 'I') 
-	{
-        PID_out_right.ki = data_return;
-    }
-	else if (data_buffer[0] == 'R' && data_buffer[1] == 'D') 
-	{
-        PID_out_right.kd = data_return;
-    }
-	
+		// PID_adc
+		if 		(data_buffer[0] == 'A' && data_buffer[1] == 'P') 
+		{
+			PID_adc.kp = data_return;
+		}
+		else if (data_buffer[0] == 'A' && data_buffer[1] == 'I') 
+		{
+			PID_adc.ki = data_return;
+		}
+		else if (data_buffer[0] == 'A' && data_buffer[1] == 'D') 
+		{
+			PID_adc.kd = data_return;
+		}
+		
+		// PID_out_left
+		else if (data_buffer[0] == 'L' && data_buffer[1] == 'P') 
+		{
+			PID_out_left.kp = data_return;
+		}
+		else if (data_buffer[0] == 'L' && data_buffer[1] == 'I') 
+		{
+			PID_out_left.ki = data_return;
+		}
+		else if (data_buffer[0] == 'L' && data_buffer[1] == 'D') 
+		{
+			PID_out_left.kd = data_return;
+		}
+		
+		// PID_out_right
+		else if (data_buffer[0] == 'R' && data_buffer[1] == 'P') 
+		{
+			PID_out_right.kp = data_return;
+		}
+		else if (data_buffer[0] == 'R' && data_buffer[1] == 'I') 
+		{
+			PID_out_right.ki = data_return;
+		}
+		else if (data_buffer[0] == 'R' && data_buffer[1] == 'D') 
+		{
+			PID_out_right.kd = data_return;
+		}
+		
+		// 显示三组PID参数
+		printf("ADC:%ld,%ld,%ld\nL:%ld,%ld,%ld\nR:%ld,%ld,%ld\n",\
+		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
+		PID_out_left.kp, 	PID_out_left.ki, 	PID_out_left.kd,\
+		PID_out_right.kp, 	PID_out_right.ki, 	PID_out_right.kd);
+		
+		pid_changed = 0;
+	}
+
 	memset(data_buffer, 0, 32);
-	
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      获取buffer里的数据，并调用PID_Adjust()。放入主循环中实现实时调参
+//  @param      NULL
+//  @return     void					
+//  @since      v1.0
+//  Sample usage:	
+//  @note       
+//-------------------------------------------------------------------------------------------------------------------
+void wireless_PID(void)
+{
+	uint8 i = 0;
+	if(COM4.RX_TimeOut > 0)		//超时计数
+		{
+			if(--COM4.RX_TimeOut == 0)
+			{
+				if(COM4.RX_Cnt > 0)
+				{
+					for(i=0; i<COM4.RX_Cnt; i++)	
+					{
+						data_buffer[i] = RX4_Buffer[i];		//收到的数据存放到data_buffer数组中
+						//TX4_write2buff(RX4_Buffer[i]);	//收到的数据原样返回
+					}
+				}
+				COM4.RX_Cnt = 0;
+				PID_Adjust();
+				
+			}
+		}
 }

@@ -29,8 +29,8 @@
 #ifndef __WIRELESS_H__
 #define __WIRELESS_H__
 
-
 #include "config.h"
+#include "uart.h"
 
 #define WIRELESS_UART        		UART_4         //无线转串口模块 所使用到的串口     
 #define WIRELESS_UART_TX_PIN    	UART4_TX_P03
@@ -42,29 +42,12 @@
 #define WIRELESS_RTS_PIN 	P01 			//定义流控位引脚  指示当前模块是否可以接受数据  0可以继续接收  1不可以继续接收
 //#define WIRELESS_CMD_PIN 	P05 			//定义命令引脚
 
-#define WIRELESS_BUFFER_SIZE       64
-#define WIRELESS_TIMEOUT_COUNT     500
-
-typedef enum //无线模块
-{
-    NO_WIRELESS_MODE = 0,   //没有无线模块
-    WIRELESS_SI24R1 = 1,    //无线转串口
-    WIRELESS_CH9141 = 2,    //蓝牙转串口
-    WIRELESS_CH573 = 3      //CH573模块
-}WIRELESS_TYPE_enum;
-
-extern WIRELESS_TYPE_enum wireless_type;
-
 extern uint8 data_buffer[32];
 extern uint8 pid_changed;
 
 void wireless_uart_init(void);
-void wireless_uart_callback(void);
-
-uint32 wireless_uart_send_buff(uint8 *buff, uint32 len);
-uint32 wireless_uart_read_buff(uint8 *buff, uint32 len);
 
 long get_data(void);
 void PID_Adjust(void);
-
+void wireless_PID(void);
 #endif 
