@@ -6,6 +6,7 @@
 #include "screen.h"
 #include "gyroscope.h"
 #include "iic.h"
+#include "exti.h"
 
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
@@ -16,6 +17,7 @@ int main(void)
 	/******************************************************************/
 	ceventInit();
 	ceventPost(0);
+
 //	Screen_Init();
 	wireless_uart_init();
 	
@@ -36,6 +38,7 @@ int main(void)
 
 	//≥ı ºªØΩ· ¯
 	/******************************************************************/
+
 	while (1)
 	{
 		delay_ms(10);

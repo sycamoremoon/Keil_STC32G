@@ -9,7 +9,7 @@
 #define MAX_BIAS          100           //标准化后表示电压大小的参数最大值
 #define MIN_BIAS          (-100)        //标准化后表示电压大小的最小值
 
-#define STANDERD            (1200)    //中间电感采集的触发转弯电压
+#define STANDERD            (1500)    //中间电感采集的触发转弯电压
                                   
 #define REF_VOLTAGE         (3.3)         //参考电压
 #define CAPTURE_LIMIT       (4095.0)

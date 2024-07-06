@@ -87,10 +87,9 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	int32 answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
 	int32 strai=453000;
-	int32 turn =968411L;
-
-	if( (*(Data_Array+1)>STANDERD || *(Data_Array+2)>STANDERD) && (*(Data_Array)<1000 || *(Data_Array+3)<1000))
-
+	int32 turn =968411;
+	
+	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
 	{
 		
 		if(*(Data_Array+1)>*(Data_Array+2))

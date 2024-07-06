@@ -11,7 +11,7 @@
 /*---------------------------------------------------------------------*/
 
 #include	"STC32G_Exti.h"
-
+#include 	"control.h"
 //========================================================================
 //                               本地变量声明
 //========================================================================
@@ -28,8 +28,7 @@ u8 WakeUpSource;
 void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	char * num = 3;
-	cpost(turn_on,num,0,0,0);
+	Stop_Car();
 }
 
 //========================================================================
@@ -42,10 +41,9 @@ void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 void INT1_ISR_Handler (void) interrupt INT1_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	char * num =  3;
-	cpost(turn_off,num,0,0,0); 
-	
-
+//	TargetSpeed = 4000;
+//	memset((void*)&Left_Speed_State,0,sizeof(PID_State));
+//	memset((void*)&Right_Speed_State,0,sizeof(PID_State));
 }
 
 //========================================================================

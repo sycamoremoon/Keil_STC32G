@@ -1,18 +1,19 @@
 #include "control.h"
 
-
-
 PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {0,0,0};	// 中环adc的PID参数 20
-PID_Calibration PID_out_left 	= {20,0,25};	// 外环左速度的PID参数
-PID_Calibration PID_out_right 	= {20,0,25};	// 外环右速度的PID参数
+
+PID_Calibration PID_adc 		= {-3800,0,-600};	// 中环adc的PID参数 20
+PID_Calibration PID_out_left 	= {270,110,44};	// 外环左速度的PID参数hong{290,195,57};
+PID_Calibration PID_out_right 	= {270,110,44};	// 外环右速度的PID参数lv  {290,195,57};
+
 //P: 32max
 PID_State accy_state		= {0};				        //accy状态参数
 PID_State adc_state 		= {0};				        //adc状态参数
 PID_State Left_Speed_State 	= {0};				//左电机速度状态参数
 PID_State Right_Speed_State = {0};				//右电机速度状态参数
 
-int TargetSpeed = 10000;
+
+long TargetSpeed = 2600;
 
 /// @brief 通过PID算法调整电机速度达到目标速度
 /// @param Left_Speed 参数给出左电机的目标速度
@@ -94,7 +95,19 @@ void Set_Motors(long left, long right)
 
 void Stop_Car(void)		// 小车停止
 {
-	TargetSpeed = 0;
+	static flag = 0;
+	if(flag == 0){
+		flag = 1;
+		TargetSpeed = 0;
+		memset((void*)&Left_Speed_State,0,sizeof(PID_State));
+		memset((void*)&Right_Speed_State,0,sizeof(PID_State));
+		PID_out_right.kp = 225;
+		PID_out_right.ki = 180;
+		PID_out_right.kd = 25;
+		PID_out_left.kp = 220;
+		PID_out_left.ki = 180;
+		PID_out_left.kd = 25;
+	}
 }
 
 
