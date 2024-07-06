@@ -47,9 +47,14 @@ int main(void)
 		Screen_ShowInt(80,16,BLACK,WHITE,Get_DMA_ADC_Result(1));
 		Screen_ShowInt(80,32,BLACK,WHITE,Get_DMA_ADC_Result(2));
 		Screen_ShowInt(80,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
-		Screen_ShowInt(80,64,BLACK,WHITE,Get_DMA_ADC_Result(0)-Get_DMA_ADC_Result(3));
+//		printf("F: %d,",Get_DMA_ADC_Result(0));
+//		printf("%d,",Get_DMA_ADC_Result(1));
+//		printf("%d,",Get_DMA_ADC_Result(2));
+//		printf("%d,",Get_DMA_ADC_Result(3));
+//		delay_ms(8);
+		//Screen_ShowInt(80,64,BLACK,WHITE,Get_DMA_ADC_Result(0)-Get_DMA_ADC_Result(3));
 //		Sample_All_Chanel();
-		Screen_ShowInt(80,80,BLACK,WHITE,Get_Regularized_Signal_Data(All_Signal_Data));
+//		printf("%d\n",Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("F: %d,%d,%d,%d,%d\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
 
 	}

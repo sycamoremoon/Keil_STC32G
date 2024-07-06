@@ -61,7 +61,7 @@ void Set_Lmotor_Speed(long speed)
 	else if (speed > SAFESPEED)
         speed = SAFESPEED;
 	
-    if (abs((int)speed) < 100)				
+    if (abs((int)speed) < 150)				
 		speed = 0;
 	
 	if(speed >= 0)
@@ -98,7 +98,7 @@ void Set_Rmotor_Speed(long speed)
 	else if (speed > SAFESPEED)
         speed = SAFESPEED;
 	
-    if (abs((int)speed) < 100)				
+    if (abs((int)speed) < 150)				
 		speed = 0;
 	
 	if(speed >= 0)
