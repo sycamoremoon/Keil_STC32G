@@ -1,13 +1,12 @@
 #include "signal_acq.h"
 #define BUFFERLENGTH 10
-#define WEIGHTSUM 	55
+#define WEIGHTSUM 	70
 
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
 uint16 ADC_DataBuffer[CHANNEL_NUM][BUFFERLENGTH] = {0};
 static uint16 ADC_counter[CHANNEL_NUM] = {0};
 uint16 All_Signal_Data[CHANNEL_NUM] = {0};
-uint16 Weight[BUFFERLENGTH] = {1,2,3,4,5,6,7,8,9,10};
-int filled = 0;
+uint16 Weight[BUFFERLENGTH] = {1,1,2,2,3,3,4,4,10,40};
 
 void Stop_Car();
 
@@ -56,7 +55,7 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 	uint32 ADC_Value_Sum = 0;
 	uint16 * ADC_Data;
 	uint16 adc;
-	uint8 j;
+	uint8 j,cnt;
 	ADC_Data = (uint16 *) &DmaAdBuffer[channel][2*CONVERT_TIMES+2];		//指向了ADC采集数据的平均值
 	if(RESFMT)		//转换结果右对齐。 
 	{
@@ -73,14 +72,14 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 		DMA_ADC_STA &= ~0x01;	//清标志位
 		DMA_ADC_TRIG();		//触发启动转换
 	}
-	//return adc;
-	
-	ADC_DataBuffer[channel][ADC_counter[channel]] = adc;
+	//return adc;		// select if use filter
+	cnt = ADC_counter[channel];
+	ADC_DataBuffer[channel][cnt] = adc;
 	ADC_counter[channel] = ADC_counter[channel]+1;
 	if(ADC_counter[channel] == BUFFERLENGTH) ADC_counter[channel] = 0;
-	for(j = 0; j < 10; j++)
+	for(j = 0; j < 10; j++,cnt++)
     {
-        ADC_Value_Sum += ADC_DataBuffer[channel][j] * Weight[j];
+        ADC_Value_Sum += ADC_DataBuffer[channel][cnt%10] * Weight[j];
     }
 	
 	ADC_Value_Sum = ADC_Value_Sum / (WEIGHTSUM);
@@ -94,8 +93,6 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 void Sample_All_Chanel()
 {
 	uint8 channel;
-	static int count = 0;
-	if (count++ > 10) filled = 1;
 	for(channel = 0 ; channel < CHANNEL_NUM ; channel++)
 	{
 		All_Signal_Data[channel] = Get_DMA_ADC_Result(channel);
@@ -109,6 +106,8 @@ void Sample_All_Chanel()
 
 int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 {
+	static int32 previous = 0;
+	static int count = 0;
 	int32 answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
 	int32 strai=453000;
@@ -155,11 +154,22 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}
 	}
 		//冲出赛道停车
-	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 1000 && filled == 1)
+	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 1000){
 		Stop_Car();
-
-	if(abs((int)answer) > 120) answer = 0;
-	if(abs((int)answer) < 20) answer = 0;
+	}
+	
+	if (abs((int)(answer - previous)) > 30){
+		answer = previous;
+		if(count++ > 20){
+			count = 0;
+			previous = answer;
+		}
+	}else{
+		previous = answer;
+	}
+	
+	if(abs((int)answer) > 220) answer = 0;
+	if(abs((int)answer) < 3) answer = 0;
 	
 	return answer;
 }

@@ -43,7 +43,7 @@ int main(void)
 	{	
 		
 		wireless_PID();
-		delay_ms(20);
+		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_Show_String(0, 0,BLACK, WHITE, "HELLO");
 //		Screen_ShowInt(0,0,BLACK,WHITE,12345);
@@ -59,8 +59,8 @@ int main(void)
 //		printf("%d,",Get_DMA_ADC_Result(2));
 //		printf("%d,",Get_DMA_ADC_Result(3));
 //		delay_ms(8);
-		//Screen_ShowInt(80,64,BLACK,WHITE,Get_DMA_ADC_Result(0)-Get_DMA_ADC_Result(3));
 //		Sample_All_Chanel();
+//		Screen_ShowInt(0,64,BLACK,WHITE,Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("%d\n",Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("F: %d,%d,%d,%d,%d\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
 	}

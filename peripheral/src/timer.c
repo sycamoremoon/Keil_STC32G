@@ -244,6 +244,6 @@ void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 //定时器初始化
 void timer_init(void)
 {
-	pit_timer_ms(TIM_0,10);
+	pit_timer_ms(TIM_0,5);
 	// pit_timer_ms(TIM_1,10);
 }

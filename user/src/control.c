@@ -1,7 +1,7 @@
 #include "control.h"
 
 PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {-1300,0,-100};	// 中环adc的PID参数 20
+PID_Calibration PID_adc 		= {-1700,0,0};	// 中环adc的PID参数 20
 PID_Calibration PID_out_left 	= {270,110,44};	// 外环左速度的PID参数hong{290,195,57};
 PID_Calibration PID_out_right 	= {270,110,44};	// 外环右速度的PID参数lv  {290,195,57};
 
@@ -34,7 +34,7 @@ void Speed_Ctrl_mid(long adc_target)
 {
 	//获取真实adc
 	adc_state.actual = (long) Get_Regularized_Signal_Data(All_Signal_Data);
-	printf("adc_state.actual:%ld\n",adc_state.actual);
+//	printf("adc_state.actual:%ld\n",adc_state.actual);
 	//adc_state.actual = 0;
 	//获取目标adc
 	adc_state.target = adc_target;

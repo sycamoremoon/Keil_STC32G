@@ -36,7 +36,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	
 	if(TargetSpeed != 0){
 	output_left = output_left - pid2_output - pid1_output;
-	output_right = output_right + pid2_output + pid1_output; 
+	output_right = output_left + pid2_output + pid1_output; 
 	}
 	Set_Motors(output_left,output_right);		// 更新电机PWM
 	cnt++;
@@ -59,7 +59,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 //		
 //	}
 
-	Get_angle();
+//	Get_angle();
 	
 	if(cnt % 1 == 0)	// 中环pid adc处理，每一小段的偏移，PID
 	{

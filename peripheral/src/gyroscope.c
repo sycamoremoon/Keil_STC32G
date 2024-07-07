@@ -1,7 +1,7 @@
 #include "gyroscope.h"
 #include "timer.h"
 
-#define dt 0.01
+#define dt 0.005
 #define FILTER_NUM 100	// 平均滤波算法的数据量
 
 int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
