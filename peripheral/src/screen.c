@@ -17,8 +17,8 @@ void HardWare_SPI_Config(void)
 	SPI_InitStructure.SPI_CPHA      = SPI_CPHA_1Edge;		//数据边沿   SPI_CPHA_1Edge,第一个时钟边沿采样，第二个边沿移位
 	SPI_InitStructure.SPI_Speed     = SPI_Speed_4;			//SPI速度    SPI_Speed_4, SPI_Speed_8, SPI_Speed_16, SPI_Speed_2
 	SPI_Init(&SPI_InitStructure);
-	NVIC_SPI_Init(DISABLE,Priority_3);		//中断配置，是否使用中断
-	
+	NVIC_SPI_Init(DISABLE,Priority_0);		//中断配置，是否使用中断
+	 
 	SPI_SW(SPI_P54_P40_P41_P43);	//SPI_P54_P13_P14_P15,SPI_P22_P23_P24_P25,SPI_P54_P40_P41_P43,SPI_P35_P34_P33_P32
     SPI_SS_2 = 1;                   //SS置高电平，取消从机的使能
 }
