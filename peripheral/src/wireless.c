@@ -30,7 +30,7 @@
 
 uint8 data_buffer[32] = {0};		// 数据存储在data_buffer中
 uint8 pid_changed = 0;
-
+extern int turn_ratio, vertical_value;
 WIRELESS_TYPE_enum wireless_type = WIRELESS_SI24R1;
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -176,13 +176,18 @@ void PID_Adjust(void)
 		else if (data_buffer[0] == 'V' && data_buffer[1] == 'E') 
 		{
 			TargetSpeed = data_return;
+		}else if (data_buffer[0] == 'T' && data_buffer[1] == 'R') 
+		{
+			turn_ratio = data_return;
+		}else if (data_buffer[0] == 'V' && data_buffer[1] == 'T') 
+		{
+			vertical_value = data_return;
 		}
 		
 		// 显示三组PID参数
-		printf("ADC:%ld,%ld,%ld\nL:%ld,%ld,%ld\nR:%ld,%ld,%ld\n%ld\n\n",\
+		printf("ADC:%ld,%ld,%ld\nVer:%d\Turn:%d\nSpeed:%ld\n",\
 		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
-		PID_out_left.kp, 	PID_out_left.ki, 	PID_out_left.kd,\
-		PID_out_right.kp, 	PID_out_right.ki, 	PID_out_right.kd,\
+		turn_ratio,			vertical_value,\
 		TargetSpeed);
 		
 		pid_changed = 0;
