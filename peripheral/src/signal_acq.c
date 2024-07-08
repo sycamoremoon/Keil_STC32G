@@ -53,6 +53,7 @@ void Signal_Acq_Config(unsigned char GPIO_PX, unsigned int GPIO_pin)
 uint16 Get_DMA_ADC_Result(uint8 channel)
 {
 	uint32 ADC_Value_Sum = 0;
+	uint32 Average_value[CHANNEL_NUM] = {0};
 	uint16 * ADC_Data;
 	uint16 adc;
 	uint8 j,cnt;
@@ -77,12 +78,22 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 	ADC_DataBuffer[channel][cnt] = adc;
 	ADC_counter[channel] = ADC_counter[channel]+1;
 	if(ADC_counter[channel] == BUFFERLENGTH) ADC_counter[channel] = 0;
+	// zero them
+	Average_value[channel] = 0;
+	ADC_Value_Sum = 0;
+	
 	for(j = 0; j < 10; j++,cnt++)
     {
-        ADC_Value_Sum += ADC_DataBuffer[channel][cnt%10] * Weight[j];
+		if(abs((int)(ADC_DataBuffer[channel][cnt%10] - (Average_value[channel] / (j+1))) > 300)){
+			ADC_Value_Sum += ADC_DataBuffer[channel][cnt%10] * Weight[j];
+			Average_value[channel] += ADC_DataBuffer[channel][cnt%10];
+		}else{
+			ADC_Value_Sum += Average_value[channel] / (j+1) * Weight[j];
+		}
     }
 	
 	ADC_Value_Sum = ADC_Value_Sum / (WEIGHTSUM);
+
 	if(abs((int)ADC_Value_Sum) < 100) ADC_Value_Sum = 0;
 	
 	return ADC_Value_Sum;
@@ -113,9 +124,10 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	int32 strai=453000;
 	int32 turn =968411;
 	
-	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
+//	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
+	if(((*(Data_Array+1)>=*(Data_Array+0)) || (*(Data_Array+2)>=*(Data_Array+3))) && ((*(Data_Array+1)>STANDERD) || (*(Data_Array+2)>STANDERD)))
 	{
-//		
+		P34 = 1;
 //		if(*(Data_Array+1)>*(Data_Array+2))
 //		{
 //			answer = 100;		// 转直角弯时写死100，根据不同的速度需要调整该值
@@ -129,17 +141,18 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		{
 			diff2 = *(Data_Array+1)-*(Data_Array+2);
 			sum2 = *(Data_Array+1)+*(Data_Array+2);
-			answer = +(diff2*turn)/(sum2*sum2*3);
+			answer = +(diff2*turn)/(sum2*sum2*2);
 		}
 		else
 		{
 			diff2 = *(Data_Array+2)-*(Data_Array+1);
 			sum2 = *(Data_Array+2)+*(Data_Array+1);
-			answer = -(diff2*turn)/(sum2*sum2*3);
+			answer = -(diff2*turn)/(sum2*sum2*2);
 		}
 	}
 	else
 	{
+		P34 = 0;
 		if(*(Data_Array)>*(Data_Array+3))
 		{
 			diff1 = *Data_Array-*(Data_Array+3);
@@ -158,12 +171,14 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		Stop_Car();
 	}
 	
-	if (abs((int)(answer - previous)) > 30){
-		answer = previous;
+	if (abs((int)(answer - previous)) > 15){
 		if(count++ > 20){
 			count = 0;
 			previous = answer;
+		}else{
+			answer = previous;
 		}
+			
 	}else{
 		previous = answer;
 	}
