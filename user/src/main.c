@@ -35,7 +35,7 @@ int main(void)
 
 	/******************************************************************/
 
-	P3_MODE_OUT_PP(GPIO_Pin_4);
+	P3_MODE_OUT_PP(GPIO_Pin_4);	//蜂鸣器
 	//初始化结束
 	/******************************************************************/
 	//主循环
@@ -49,12 +49,12 @@ int main(void)
 //		Screen_ShowInt(0,16,BLACK,WHITE,Get_DMA_ADC_Result(1));
 //		Screen_ShowInt(0,32,BLACK,WHITE,Get_DMA_ADC_Result(2));
 //		Screen_ShowInt(0,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
-//		printf("%d,",Get_DMA_ADC_Result(0));
-//		printf("%d,",Get_DMA_ADC_Result(1));
-//		printf("%d,",Get_DMA_ADC_Result(2));
-//		printf("%d\n",Get_DMA_ADC_Result(3));
-//		delay_ms(8);
 //		Sample_All_Chanel();
+//		
+//		printf("ADC:%d,%d,%d,%d,%d\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
+
+//		delay_ms(8);
+
 //		Screen_ShowInt(0,64,BLACK,WHITE,Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("%d\n",Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("F: %d,%d,%d,%d,%d\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
