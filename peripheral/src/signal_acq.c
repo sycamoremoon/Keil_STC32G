@@ -7,6 +7,8 @@ uint16 ADC_DataBuffer[CHANNEL_NUM][BUFFERLENGTH] = {0};
 static uint16 ADC_counter[CHANNEL_NUM] = {0};
 uint16 All_Signal_Data[CHANNEL_NUM] = {0};
 uint16 Weight[BUFFERLENGTH] = {1,1,2,2,3,3,4,4,10,40};
+int turn_ratio=0;
+int vertical_value=0;
 
 void Stop_Car();
 
@@ -84,7 +86,7 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 	
 	for(j = 0; j < 10; j++,cnt++)
     {
-		if(abs((int)(ADC_DataBuffer[channel][cnt%10] - (Average_value[channel] / (j+1))) > 300)){
+		if(abs((int)(ADC_DataBuffer[channel][cnt%10] - (Average_value[channel] / (j+1)))) > 200){
 			ADC_Value_Sum += ADC_DataBuffer[channel][cnt%10] * Weight[j];
 			Average_value[channel] += ADC_DataBuffer[channel][cnt%10];
 		}else{
@@ -94,7 +96,7 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 	
 	ADC_Value_Sum = ADC_Value_Sum / (WEIGHTSUM);
 
-	if(abs((int)ADC_Value_Sum) < 100) ADC_Value_Sum = 0;
+	if(abs((int)ADC_Value_Sum) < 150) ADC_Value_Sum = 0;
 	
 	return ADC_Value_Sum;
 }
@@ -124,47 +126,28 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	int32 strai=453000;
 	int32 turn =968411;
 	
-//	if(*(Data_Array+1)>STANDERD||*(Data_Array+2)>STANDERD)
 	if(((*(Data_Array+1)>=*(Data_Array+0)) || (*(Data_Array+2)>=*(Data_Array+3))) && ((*(Data_Array+1)>STANDERD) || (*(Data_Array+2)>STANDERD)))
 	{
 		P34 = 1;
-//		if(*(Data_Array+1)>*(Data_Array+2))
-//		{
-//			answer = 100;		// 转直角弯时写死100，根据不同的速度需要调整该值
-//		}
-//		else 
-//			answer = -100;
-//		
-//		
-//		beeing();
 		if(*(Data_Array+1)>*(Data_Array+2))
 		{
-			diff2 = *(Data_Array+1)-*(Data_Array+2);
-			sum2 = *(Data_Array+1)+*(Data_Array+2);
-			answer = +(diff2*turn)/(sum2*sum2*2);
+			answer = vertical_value;		// 转直角弯时写死100，根据不同的速度需要调整该值
 		}
-		else
-		{
-			diff2 = *(Data_Array+2)-*(Data_Array+1);
-			sum2 = *(Data_Array+2)+*(Data_Array+1);
-			answer = -(diff2*turn)/(sum2*sum2*2);
-		}
+		else 
+			answer = -vertical_value;
 	}
 	else
 	{
 		P34 = 0;
-		if(*(Data_Array)>*(Data_Array+3))
-		{
-			diff1 = *Data_Array-*(Data_Array+3);
-			sum1 = *Data_Array+*(Data_Array+3);
-			answer = +(diff1*strai)/(sum1*sum1);
-		}
-		else
-		{
-			diff1 = *(Data_Array+3)-*(Data_Array);
-			sum1 = *Data_Array+*(Data_Array+3);
-			answer = -(diff1*strai)/(sum1*sum1);
-		}
+		diff2 = *(Data_Array+1)-*(Data_Array+2);
+		sum2 = *(Data_Array+1)+*(Data_Array+2);
+		answer = (diff2*turn)/(sum2*sum2);
+		answer = answer * turn_ratio / 100;
+
+		diff1 = *Data_Array-*(Data_Array+3);
+		sum1 = *Data_Array+*(Data_Array+3);
+		answer += (diff1*strai)/(sum1*sum1);
+		
 	}
 		//冲出赛道停车
 	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 1000){
@@ -183,7 +166,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		previous = answer;
 	}
 	
-	if(abs((int)answer) > 220) answer = 0;
+	if(abs((int)answer) > 400) answer = 400;
 	if(abs((int)answer) < 3) answer = 0;
 	
 	return answer;
