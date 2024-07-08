@@ -1,7 +1,7 @@
 #include "control.h"
 
 PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {-1700,0,0};	// 中环adc的PID参数 20
+PID_Calibration PID_adc 		= {-2850,-6,-20};	// 中环adc的PID参数 20
 PID_Calibration PID_out_left 	= {270,110,44};	// 外环左速度的PID参数hong{290,195,57};
 PID_Calibration PID_out_right 	= {270,110,44};	// 外环右速度的PID参数lv  {290,195,57};
 
@@ -11,7 +11,7 @@ PID_State adc_state 		= {0};				        //adc状态参数
 PID_State Left_Speed_State 	= {0};				//左电机速度状态参数
 PID_State Right_Speed_State = {0};				//右电机速度状态参数
 
-long TargetSpeed = 1000;
+long TargetSpeed = 0;
 
 /// @brief 通过PID算法调整电机速度达到目标速度
 /// @param Left_Speed 参数给出左电机的目标速度

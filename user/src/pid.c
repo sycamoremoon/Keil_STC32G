@@ -22,7 +22,12 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
     // calculate difference between desired and actual values (the error)
     error = state->target - state->actual;
     // calculate and update integral
-    state->integral += error;
+	
+	state->integral += error;
+	if (((int)state->integral) >= 2000)
+		state->integral = 2000;
+	if (((int)state->integral) <= -2000)
+		state->integral = -2000;
     // calculate derivative
     derivative = (error - state->previous_error);
     // calculate output value according to algorithm
@@ -53,7 +58,7 @@ PID_State* pid_increase(PID_Calibration * calibration, PID_State * state)
     state->output = (
 		state->output
         + (calibration->kp * (error - state -> previous_error) / 100) 
-		+ (calibration->ki * error * 10 / 100000) 
+		+ (calibration->ki * error * 10 / 100000) 		// 30%
 		+ (calibration->kd * derivative / 10)
 		);
 	

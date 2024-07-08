@@ -75,7 +75,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 
 	}
 	
-	if(cnt % 1 == 0)	// 外环pid 速度环，用PI
+	if(cnt % 5 == 0)	// 外环pid 速度环，用PI
 	{
 		// PID输入：中环的两个输出数据
 		// error = 中环的输出 - 实际速度
