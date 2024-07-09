@@ -34,7 +34,7 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
     state->output = (
         (calibration->kp * error / 100) 
 		+ (calibration->ki * state->integral * 10 / 10000) 
-		+ (calibration->kd * derivative / 10)
+		+ (calibration->kd * derivative / 100)
 		);
     // update state.previous_error to the error value calculated on this iteration
     state->previous_error = error;

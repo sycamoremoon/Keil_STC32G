@@ -1,4 +1,6 @@
 #include "signal_acq.h"
+
+extern long TargetSpeed;	//目标速度，PID控制
 #define BUFFERLENGTH 10
 #define WEIGHTSUM 	70
 
@@ -9,6 +11,7 @@ uint16 All_Signal_Data[CHANNEL_NUM] = {0};
 uint16 Weight[BUFFERLENGTH] = {1,1,2,2,3,3,4,4,10,40};
 int turn_ratio=0;
 int vertical_value=0;
+int E_T = 0;
 
 void Stop_Car();
 
@@ -84,19 +87,19 @@ uint16 Get_DMA_ADC_Result(uint8 channel)
 	Average_value[channel] = 0;
 	ADC_Value_Sum = 0;
 	
-	for(j = 0; j < 10; j++,cnt++)
+	for(j = 0; j < BUFFERLENGTH; j++,cnt++)
     {
-		if(abs((int)(ADC_DataBuffer[channel][cnt%10] - (Average_value[channel] / (j+1)))) > 200){
-			ADC_Value_Sum += ADC_DataBuffer[channel][cnt%10] * Weight[j];
-			Average_value[channel] += ADC_DataBuffer[channel][cnt%10];
+		if(abs((int)(ADC_DataBuffer[channel][cnt%BUFFERLENGTH] - (Average_value[channel] / (j+1)))) > 70){
+			ADC_Value_Sum += ADC_DataBuffer[channel][cnt%BUFFERLENGTH] * Weight[j];
+			Average_value[channel] += ADC_DataBuffer[channel][cnt%BUFFERLENGTH];
 		}else{
 			ADC_Value_Sum += Average_value[channel] / (j+1) * Weight[j];
 		}
     }
 	
 	ADC_Value_Sum = ADC_Value_Sum / (WEIGHTSUM);
-
-	if(abs((int)ADC_Value_Sum) < 150) ADC_Value_Sum = 0;
+	
+	if(abs((int)ADC_Value_Sum) < 200) ADC_Value_Sum = 0;
 	
 	return ADC_Value_Sum;
 }
@@ -121,41 +124,62 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 {
 	static int32 previous = 0;
 	static int count = 0;
+	static int enter_time = 0;
+	long targetspeed_backup;
+	uint8 angle90_flag, cross_flag;
 	int32 answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
 	int32 strai=453000;
 	int32 turn =968411;
 	
-	if(((*(Data_Array+1)>=*(Data_Array+0)) || (*(Data_Array+2)>=*(Data_Array+3))) && ((*(Data_Array+1)>STANDERD) || (*(Data_Array+2)>STANDERD)))
-	{
-		P34 = 1;
-		if(*(Data_Array+1)>*(Data_Array+2))
-		{
-			answer = vertical_value;		// 转直角弯时写死100，根据不同的速度需要调整该值
-		}
-		else 
-			answer = -vertical_value;
-	}
-	else
+//	targetspeed_backup = TargetSpeed;
+////	if(((*(Data_Array+1)>=*(Data_Array+0)) || (*(Data_Array+2)>=*(Data_Array+3))) && ((*(Data_Array+1)>STANDERD) || (*(Data_Array+2)>STANDERD)))
+//	if((Data_Array[0] < 900 && Data_Array[3] < 900) && (Data_Array[1] < 1300 && Data_Array[2] < 1300) && (Data_Array[1] > 800 || Data_Array[2] > 800) || enter_time > 0)
+//		angle90_flag = 1;
+//	else
+//		angle90_flag = 0;
+//	
+//	if(abs((int)(Data_Array[1] - Data_Array[2])) < 200)		// 十字路口，四个通道的差值很小
+//		cross_flag = 1;
+//	else
+//		cross_flag = 0;
+//	
+//	if(angle90_flag && !cross_flag)	//判断进入直角的条件
+//	{
+//		P34 = 1;
+//		if(enter_time == 0) enter_time = E_T;
+//		else enter_time--;
+//		TargetSpeed = targetspeed_backup;
+//		
+//		if(*(Data_Array+1)>*(Data_Array+2))
+//		{
+//			answer = vertical_value;		// 转直角弯时写死100，根据不同的速度需要调整该值
+//		}
+//		else 
+//			answer = -vertical_value;
+//	}
+//	else
 	{
 		P34 = 0;
-		diff2 = *(Data_Array+1)-*(Data_Array+2);
-		sum2 = *(Data_Array+1)+*(Data_Array+2);
-		answer = (diff2*turn)/(sum2*sum2);
-		answer = answer * turn_ratio / 100;
-
+		if(abs((int)(Data_Array[1] - Data_Array[2])) > 550){
+			diff2 = *(Data_Array+1)-*(Data_Array+2);
+			sum2 = *(Data_Array+1)+*(Data_Array+2);
+			answer = (diff2*turn)/(sum2*sum2);
+			answer = answer * turn_ratio / 100;
+		}
+		
 		diff1 = *Data_Array-*(Data_Array+3);
 		sum1 = *Data_Array+*(Data_Array+3);
 		answer += (diff1*strai)/(sum1*sum1);
 		
-	}
 		//冲出赛道停车
-	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 1000){
-		Stop_Car();
+		if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 100){
+			Stop_Car();
+		}
 	}
 	
 	if (abs((int)(answer - previous)) > 15){
-		if(count++ > 20){
+		if(count++ > 10){
 			count = 0;
 			previous = answer;
 		}else{
@@ -166,7 +190,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		previous = answer;
 	}
 	
-	if(abs((int)answer) > 400) answer = 400;
+	if(abs((int)answer) > 500) answer = 500;
 	if(abs((int)answer) < 3) answer = 0;
 	
 	return answer;

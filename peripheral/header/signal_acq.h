@@ -14,6 +14,9 @@
 #define CAPTURE_LIMIT       (4095.0)
 
 extern uint16 All_Signal_Data[CHANNEL_NUM];
+extern int turn_ratio;
+extern int vertical_value;
+extern int E_T;
 
 int32 Get_Regularized_Signal_Data(const uint16 * Data_Array);
 void Sample_All_Chanel();
