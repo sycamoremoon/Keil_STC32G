@@ -24,10 +24,10 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
     // calculate and update integral
 	
 	state->integral += error;
-	if (((int)state->integral) >= 2000)
-		state->integral = 2000;
-	if (((int)state->integral) <= -2000)
-		state->integral = -2000;
+//	if (((int)state->integral) >= 2000)
+//		state->integral = 2000;
+//	if (((int)state->integral) <= -2000)
+//		state->integral = -2000;
     // calculate derivative
     derivative = (error - state->previous_error);
     // calculate output value according to algorithm

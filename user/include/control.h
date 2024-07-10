@@ -19,8 +19,9 @@ extern PID_Calibration PID_adc;
 extern PID_Calibration PID_out_left;
 extern PID_Calibration PID_out_right;
 
-extern long TargetSpeed;	//目标速度，PID控制
-
+extern long TargetSpeed;	//目标速度
+extern long targetspeed_backup; 	//备份目标速度
+	
 void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gyro_state);
 void Set_Motors(long left, long right);
 void Speed_Ctrl_in(unsigned int accy_target);

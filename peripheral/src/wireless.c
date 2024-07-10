@@ -27,7 +27,7 @@
  ********************************************************************************************************************/
 #include "wireless.h"
 #include "control.h"
-
+uint8 start_car_signal = 0;
 uint8 data_buffer[32] = {0};		// 数据存储在data_buffer中
 uint8 pid_changed = 0;
 WIRELESS_TYPE_enum wireless_type = WIRELESS_SI24R1;
@@ -174,7 +174,9 @@ void PID_Adjust(void)
 		}
 		else if (data_buffer[0] == 'V' && data_buffer[1] == 'E') 
 		{
-			TargetSpeed = data_return;
+			start_car_signal = 1;
+			targetspeed_backup = TargetSpeed = data_return;
+			adc_state.integral = 0;
 		}else if (data_buffer[0] == 'T' && data_buffer[1] == 'R') 
 		{
 			turn_ratio = data_return;

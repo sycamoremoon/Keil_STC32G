@@ -1,9 +1,9 @@
 #include "control.h"
 
 PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {-2950,0,-20};	// 中环adc的PID参数 20
-PID_Calibration PID_out_left 	= {270,110,44};	// 外环左速度的PID参数hong{290,195,57};
-PID_Calibration PID_out_right 	= {270,110,44};	// 外环右速度的PID参数lv  {290,195,57};
+PID_Calibration PID_adc 		= {-715,-10,-35};	// 中环adc的PID参数 20
+PID_Calibration PID_out_left 	= {450,1300,30};	// 外环左速度的PID参数hong{290,195,57};
+PID_Calibration PID_out_right 	= {450,1300,35};	// 外环右速度的PID参数lv  {290,195,57};
 
 //P: 32max
 PID_State accy_state		= {0};				        //accy状态参数
@@ -12,6 +12,9 @@ PID_State Left_Speed_State 	= {0};				//左电机速度状态参数
 PID_State Right_Speed_State = {0};				//右电机速度状态参数
 
 long TargetSpeed = 0;
+long targetspeed_backup = 0;
+
+extern uint8 start_car_signal;	//发车信号
 
 /// @brief 通过PID算法调整电机速度达到目标速度
 /// @param Left_Speed 参数给出左电机的目标速度
@@ -34,7 +37,7 @@ void Speed_Ctrl_mid(long adc_target)
 {
 	//获取真实adc
 	adc_state.actual = (long) Get_Regularized_Signal_Data(All_Signal_Data);
-//	printf("adc_state.actual:%ld\n",adc_state.actual);
+	printf("adc_state.actual:%ld\n",adc_state.actual);
 	//adc_state.actual = 0;
 	//获取目标adc
 	adc_state.target = adc_target;
@@ -49,6 +52,7 @@ void Speed_Ctrl_out(long Left_Speed,long Right_Speed)
 	//获取真实速度*MAXSPEED/MAXENCODER
 	Left_Speed_State.actual = get_EncoderL();
 	Right_Speed_State.actual = get_EncoderR();
+//	printf("Speed:%ld,%ld\n",Left_Speed_State.actual, Right_Speed_State.actual);
 	
 	//获取目标速度
 	Left_Speed_State.target = Left_Speed * MAXENCODER_L / MAXSPEED;
@@ -94,17 +98,13 @@ void Set_Motors(long left, long right)
 
 void Stop_Car(void)		// 小车停止
 {
-	if(TargetSpeed != 0){
-		TargetSpeed = 0;
+	if(TargetSpeed >= 50){
+		if(TargetSpeed > 0) TargetSpeed = 0;
+		else TargetSpeed = TargetSpeed - 100;
 		memset((void*)&Left_Speed_State,0,sizeof(PID_State));
 		memset((void*)&Right_Speed_State,0,sizeof(PID_State));
-		PID_out_right.kp = 260;
-		PID_out_right.ki = 70;
-		PID_out_right.kd = 50;
-		PID_out_left.kp = 260;
-		PID_out_left.ki = 70;
-		PID_out_left.kd = 50;
-
+	}else{
+		start_car_signal = 0;
 	}
 }
 

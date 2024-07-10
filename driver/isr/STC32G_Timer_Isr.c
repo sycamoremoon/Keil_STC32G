@@ -21,6 +21,7 @@ long pid3_output_left = 0;
 long pid3_output_right = 0;
 long output_left = 0;
 long output_right = 0;
+extern uint8 start_car_signal;	//发车信号
 //========================================================================
 // 函数: Timer0_ISR_Handler
 // 描述: Timer0中断函数.
@@ -34,9 +35,9 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	output_left = pid3_output_left;
 	output_right = pid3_output_right;
 	
-	if(TargetSpeed != 0){
+	if(TargetSpeed > 0 && start_car_signal){
 	output_left = output_left - pid2_output - pid1_output;
-	output_right = output_left + pid2_output + pid1_output; 
+	output_right = output_right + pid2_output + pid1_output; 
 	}
 	Set_Motors(output_left,output_right);		// 更新电机PWM
 	cnt++;
@@ -77,6 +78,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	
 	if(cnt % 5 == 0)	// 外环pid 速度环，用PI
 	{
+		cnt = 0;
 		// PID输入：中环的两个输出数据
 		// error = 中环的输出 - 实际速度
 		// 更新电机PWM = pid(error)
