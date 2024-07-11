@@ -128,7 +128,8 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	static int32 previous = 0;
 	static int count = 0;
 	static int enter_time = 0;
-	uint8 angle90_flag, cross_flag;
+	static uint8 enter_begin = 0, enter_finish = 0, leave_finish = 0, leave_begin = 0, out_island;
+	uint8 angle90_flag, cross_flag, soft_turn_flag;
 	int32 answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
 	int32 strai=453000;
@@ -153,19 +154,45 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 //	}
 //	else
 	{
-
-		
 		angle90_flag = 0;
 		cross_flag = 0;
+		soft_turn_flag = 0;
 		if(abs((int)(Data_Array[1] - Data_Array[2])) > 850) angle90_flag = 1;
 		if((MAXI(Data_Array[1], Data_Array[2])/MINI(Data_Array[1], Data_Array[2]) > 6) && (MINI(Data_Array[1], Data_Array[2]) > 80)) angle90_flag = 1;
-		if(enter_time) angle90_flag = 1;
+		
+		//弯道不使用中间电感
+		if(angle90_flag){
+			if(Data_Array[1] > Data_Array[2]){
+				if(abs((int)(Data_Array[0] - Data_Array[1])) < 520) soft_turn_flag = 1;
+			}
+			else{
+				if(abs((int)(Data_Array[2] - Data_Array[3])) < 520) soft_turn_flag = 1;
+			}
+		}
 		
 		if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] > 5000) cross_flag = 1;
 		
-		if(angle90_flag && !cross_flag){
+//		if(Data_Array[0] > 3500 || Data_Array[1] > 3500){
+//			if(island_flag_enter == 0) island_flag_enter = 1;
+//			else island_flag_leave = 1;
+//		}else{
+//			island_flag_leave = 0;
+//		}
+//		
+//		if(island_flag_enter == 1 && island_flag_leave == 0){
+//			TargetSpeed = targetspeed_backup - 400;
+//			if(Data_Array[1] > Data_Array[2]) answer = 80;
+//			else(Data_Array[1] > Data_Array[2]) answer = -80;
+//		}else if(island_flag_enter == 1 && island_flag_leave == 1){
+//			TargetSpeed = targetspeed_backup;
+//		}
+
+
+		
+		if(enter_time) angle90_flag = 1;
+		if(angle90_flag && !cross_flag && !soft_turn_flag){
 			P34 = 1;
-			if(enter_time == 0) enter_time = E_T;
+			if(enter_time <= 0) enter_time = E_T;
 			else enter_time--;
 			diff2 = *(Data_Array+1)-*(Data_Array+2);
 			sum2 = *(Data_Array+1)+*(Data_Array+2);
@@ -176,12 +203,36 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}
 		
 			
-		if(abs((int)(Data_Array[0] - Data_Array[3])) > 200){
+		if(abs((int)(Data_Array[0] - Data_Array[3])) > 100){
 		diff1 = *Data_Array-*(Data_Array+3);
 		sum1 = *Data_Array+*(Data_Array+3);
-		answer = (diff1*strai)/(sum1*sum1);
+		answer += (diff1*strai)/(sum1*sum1);
+		}
+		// 入环检测
+		if(Data_Array[0] > 3500 && enter_finish == 0){
+			enter_begin = 1;
+		}
+		if(Data_Array[3] > 3500 && leave_finish == 0 && enter_finish == 1){
+			leave_begin = 1;
+		}
+		if(enter_begin){
+			if(Data_Array[1] > Data_Array[2]) answer += 150;
+			else answer += -150;
+			if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_finish == 0){
+				enter_finish = 1;
+				enter_begin = 0;
+			}
+		}
+		if(leave_begin){
+			if(Data_Array[1] > Data_Array[2]) answer += 150;
+			else answer += -150;
+			if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && leave_finish == 0 && enter_finish == 1){
+				leave_finish = 1;
+				leave_begin = 0;
+			}
 		}
 		
+//		if(leave_finish == 1 && enter_finish == 1) enter_finish = leave_finish = 0; //重置环岛标志
 		//冲出赛道停车
 		if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 200){
 			Stop_Car();
@@ -207,17 +258,17 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 //		}
 //    }
 //	
-	if (labs(answer - previous) > 15){
-		if(count++ > 10){
-			count = 0;
-			previous = answer;
-		}else{
-			answer = previous;
-		}
-			
-	}else{
-		previous = answer;
-	}
+//	if (labs(answer - previous) > 15){
+//		if(count++ > 10){
+//			count = 0;
+//			previous = answer;
+//		}else{
+//			answer = previous;
+//		}
+//			
+//	}else{
+//		previous = answer;
+//	}
 
 	if(labs(answer) > 1200) answer > 0 ? answer = 1200 : answer = -1200;
 	if(labs(answer) < 3) answer = 0;

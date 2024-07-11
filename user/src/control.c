@@ -1,7 +1,7 @@
 #include "control.h"
 
 PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {-715,-10,-35};	// 中环adc的PID参数 20
+PID_Calibration PID_adc 		= {-660,-10,-35};	// 中环adc的PID参数 20
 PID_Calibration PID_out_left 	= {450,1300,30};	// 外环左速度的PID参数hong{290,195,57};
 PID_Calibration PID_out_right 	= {450,1300,35};	// 外环右速度的PID参数lv  {290,195,57};
 
@@ -103,6 +103,7 @@ void Stop_Car(void)		// 小车停止
 		else TargetSpeed = TargetSpeed - 100;
 		memset((void*)&Left_Speed_State,0,sizeof(PID_State));
 		memset((void*)&Right_Speed_State,0,sizeof(PID_State));
+		adc_state.integral = 0;
 	}else{
 		start_car_signal = 0;
 	}

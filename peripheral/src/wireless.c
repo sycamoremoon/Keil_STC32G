@@ -175,8 +175,9 @@ void PID_Adjust(void)
 		else if (data_buffer[0] == 'V' && data_buffer[1] == 'E') 
 		{
 			start_car_signal = 1;
-			targetspeed_backup = TargetSpeed = data_return;
 			adc_state.integral = 0;
+			if(data_return == 0) Stop_Car();
+			targetspeed_backup = TargetSpeed = data_return;
 		}else if (data_buffer[0] == 'T' && data_buffer[1] == 'R') 
 		{
 			turn_ratio = data_return;
