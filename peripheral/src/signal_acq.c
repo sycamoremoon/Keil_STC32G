@@ -134,6 +134,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	int32 diff1,diff2 ,sum1,sum2;
 	int32 strai=453000;
 	int32 turn =968411;
+	
 //	if(abs((int)(Data_Array[1] - Data_Array[2])) < 200)		// 十字路口，四个通道的差值很小
 //		cross_flag = 1;
 //	else
@@ -191,7 +192,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		
 		if(enter_time) angle90_flag = 1;
 		if(angle90_flag && !cross_flag && !soft_turn_flag){
-			P34 = 1;
+			//P34 = 1;
 			if(enter_time <= 0) enter_time = E_T;
 			else enter_time--;
 			diff2 = *(Data_Array+1)-*(Data_Array+2);
@@ -199,7 +200,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 			answer = (diff2*turn)/(sum2*sum2);
 			answer = answer * turn_ratio / 100;
 		}else{
-			P34 = 0;
+			//P34 = 0;
 		}
 		
 			

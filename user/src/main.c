@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "screen.h"
 #include "gyroscope.h"
+#include "telemeter.h"
 #include "iic.h"
 #include "exti.h"
 
@@ -28,15 +29,17 @@ int main(void)
 	Exti_config();
 	EA = 1;
 
-//	icm20602_init();
+	icm20602_init();
+	dl1b_init();
 	timer_init();
 	
 	/******************************************************************/
 
 	/******************************************************************/
-
+	P6_MODE_OUT_PP(GPIO_Pin_1);	//测试GET_ANGLE
 	P3_MODE_OUT_PP(GPIO_Pin_4);	//蜂鸣器
 	printf("start\n");
+	P34 = 0;
 	//初始化结束
 	/******************************************************************/
 	//主循环
@@ -44,6 +47,8 @@ int main(void)
 	{	
 //		printf("start\n");
 		wireless_PID();
+//		printf("fsdf:%d\n",dl1b_get_distance());
+		
 //		
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);

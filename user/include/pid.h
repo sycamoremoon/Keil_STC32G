@@ -29,6 +29,20 @@ extern "C"{
         long ki; // Integral gain
         long kd; // Derivative gain
     } PID_Calibration;
+	
+	// PID常数-float版本
+    typedef struct pid_calibration_float {
+        /*
+         * struct PID_Calibration
+         * 
+         * Struct storing calibrated PID constants for a PID Controller
+         * These are used for tuning the algorithm and the values they take are
+         * dependent upon the application - (in other words, YMMV...)
+         */
+        float kp; // Proportional gain
+        float ki; // Integral gain
+        float kd; // Derivative gain
+    } PID_Calibration_float;
 
 // PID当前状态，输入值
     typedef struct pid_state {
@@ -50,6 +64,25 @@ extern "C"{
         long output;                // 最终通过pid处理得到的修正输出
     } PID_State;
 
+	// PID当前状态，输入值-float版本
+    typedef struct pid_state_float {
+        /*
+         * struct PID_State
+         * 
+         * Struct storing the current state of a PID Controller.
+         * This is used as the input value to the PID algorithm function, which also
+         * returns a PID_State struct reflecting the adjustments suggested by the algorithm.
+         * 
+         * NOTE: The output field in this struct is set by the PID algorithm function, and
+         * is ignored in the actual calculations.
+         */
+        float actual;                // 测量的真实值
+        float target;                // 目标值
+        float previous_error;        // 上一次误差
+		float pre_previous_error;	// 上上次误差，只在增量式pid中使用
+        float integral;              // 误差积分，只在位置式pid中使用
+        float output;                // 最终通过pid处理得到的修正输出
+    } PID_State_float;
 
     /*
      * PID Controller Algorithm implementation
@@ -60,6 +93,7 @@ extern "C"{
      */
     PID_State* pid_location(PID_Calibration * calibration, PID_State * state);
 	PID_State* pid_increase(PID_Calibration * calibration, PID_State * state);
+	PID_State_float* pid_location_float(PID_Calibration_float * calibration, PID_State_float * state);
 
 #ifdef __cplusplus
 } // extern "C"

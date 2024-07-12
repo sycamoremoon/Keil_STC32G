@@ -1,7 +1,7 @@
 #include "gyroscope.h"
 #include "timer.h"
 
-#define dt 0.005
+#define dt (2.0/1000)
 #define FILTER_NUM 100	// 平均滤波算法的数据量
 
 int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
@@ -229,7 +229,6 @@ void Get_gyro_gyro(void)
 **************************************************************************/
 void init_gyrodata()
 {
- 
 	gyro[gyro_i]=gyro_gyro_z;
 	fil_Gyro_z=0.0;
 	for(gyro_i=0;gyro_i<FILTER_NUM;gyro_i++)
@@ -277,7 +276,7 @@ void Gyroscope_newValues()
 void Get_angle()
 {
 	Gyroscope_newValues();			//使用陀螺仪获取角速度
-	Angle_Z-=fil_Gyro_z*dt;
+	Angle_Z-=fil_Gyro_z*dt;	//为线性修正比例
 	if(Angle_Z>=360) Angle_Z=Angle_Z-360;
 	if(Angle_Z<=-360) Angle_Z=Angle_Z+360;
 }

@@ -42,6 +42,39 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
     return state;
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      位置式PID
+//  @param      calibration			对被控对象PID调整的参数
+//  @param      state				被控对象结构体
+//  Sample usage:				
+//-------------------------------------------------------------------------------------------------------------------
+PID_State_float* pid_location_float(PID_Calibration_float * calibration, PID_State_float * state) 
+{
+	float error,derivative;
+	
+    // calculate difference between desired and actual values (the error)
+    error = state->target - state->actual;
+    // calculate and update integral
+	state->integral += error;
+//	if ((state->integral) >= 2000)
+//		state->integral = 2000;
+//	if ((state->integral) <= -2000)
+//		state->integral = -2000;
+	
+    // calculate derivative
+    derivative = (error - state->previous_error);
+    // calculate output value according to algorithm
+    state->output = (
+        (calibration->kp * error / 100) 
+		+ (calibration->ki * state->integral * 10 / 10000) 
+		+ (calibration->kd * derivative / 100)
+		);
+    // update state.previous_error to the error value calculated on this iteration
+    state->previous_error = error;
+    // return the state struct reflecting the calculations
+    return state;
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      增量式PID
