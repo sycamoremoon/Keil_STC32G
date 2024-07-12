@@ -126,153 +126,107 @@ void Sample_All_Chanel()
 int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 {
 	static int32 previous = 0;
+	static int32 strai=453000, turn =968411;
 	static int count = 0;
 	static int enter_time = 0;
-	static uint8 enter_begin = 0, enter_finish = 0, leave_finish = 0, leave_begin = 0, out_island;
+	static uint8 enter_island_begin = 0, enter_island_finish = 0, leave_island_finish = 0, leave_island_begin = 0, out_island;
+	static uint8 enter_angle90_begin = 0, enter_angle90_finish = 0, leave_angle90_finish = 0, leave_angle90_begin = 0, out_angle90;
 	uint8 angle90_flag, cross_flag, soft_turn_flag;
-	int32 answer = 0;
+	int32 answer = 0, mid_answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
-	int32 strai=453000;
-	int32 turn =968411;
-	
-//	if(abs((int)(Data_Array[1] - Data_Array[2])) < 200)		// 十字路口，四个通道的差值很小
-//		cross_flag = 1;
-//	else
-//		cross_flag = 0;
-//	
-//	if(angle90_flag && !cross_flag)	//判断进入直角的条件
-//	{
-//		P34 = 1;
-//		if(enter_time == 0) enter_time = E_T;
-//		else enter_time--;
-//		
-//		if(*(Data_Array+1)>*(Data_Array+2))
-//		{
-//			answer = vertical_value;		// 转直角弯时写死100，根据不同的速度需要调整该值
-//		}
-//		else 
-//			answer = -vertical_value;
-//	}
-//	else
-	{
-		angle90_flag = 0;
-		cross_flag = 0;
-		soft_turn_flag = 0;
-		if(abs((int)(Data_Array[1] - Data_Array[2])) > 850) angle90_flag = 1;
-		if((MAXI(Data_Array[1], Data_Array[2])/MINI(Data_Array[1], Data_Array[2]) > 6) && (MINI(Data_Array[1], Data_Array[2]) > 80)) angle90_flag = 1;
-		
-		//弯道不使用中间电感
-		if(angle90_flag){
-			if(Data_Array[1] > Data_Array[2]){
-				if(abs((int)(Data_Array[0] - Data_Array[1])) < 520) soft_turn_flag = 1;
-			}
-			else{
-				if(abs((int)(Data_Array[2] - Data_Array[3])) < 520) soft_turn_flag = 1;
-			}
-		}
-		
-		if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] > 5000) cross_flag = 1;
-		
-//		if(Data_Array[0] > 3500 || Data_Array[1] > 3500){
-//			if(island_flag_enter == 0) island_flag_enter = 1;
-//			else island_flag_leave = 1;
-//		}else{
-//			island_flag_leave = 0;
-//		}
-//		
-//		if(island_flag_enter == 1 && island_flag_leave == 0){
-//			TargetSpeed = targetspeed_backup - 400;
-//			if(Data_Array[1] > Data_Array[2]) answer = 80;
-//			else(Data_Array[1] > Data_Array[2]) answer = -80;
-//		}else if(island_flag_enter == 1 && island_flag_leave == 1){
-//			TargetSpeed = targetspeed_backup;
-//		}
 
-
-		
-		if(enter_time) angle90_flag = 1;
-		if(angle90_flag && !cross_flag && !soft_turn_flag){
-			//P34 = 1;
-			if(enter_time <= 0) enter_time = E_T;
-			else enter_time--;
-			diff2 = *(Data_Array+1)-*(Data_Array+2);
-			sum2 = *(Data_Array+1)+*(Data_Array+2);
-			answer = (diff2*turn)/(sum2*sum2);
-			answer = answer * turn_ratio / 100;
-		}else{
-			//P34 = 0;
+	angle90_flag = 0;
+	cross_flag = 0;
+	soft_turn_flag = 0;
+	if(abs((int)(Data_Array[1] - Data_Array[2])) > 850) angle90_flag = 1;
+	if((MAXI(Data_Array[1], Data_Array[2])/MINI(Data_Array[1], Data_Array[2]) > 6) && (MINI(Data_Array[1], Data_Array[2]) > 80)) angle90_flag = 1;
+	//弯道不使用中间电感
+	if(angle90_flag){
+		if(Data_Array[1] > Data_Array[2]){
+			if(abs((int)(Data_Array[0] - Data_Array[1])) < 520) soft_turn_flag = 1;
 		}
-		
-			
-		if(abs((int)(Data_Array[0] - Data_Array[3])) > 100){
-		diff1 = *Data_Array-*(Data_Array+3);
-		sum1 = *Data_Array+*(Data_Array+3);
-		answer += (diff1*strai)/(sum1*sum1);
-		}
-		// 入环检测
-		if(Data_Array[0] > 3500 && enter_finish == 0){
-			enter_begin = 1;
-		}
-		if(Data_Array[3] > 3500 && leave_finish == 0 && enter_finish == 1){
-			leave_begin = 1;
-		}
-		if(enter_begin){
-			if(Data_Array[1] > Data_Array[2]) answer += 150;
-			else answer += -150;
-			if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_finish == 0){
-				enter_finish = 1;
-				enter_begin = 0;
-			}
-		}
-		if(leave_begin){
-			if(Data_Array[1] > Data_Array[2]) answer += 150;
-			else answer += -150;
-			if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && leave_finish == 0 && enter_finish == 1){
-				leave_finish = 1;
-				leave_begin = 0;
-			}
-		}
-		
-//		if(leave_finish == 1 && enter_finish == 1) enter_finish = leave_finish = 0; //重置环岛标志
-		//冲出赛道停车
-		if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 200){
-			Stop_Car();
-		}else{
-			if(start_car_signal == 1) TargetSpeed = targetspeed_backup;
+		else{
+			if(abs((int)(Data_Array[2] - Data_Array[3])) < 520) soft_turn_flag = 1;
 		}
 	}
 	
-//	Buffer[cnt] = answer;
-//	cnt++;
-//	if(cnt == BUFFERLENGTH) cnt = 0;
-//	// zero them
-//	equal_value = 0;
-//	Value_Sum = 0;
-//	
-//	for(j = 0; j < BUFFERLENGTH; j++,cnt++)
-//    {
-//		if(abs((int)(Buffer[cnt%BUFFERLENGTH] - (equal_value / (j+1)))) > 10){
-//			ADC_Value_Sum += ADC_DataBuffer[channel][cnt%BUFFERLENGTH] * Weight[j];
-//			equal_value[channel] += ADC_DataBuffer[channel][cnt%BUFFERLENGTH];
-//		}else{
-//			ADC_Value_Sum += equal_value[channel] / (j+1) * Weight[j];
-//		}
-//    }
-//	
-//	if (labs(answer - previous) > 15){
-//		if(count++ > 10){
-//			count = 0;
-//			previous = answer;
-//		}else{
-//			answer = previous;
-//		}
-//			
-//	}else{
-//		previous = answer;
-//	}
+	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] > 5000) cross_flag = 1;
+	
+	//纵向电感
+	if(angle90_flag == 1)enter_time++;
+	if(enter_time) angle90_flag = 1;
+	if(angle90_flag && !cross_flag && !soft_turn_flag){
+		//P34 = 1;
+		if(enter_time <= 0) enter_time = E_T;
+		else enter_time--;
+		
+		if(Data_Array[1] > Data_Array[2]){
+			diff2 = Data_Array[1]-Data_Array[2];
+			sum2 = Data_Array[1]+Data_Array[2];
+			mid_answer = (diff2*turn)/(sum2*sum2);
+			mid_answer = mid_answer * turn_ratio / 100;
+		}else{
+			diff2 = Data_Array[2]-Data_Array[1];
+			sum2 = Data_Array[1]+Data_Array[2];
+			mid_answer = (diff2*turn)/(sum2*sum2);
+			mid_answer = mid_answer * turn_ratio / 100;
+			mid_answer = - mid_answer;
+		}
+		answer += mid_answer;
+	}else{
+		//P34 = 0;
+	}
+	
+	//横向电感
+	if(abs((int)(Data_Array[0] - Data_Array[3])) > 100){
+		if(Data_Array[0] > Data_Array[3]){
+			diff1 = Data_Array[0]-Data_Array[3];
+			sum1 = *Data_Array+*(Data_Array+3);
+			mid_answer = (diff1*strai)/(sum1*sum1);
+		}else{
+			diff1 = Data_Array[3]-Data_Array[0];
+			sum1 = *Data_Array+*(Data_Array+3);
+			mid_answer = (diff1*strai)/(sum1*sum1);
+			mid_answer = -mid_answer;
+		}
+		answer += mid_answer;			
+	}
+	
+	// 入环检测
+	if(Data_Array[0] > 3500 && enter_island_finish == 0){
+		enter_island_begin = 1;
+	}
+	if(Data_Array[3] > 3500 && leave_island_finish == 0 && enter_island_finish == 1){
+		leave_island_begin = 1;
+	}
+	if(enter_island_begin){
+		if(Data_Array[1] > Data_Array[2]) answer += 150;
+		else answer += -150;
+		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_island_finish == 0){
+			enter_island_finish = 1;
+			enter_island_begin = 0;
+		}
+	}
+	if(leave_island_begin){
+		if(Data_Array[1] > Data_Array[2]) answer += 150;
+		else answer += -150;
+		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && leave_island_finish == 0 && enter_island_finish == 1){
+			leave_island_finish = 1;
+			leave_island_begin = 0;
+		}
+	}
+	
+//		if(leave_island_finish == 1 && enter_island_finish == 1) enter_island_finish = leave_island_finish = 0; //重置环岛标志
+	
+	//冲出赛道停车
+	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 200){
+		Stop_Car();
+	}else{
+		if(start_car_signal == 1) TargetSpeed = targetspeed_backup;
+	}
 
 	if(labs(answer) > 1200) answer > 0 ? answer = 1200 : answer = -1200;
-	if(labs(answer) < 3) answer = 0;
+	if(labs(answer) < 5) answer = 0;
 	
 	return answer;
 }

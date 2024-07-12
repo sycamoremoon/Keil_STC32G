@@ -14,14 +14,7 @@
 #include 	"gyroscope.h"
 #include 	"telemeter.h"
 #include	"control.h"
-
-u8 cnt = 0;
-long AngleZ_output = 0;
-long pid2_output = 0;
-long pid3_output_left = 0;
-long pid3_output_right = 0;
-long output_left = 0;
-long output_right = 0;
+uint8 cnt = 0;
 extern uint8 start_car_signal;	//发车信号
 uint16 distance = 0;
 uint8 turn_out_start_flag = 0, turn_in_start_flag = 0, turn_finish_flag = 0;
@@ -38,13 +31,12 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 {
 	output_left = pid3_output_left;
 	output_right = pid3_output_right;
-	
+	cnt++;
 	if(TargetSpeed > 0 && start_car_signal){
 	output_left = output_left - pid2_output - AngleZ_output;
 	output_right = output_right + pid2_output + AngleZ_output; 
 	}
 	Set_Motors(output_left,output_right);		// 更新电机PWM
-	cnt++;
 	
 	/* 陀螺仪控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0 && turn_finish_flag == 0){
@@ -125,7 +117,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 //		printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
 		pid3_output_left = Left_Speed_State.output;
 		pid3_output_right = Right_Speed_State.output;
-
+		
 	}
 	
 }
