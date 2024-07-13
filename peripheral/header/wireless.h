@@ -42,7 +42,7 @@
 #define WIRELESS_RTS_PIN 	P01 			//定义流控位引脚  指示当前模块是否可以接受数据  0可以继续接收  1不可以继续接收
 //#define WIRELESS_CMD_PIN 	P05 			//定义命令引脚
 
-extern uint8 data_buffer[];
+extern uint8 data_buffer[32];
 extern uint8 pid_changed;
 
 void wireless_uart_init(void);

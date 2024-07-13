@@ -61,34 +61,34 @@ void dl1b_iic_transfer_8bit_array (const uint8 *write_data, uint8 write_len, uin
 //-------------------------------------------------------------------------------------------------------------------
 uint16 dl1b_get_distance (void)
 {     
-	uint8 Data_Buffer[3];
+	uint8 data_buffer[3];
 	int16 dl1b_distance_temp = 0;
 	uint16 dl1b_distance_mm = 3333;
     if(dl1b_init_flag)
     {
-        Data_Buffer[0] = DL1B_GPIO__TIO_HV_STATUS >> 8;
-        Data_Buffer[1] = DL1B_GPIO__TIO_HV_STATUS & 0xFF;
-        dl1b_transfer_8bit_array(Data_Buffer, 2, &Data_Buffer[2], 1);
+        data_buffer[0] = DL1B_GPIO__TIO_HV_STATUS >> 8;
+        data_buffer[1] = DL1B_GPIO__TIO_HV_STATUS & 0xFF;
+        dl1b_transfer_8bit_array(data_buffer, 2, &data_buffer[2], 1);
 
-        if(Data_Buffer[2])
+        if(data_buffer[2])
         {
 
-            Data_Buffer[0] = DL1B_SYSTEM__INTERRUPT_CLEAR >> 8;
-            Data_Buffer[1] = DL1B_SYSTEM__INTERRUPT_CLEAR & 0xFF;
-            Data_Buffer[2] = 0x01;
-            dl1b_transfer_8bit_array(Data_Buffer, 3, Data_Buffer, 0);// clear Interrupt
+            data_buffer[0] = DL1B_SYSTEM__INTERRUPT_CLEAR >> 8;
+            data_buffer[1] = DL1B_SYSTEM__INTERRUPT_CLEAR & 0xFF;
+            data_buffer[2] = 0x01;
+            dl1b_transfer_8bit_array(data_buffer, 3, data_buffer, 0);// clear Interrupt
 
-            Data_Buffer[0] = DL1B_RESULT__RANGE_STATUS >> 8;
-            Data_Buffer[1] = DL1B_RESULT__RANGE_STATUS & 0xFF;
-            dl1b_transfer_8bit_array(Data_Buffer, 2, &Data_Buffer[2], 1);
+            data_buffer[0] = DL1B_RESULT__RANGE_STATUS >> 8;
+            data_buffer[1] = DL1B_RESULT__RANGE_STATUS & 0xFF;
+            dl1b_transfer_8bit_array(data_buffer, 2, &data_buffer[2], 1);
             
-            if(0x89 == Data_Buffer[2])
+            if(0x89 == data_buffer[2])
             {
-                Data_Buffer[0] = DL1B_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0 >> 8;
-                Data_Buffer[1] = DL1B_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0 & 0xFF;
-                dl1b_transfer_8bit_array(Data_Buffer, 2, Data_Buffer, 2);
-                dl1b_distance_temp = Data_Buffer[0];
-                dl1b_distance_temp = (dl1b_distance_temp << 8) | Data_Buffer[1];
+                data_buffer[0] = DL1B_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0 >> 8;
+                data_buffer[1] = DL1B_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0 & 0xFF;
+                dl1b_transfer_8bit_array(data_buffer, 2, data_buffer, 2);
+                dl1b_distance_temp = data_buffer[0];
+                dl1b_distance_temp = (dl1b_distance_temp << 8) | data_buffer[1];
                 
                 if(dl1b_distance_temp > 4000 || dl1b_distance_temp < 0)
                 {
@@ -128,7 +128,7 @@ uint16 dl1b_get_distance (void)
 uint8 dl1b_init (void)
 {
     uint8   return_state    = 0;
-    uint8   Data_Buffer[2 + sizeof(dl1b_default_configuration)]; 
+    uint8   data_buffer[2 + sizeof(dl1b_default_configuration)]; 
     uint16  time_out_count  = 0;
 	do
     {
@@ -138,26 +138,26 @@ uint8 dl1b_init (void)
         DL1B_XS_PIN = 1;
         delay_ms(50);
 
-        Data_Buffer[0] = DL1B_FIRMWARE__SYSTEM_STATUS >> 8;
-        Data_Buffer[1] = DL1B_FIRMWARE__SYSTEM_STATUS & 0xFF;
-        dl1b_transfer_8bit_array(Data_Buffer, 2, &Data_Buffer[2], 1);
-        return_state = (0x01 == (Data_Buffer[2] & 0x01)) ? (0) : (1);
+        data_buffer[0] = DL1B_FIRMWARE__SYSTEM_STATUS >> 8;
+        data_buffer[1] = DL1B_FIRMWARE__SYSTEM_STATUS & 0xFF;
+        dl1b_transfer_8bit_array(data_buffer, 2, &data_buffer[2], 1);
+        return_state = (0x01 == (data_buffer[2] & 0x01)) ? (0) : (1);
         if(1 == return_state)
         {
             break;
         }
 
-        Data_Buffer[0] = DL1B_I2C_SLAVE__DEVICE_ADDRESS >> 8;
-        Data_Buffer[1] = DL1B_I2C_SLAVE__DEVICE_ADDRESS & 0xFF;
-        memcpy(&Data_Buffer[2], (uint8 *)dl1b_default_configuration, sizeof(dl1b_default_configuration));
-        dl1b_transfer_8bit_array(Data_Buffer, 2 + sizeof(dl1b_default_configuration), Data_Buffer, 0);
+        data_buffer[0] = DL1B_I2C_SLAVE__DEVICE_ADDRESS >> 8;
+        data_buffer[1] = DL1B_I2C_SLAVE__DEVICE_ADDRESS & 0xFF;
+        memcpy(&data_buffer[2], (uint8 *)dl1b_default_configuration, sizeof(dl1b_default_configuration));
+        dl1b_transfer_8bit_array(data_buffer, 2 + sizeof(dl1b_default_configuration), data_buffer, 0);
 
         while(1)
         {
-            Data_Buffer[0] = DL1B_GPIO__TIO_HV_STATUS >> 8;
-            Data_Buffer[1] = DL1B_GPIO__TIO_HV_STATUS & 0xFF;
-            dl1b_transfer_8bit_array(Data_Buffer, 2, &Data_Buffer[2], 1);
-            if(0x00 == (Data_Buffer[2] & 0x01))
+            data_buffer[0] = DL1B_GPIO__TIO_HV_STATUS >> 8;
+            data_buffer[1] = DL1B_GPIO__TIO_HV_STATUS & 0xFF;
+            dl1b_transfer_8bit_array(data_buffer, 2, &data_buffer[2], 1);
+            if(0x00 == (data_buffer[2] & 0x01))
             {
                 time_out_count = 0;
                 break;

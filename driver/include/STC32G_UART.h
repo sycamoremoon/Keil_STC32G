@@ -27,7 +27,7 @@
 
 #define	UART_BUF_type	edata       //设置串口收发数据缓存空间，可选 edata 或者 xdata
 
-#define	UART_QUEUE_MODE	1           //设置串口发送模式，0：阻塞模式，1：队列模式
+#define	UART_QUEUE_MODE	0           //设置串口发送模式，0：阻塞模式，1：队列模式
 
 #define	PRINTF_SELECT  UART4		//选择 printf 函数所使用的串口，参数 UART1~UART4
 
@@ -44,8 +44,8 @@
 #define	COM_RX3_Lenth	64          //设置串口3接收数据缓冲区大小，如果长度定义大于256，需要将程序中与该长度比较的变量类型由u8改为u16.
 #endif
 #ifdef UART4
-#define	COM_TX4_Lenth	128          //设置串口4发送数据缓冲区大小，如果长度定义大于256，需要将程序中与该长度比较的变量类型由u8改为u16.
-#define	COM_RX4_Lenth	128          //设置串口4接收数据缓冲区大小，如果长度定义大于256，需要将程序中与该长度比较的变量类型由u8改为u16.
+#define	COM_TX4_Lenth	64          //设置串口4发送数据缓冲区大小，如果长度定义大于256，需要将程序中与该长度比较的变量类型由u8改为u16.
+#define	COM_RX4_Lenth	64          //设置串口4接收数据缓冲区大小，如果长度定义大于256，需要将程序中与该长度比较的变量类型由u8改为u16.
 #endif
 
 #define	UART_ShiftRight	0		//同步移位输出

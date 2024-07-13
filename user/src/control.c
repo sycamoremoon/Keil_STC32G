@@ -1,9 +1,9 @@
 #include "control.h"
 
 PID_Calibration		PID_AngleZ 		= {-20,0,-450};		// 内环陀螺仪的PID参数，用PD
-PID_Calibration 	PID_adc 		= {0,0,0};	// 中环adc的PID参数 20
-PID_Calibration 	PID_out_left 	= {450,1000,0};	// 外环左速度的PID参数hong{290,195,57};{380,160,1000}
-PID_Calibration		PID_out_right 	= {450,1000,0};	// 外环右速度的PID参数lv  {290,195,57};
+PID_Calibration 	PID_adc 		= {-660,-10,-35};	// 中环adc的PID参数 20
+PID_Calibration 	PID_out_left 	= {450,1300,30};	// 外环左速度的PID参数hong{290,195,57};
+PID_Calibration		PID_out_right 	= {450,1300,35};	// 外环右速度的PID参数lv  {290,195,57};
 
 PID_State	AngleZ_state		= {0};				//accy状态参数
 PID_State 	adc_state 			= {0};				//adc状态参数
@@ -58,7 +58,7 @@ void Speed_Ctrl_out(long Left_Speed,long Right_Speed)
 	//获取真实速度*MAXSPEED/MAXENCODER
 	Left_Speed_State.actual = get_EncoderL();
 	Right_Speed_State.actual = get_EncoderR();
-//	printf("Speed:%ld,%ld,%ld\n",Left_Speed_State.actual, Right_Speed_State.actual,TargetSpeed);
+//	
 	
 	//获取目标速度
 	Left_Speed_State.target = Left_Speed * MAXENCODER_L / MAXSPEED;
