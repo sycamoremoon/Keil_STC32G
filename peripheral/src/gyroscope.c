@@ -8,10 +8,10 @@ int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
 int16 gyro_acc_x,gyro_acc_y,gyro_acc_z;
 
 float fil_Gyro_z;				//定义处理后的角速度值
-float Gyro_z=0;					//定义的处理角速度的中间变量
-float Angle_Z=90;				//设置初始角度为90度
-float Gyroscope_FIFO[11]={0};
-int gyro_i=0;
+float Gyro_z = 0;					//定义的处理角速度的中间变量
+float Angle_Z = 90;				//设置初始角度为90度
+float Gyroscope_FIFO[11] = {0};
+int gyro_i = 0;
 static float gyro[FILTER_NUM],sum_gyro;	// 平均滤波算法的初始值
 
 float fil_acc_y = 0;				//定义处理后的加速度值

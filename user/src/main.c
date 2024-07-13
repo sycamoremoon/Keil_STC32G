@@ -47,7 +47,7 @@ int main(void)
 	{	
 //		printf("start\n");
 		wireless_PID();
-//		printf("fsdf:%d\n",dl1b_get_distance());
+		printf("Angle:%ld,%ld,%ld,%ld,%ld,%f\n",PID_AngleZ.kp,PID_AngleZ.ki,PID_AngleZ.kd,Angle_Z);
 		
 //		
 //		printf("adc_state.actual:%ld\n",adc_state.actual);

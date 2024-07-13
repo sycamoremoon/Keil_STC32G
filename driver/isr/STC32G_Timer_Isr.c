@@ -7,7 +7,7 @@
 /* --- Web: www.STCMCU.com --------------------------------------------*/
 /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
 /* --- QQ:  800003751 -------------------------------------------------*/
-/* 如果要在程序中使用此代码,请在程序中注明使用了STC的资料及程序            */
+/* 如果要在程序中使用此代码,请在程序中注明使用了STC的资料及程序        */
 /*---------------------------------------------------------------------*/
 
 #include	"STC32G_Timer.h"
@@ -16,7 +16,7 @@
 #include	"control.h"
 
 u8 cnt = 0;
-float AngleZ_output;
+long AngleZ_output;
 long pid2_output = 0;
 long pid3_output_left = 0;
 long pid3_output_right = 0;
@@ -48,21 +48,19 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	/* 陀螺仪控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0 && turn_finish_flag == 0){
 		distance = dl1b_get_distance();			// 检测距离
-		printf("distance:%d\n",distance);
 		if(distance < 800 && distance > 500){
 			turn_out_start_flag = 1;
 		}
 	}else if(turn_out_start_flag == 1 || turn_in_start_flag == 1){
 		Get_angle();
-		printf("angle:%f\n",Angle_Z);
 	}
 	
 	if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// 偏航
 	{
 		P34 = 0;
 		pid2_output = 0;					// adc环控制输出置零
-		TargetSpeed = targetspeed_backup - 300; 	// 降速
-		Speed_Ctrl_in(120.0);
+//		TargetSpeed = targetspeed_backup - 300; 	// 降速
+		Speed_Ctrl_in(120);
 		AngleZ_output = AngleZ_state.actual;
 		if(Angle_Z > 115 && Angle_Z < 125){		// 偏移角度条件判断,初始值为90°
 			turn_in_start_flag = 1;
@@ -73,8 +71,8 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	if(turn_in_start_flag == 1)		// 返航
 	{
 		P34 = 1;
-		TargetSpeed = targetspeed_backup;	// 恢复原速度
-		Speed_Ctrl_in(50.0);
+//		TargetSpeed = targetspeed_backup;	// 恢复原速度
+		Speed_Ctrl_in(50);
 		AngleZ_output = AngleZ_state.actual;
 		if(Angle_Z > 45 && Angle_Z < 55){	// 偏移角度条件判断,初始值为90°
 			turn_in_start_flag = 0;			//turn in finished
