@@ -1,17 +1,17 @@
 #include "gyroscope.h"
 #include "timer.h"
 
-#define dt 0.005
+#define dt (2.0/1000)
 #define FILTER_NUM 100	// 平均滤波算法的数据量
 
 int16 gyro_gyro_x,gyro_gyro_y,gyro_gyro_z;
 int16 gyro_acc_x,gyro_acc_y,gyro_acc_z;
 
 float fil_Gyro_z;				//定义处理后的角速度值
-float Gyro_z=0;					//定义的处理角速度的中间变量
-float Angle_Z=90;				//设置初始角度为90度
-float Gyroscope_FIFO[11]={0};
-int gyro_i=0;
+float Gyro_z = 0;					//定义的处理角速度的中间变量
+float Angle_Z = 90;				//设置初始角度为90度
+float Gyroscope_FIFO[11] = {0};
+int gyro_i = 0;
 static float gyro[FILTER_NUM],sum_gyro;	// 平均滤波算法的初始值
 
 float fil_acc_y = 0;				//定义处理后的加速度值
@@ -229,7 +229,6 @@ void Get_gyro_gyro(void)
 **************************************************************************/
 void init_gyrodata()
 {
- 
 	gyro[gyro_i]=gyro_gyro_z;
 	fil_Gyro_z=0.0;
 	for(gyro_i=0;gyro_i<FILTER_NUM;gyro_i++)
@@ -277,7 +276,7 @@ void Gyroscope_newValues()
 void Get_angle()
 {
 	Gyroscope_newValues();			//使用陀螺仪获取角速度
-	Angle_Z-=fil_Gyro_z*dt;
+	Angle_Z-=fil_Gyro_z*dt;	//为线性修正比例
 	if(Angle_Z>=360) Angle_Z=Angle_Z-360;
 	if(Angle_Z<=-360) Angle_Z=Angle_Z+360;
 }

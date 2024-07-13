@@ -1,15 +1,14 @@
 #include "control.h"
 
-PID_Calibration PID_accy 		= {0,0,0};	// 内环accy的PID参数，用PD
-PID_Calibration PID_adc 		= {-660,-10,-35};	// 中环adc的PID参数 20
-PID_Calibration PID_out_left 	= {450,1300,30};	// 外环左速度的PID参数hong{290,195,57};
-PID_Calibration PID_out_right 	= {450,1300,35};	// 外环右速度的PID参数lv  {290,195,57};
+PID_Calibration		PID_AngleZ 		= {-20,0,-450};		// 内环陀螺仪的PID参数，用PD
+PID_Calibration 	PID_adc 		= {-660,-10,-35};	// 中环adc的PID参数 20
+PID_Calibration 	PID_out_left 	= {450,1300,30};	// 外环左速度的PID参数hong{290,195,57};
+PID_Calibration		PID_out_right 	= {450,1300,35};	// 外环右速度的PID参数lv  {290,195,57};
 
-//P: 32max
-PID_State accy_state		= {0};				        //accy状态参数
-PID_State adc_state 		= {0};				        //adc状态参数
-PID_State Left_Speed_State 	= {0};				//左电机速度状态参数
-PID_State Right_Speed_State = {0};				//右电机速度状态参数
+PID_State	AngleZ_state		= {0};				//accy状态参数
+PID_State 	adc_state 			= {0};				//adc状态参数
+PID_State 	Left_Speed_State 	= {0};				//左电机速度状态参数
+PID_State 	Right_Speed_State 	= {0};				//右电机速度状态参数
 
 long TargetSpeed = 0;
 long targetspeed_backup = 0;
@@ -20,15 +19,14 @@ extern uint8 start_car_signal;	//发车信号
 /// @param Left_Speed 参数给出左电机的目标速度
 /// @param Right_Speed 参数给出右电机的目标速度
 // 内环 error_in = y_acc - 0
-void Speed_Ctrl_in(unsigned int accy_target)
+void Speed_Ctrl_in(long AngleZ_target)
 {
-	extern float fil_acc_y;
 	//获取真实accy
-	accy_state.actual = fil_acc_y;
+	AngleZ_state.actual = (long)Angle_Z * 100;
 	//获取目标accy
-	accy_state.target = accy_target;
+	AngleZ_state.target = AngleZ_target * 100;
 	
-	pid_increase(&PID_accy,&accy_state);
+	pid_location(&PID_AngleZ,&AngleZ_state);
 //	Update_Motors(&accy_state,&accy_state,&Turn_State);
 }
 
@@ -37,7 +35,7 @@ void Speed_Ctrl_mid(long adc_target)
 {
 	//获取真实adc
 	adc_state.actual = (long) Get_Regularized_Signal_Data(All_Signal_Data);
-	printf("adc_state.actual:%ld\n",adc_state.actual);
+//	printf("adc_state.actual:%ld\n",adc_state.actual);
 	//adc_state.actual = 0;
 	//获取目标adc
 	adc_state.target = adc_target;
