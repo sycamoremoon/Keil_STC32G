@@ -1,6 +1,6 @@
 #include "control.h"
 
-PID_Calibration		PID_AngleZ 		= {-40,0,-750};		// 内环陀螺仪的PID参数，用PD
+PID_Calibration		PID_AngleZ 		= {-20,0,-450};		// 内环陀螺仪的PID参数，用PD
 PID_Calibration 	PID_adc 		= {-660,-10,-35};	// 中环adc的PID参数 20
 PID_Calibration 	PID_out_left 	= {450,1300,30};	// 外环左速度的PID参数hong{290,195,57};
 PID_Calibration		PID_out_right 	= {450,1300,35};	// 外环右速度的PID参数lv  {290,195,57};

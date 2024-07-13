@@ -38,18 +38,16 @@ int main(void)
 	/******************************************************************/
 	P6_MODE_OUT_PP(GPIO_Pin_1);	//测试GET_ANGLE
 	P3_MODE_OUT_PP(GPIO_Pin_4);	//蜂鸣器
-	printf("start\n");
 	P34 = 0;
+	printf("start\n");
 	//初始化结束
 	/******************************************************************/
 	//主循环
 	while(1)
 	{	
-//		printf("start\n");
 		wireless_PID();
-		printf("Angle:%ld,%ld,%ld,%ld,%ld,%f\n",PID_AngleZ.kp,PID_AngleZ.ki,PID_AngleZ.kd,Angle_Z);
-		
-//		
+		printf("Angle:%ld,%ld,%ld,%ld\n",PID_AngleZ.kp,PID_AngleZ.kd,AngleZ_state.output,AngleZ_state.actual);
+//		printf("Angle:%ld,%ld,%ld,%ld,%ld,%f\n",PID_AngleZ.kp,PID_AngleZ.ki,PID_AngleZ.kd,Angle_Z);
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
@@ -59,7 +57,7 @@ int main(void)
 //		Sample_All_Chanel();
 //		printf("ADC:%d,%d,%d,%d,%d\n",Get_DMA_ADC_Result(0),Get_DMA_ADC_Result(1),Get_DMA_ADC_Result(2),Get_DMA_ADC_Result(3),Get_Regularized_Signal_Data(All_Signal_Data));
 
-//		delay_ms(8);
+
 
 //		Screen_ShowInt(0,64,BLACK,WHITE,Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("%d\n",Get_Regularized_Signal_Data(All_Signal_Data));

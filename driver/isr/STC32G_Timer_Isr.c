@@ -16,7 +16,7 @@
 #include	"control.h"
 
 u8 cnt = 0;
-long AngleZ_output;
+long AngleZ_output = 0;
 long pid2_output = 0;
 long pid3_output_left = 0;
 long pid3_output_right = 0;
@@ -25,6 +25,7 @@ long output_right = 0;
 extern uint8 start_car_signal;	//发车信号
 uint16 distance = 0;
 uint8 turn_out_start_flag = 0, turn_in_start_flag = 0, turn_finish_flag = 0;
+long keep_going = 0;
 //========================================================================
 // 函数: Timer0_ISR_Handler
 // 描述: Timer0中断函数.
@@ -50,38 +51,49 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		distance = dl1b_get_distance();			// 检测距离
 		if(distance < 800 && distance > 500){
 			turn_out_start_flag = 1;
+			Angle_Z = 90;
 		}
-	}else if(turn_out_start_flag == 1 || turn_in_start_flag == 1){
+	}
+	if(turn_out_start_flag == 1 || turn_in_start_flag == 1){
 		Get_angle();
 	}
 	
 	if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// 偏航
 	{
 		P34 = 0;
-		pid2_output = 0;					// adc环控制输出置零
+		pid2_output = 0;							// adc环控制输出置零
 //		TargetSpeed = targetspeed_backup - 300; 	// 降速
 		Speed_Ctrl_in(120);
-		AngleZ_output = AngleZ_state.actual;
+		AngleZ_output = AngleZ_state.output;
+		
 		if(Angle_Z > 115 && Angle_Z < 125){		// 偏移角度条件判断,初始值为90°
 			turn_in_start_flag = 1;
-			turn_out_start_flag = 0;		//turn_out finished
+			turn_out_start_flag = 0;			//turn_out finished
+			P34 = 1;
 		}
 	}
 	
 	if(turn_in_start_flag == 1)		// 返航
 	{
-		P34 = 1;
-//		TargetSpeed = targetspeed_backup;	// 恢复原速度
-		Speed_Ctrl_in(50);
-		AngleZ_output = AngleZ_state.actual;
-		if(Angle_Z > 45 && Angle_Z < 55){	// 偏移角度条件判断,初始值为90°
-			turn_in_start_flag = 0;			//turn in finished
-			turn_finish_flag = 1;			//finish all
+		AngleZ_output = 0;
+		if(keep_going < 8000)
+			keep_going += Left_Speed_State.actual / 5;
+		else{
+//			TargetSpeed = targetspeed_backup;	// 恢复原速度
+			Speed_Ctrl_in(60);
+			AngleZ_output = AngleZ_state.output;
+			if(Angle_Z > 55 && Angle_Z < 65){	// 偏移角度条件判断,初始值为90°
+				turn_in_start_flag = 0;			//turn in finished
+				turn_finish_flag = 1;			//finish all
+			}
 		}
 	}
-
+	if(turn_finish_flag == 1)
+	{
+		keep_going = 0;
+		AngleZ_output = 0;
+	}
 	
-
 	/* ADC控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0)	// 中环pid adc处理，每一小段的偏移，PID
 	{
@@ -99,7 +111,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	}
 	
 	
-	
+
 	/* 电机速度控制环 */
 	if(cnt % 5 == 0)	// 外环pid 速度环，用PI
 	{

@@ -172,6 +172,7 @@ void PID_Adjust(void)
 		{
 			PID_out_right.kd = data_return;
 		}
+		
 		else if (data_buffer[0] == 'V' && data_buffer[1] == 'E') 
 		{
 			start_car_signal = 1;
@@ -190,6 +191,8 @@ void PID_Adjust(void)
 		{
 			E_T = data_return;
 		}
+		
+		// PID_AngleZ
 		else if (data_buffer[0] == 'Z' && data_buffer[1] == 'P') 
 		{
 			PID_AngleZ.kp = data_return;
@@ -203,9 +206,10 @@ void PID_Adjust(void)
 			PID_AngleZ.kd = data_return;
 		}
 		
+		
 		// 显示三组PID参数
-//		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d,%d\n\n",\
-//		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
+//		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d,%d\n\n",
+//		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,
 //		TargetSpeed,		turn_ratio,			vertical_value, E_T);
 		
 		pid_changed = 0;
