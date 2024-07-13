@@ -15,7 +15,8 @@
 #include 	"telemeter.h"
 #include	"control.h"
 uint8 cnt = 0;
-extern uint8 start_car_signal;	//发车信号
+extern uint8 start_car_signal;
+extern int start_get_distance;
 uint16 distance = 0;
 uint8 turn_out_start_flag = 0, turn_in_start_flag = 0, turn_finish_flag = 0;
 long keep_going = 0;
@@ -33,14 +34,19 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	output_right = pid3_output_right;
 	cnt++;
 	if(TargetSpeed > 0 && start_car_signal){
-	output_left = output_left - pid2_output - AngleZ_output;
-	output_right = output_right + pid2_output + AngleZ_output; 
+		if(turn_out_start_flag == 0 && turn_in_start_flag == 0){
+			output_left = output_left - pid2_output;
+			output_right = output_right + pid2_output; 
+		}else if(turn_out_start_flag == 1 || turn_in_start_flag == 1){
+			output_left = output_left - AngleZ_output;
+			output_right = output_right + AngleZ_output;
+		}
 	}
 	Set_Motors(output_left,output_right);		// 更新电机PWM
 	
 	/* 陀螺仪控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0 && turn_finish_flag == 0){
-		distance = dl1b_get_distance();			// 检测距离
+		start_get_distance++;
 		if(distance < 800 && distance > 500){
 			turn_out_start_flag = 1;
 			Angle_Z = 90;
@@ -52,7 +58,6 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	
 	if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// 偏航
 	{
-		P34 = 0;
 		pid2_output = 0;							// adc环控制输出置零
 //		TargetSpeed = targetspeed_backup - 300; 	// 降速
 		Speed_Ctrl_in(120);
@@ -61,7 +66,6 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		if(Angle_Z > 115 && Angle_Z < 125){		// 偏移角度条件判断,初始值为90°
 			turn_in_start_flag = 1;
 			turn_out_start_flag = 0;			//turn_out finished
-			P34 = 1;
 		}
 	}
 	
@@ -85,8 +89,8 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		keep_going = 0;
 		AngleZ_output = 0;
 	}
-	
-	/* ADC控制环 */
+//	
+//	/* ADC控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0)	// 中环pid adc处理，每一小段的偏移，PID
 	{
 		// adc获取
@@ -95,13 +99,11 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		// PID输出的是外环的输入(下一环的期望)
 
 		// 更新电机PWM = pid(error_mid)
-		P34 = 1;
 		Sample_All_Chanel();
 		Speed_Ctrl_mid(0);
 		pid2_output = adc_state.output;
-//		printf("angle_Z:%.2f\n",Angle_Z);
 	}
-	
+//	
 	
 
 	/* 电机速度控制环 */

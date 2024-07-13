@@ -8,11 +8,12 @@
 #include "telemeter.h"
 #include "iic.h"
 #include "exti.h"
-
+#define PRINT(a)	printf("a: %d\n",a);
 #pragma userclass (near=CEVENT)	
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
-
+extern uint16 distance;
+int start_get_distance = 0;
 int main(void)
 {	
 	/******************************************************************/
@@ -46,10 +47,11 @@ int main(void)
 	while(1)
 	{	
 		wireless_PID();
-//		printf("Speed:%ld,%ld\n",Left_Speed_State.actual, Right_Speed_State.actual);
-		printf("state:%ld,%ld,%ld,",output_left,output_right,pid2_output);
-		printf("%ld,%ld\n",pid3_output_left,pid3_output_right);
-		printf("%ld,%ld\n",Left_Speed_State.actual,Right_Speed_State.actual);
+		if(start_get_distance % 10 == 0){
+			distance = dl1b_get_distance();			// ºÏ≤‚æ‡¿Î
+			start_get_distance = 0;
+		}		
+		printf("state:%ld,%ld\n",output_left,output_right);
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));

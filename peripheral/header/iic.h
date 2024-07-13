@@ -27,7 +27,7 @@
 #else	//use hardware IIC
 	#define IIC_SEND_OK 	0
 	#define IIC_SEND_FAIL	1
-	#define WAIT_TIME		63	//设置等待时长
+	#define WAIT_TIME		2	//设置等待时长
 	
 #endif	//USE_SOFT_IIC
 
