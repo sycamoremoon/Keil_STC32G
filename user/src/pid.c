@@ -9,7 +9,7 @@
  */
 
 #include "pid.h"
-
+#define INTEGRAL_LIMIT	(500000)
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      位置式PID
 //  @param      calibration			对被控对象PID调整的参数
@@ -24,10 +24,10 @@ PID_State* pid_location(PID_Calibration * calibration, PID_State * state)
     // calculate and update integral
 	
 	state->integral += error;
-//	if (((int)state->integral) >= 2000)
-//		state->integral = 2000;
-//	if (((int)state->integral) <= -2000)
-//		state->integral = -2000;
+	if (state->integral >= INTEGRAL_LIMIT)
+		state->integral = INTEGRAL_LIMIT;
+	if (state->integral <= -INTEGRAL_LIMIT)
+		state->integral = -INTEGRAL_LIMIT;
     // calculate derivative
     derivative = (error - state->previous_error);
     // calculate output value according to algorithm
@@ -60,7 +60,7 @@ PID_State* pid_increase(PID_Calibration * calibration, PID_State * state)
 		state->output
         + (calibration->kp * (error - state -> previous_error) / 100) 
 		+ (calibration->ki * error * 10 / 100000) 		// 30%
-		+ (calibration->kd * derivative / 10)
+		+ (calibration->kd * derivative / 100)
 		);
 	
 	//更新上次误差和上上次误差

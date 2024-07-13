@@ -13,6 +13,14 @@ PID_State 	Right_Speed_State 	= {0};				//右电机速度状态参数
 long TargetSpeed = 0;
 long targetspeed_backup = 0;
 
+long pid1_output = 0;
+long pid2_output = 0;
+long pid3_output_left = 0;
+long pid3_output_right = 0;
+long output_left = 0;
+long output_right = 0;
+long AngleZ_output = 0;
+
 extern uint8 start_car_signal;	//发车信号
 
 /// @brief 通过PID算法调整电机速度达到目标速度
@@ -34,8 +42,8 @@ void Speed_Ctrl_in(long AngleZ_target)
 void Speed_Ctrl_mid(long adc_target)
 {
 	//获取真实adc
-	adc_state.actual = (long) Get_Regularized_Signal_Data(All_Signal_Data);
-//	printf("adc_state.actual:%ld\n",adc_state.actual);
+	adc_state.actual = (long)Get_Regularized_Signal_Data(All_Signal_Data);
+//	printf("adc_state:%ld,%ld\n",adc_state.integral,adc_state.actual);
 	//adc_state.actual = 0;
 	//获取目标adc
 	adc_state.target = adc_target;
@@ -50,7 +58,7 @@ void Speed_Ctrl_out(long Left_Speed,long Right_Speed)
 	//获取真实速度*MAXSPEED/MAXENCODER
 	Left_Speed_State.actual = get_EncoderL();
 	Right_Speed_State.actual = get_EncoderR();
-//	printf("Speed:%ld,%ld\n",Left_Speed_State.actual, Right_Speed_State.actual);
+//	
 	
 	//获取目标速度
 	Left_Speed_State.target = Left_Speed * MAXENCODER_L / MAXSPEED;

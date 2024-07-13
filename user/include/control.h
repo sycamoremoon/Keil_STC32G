@@ -21,6 +21,8 @@ extern PID_Calibration PID_out_right;
 
 extern long TargetSpeed;	//目标速度
 extern long targetspeed_backup; 	//备份目标速度
+
+extern long pid1_output, pid2_output, pid3_output_left, pid3_output_right, output_left, output_right, AngleZ_output;
 	
 void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gyro_state);
 void Set_Motors(long left, long right);
