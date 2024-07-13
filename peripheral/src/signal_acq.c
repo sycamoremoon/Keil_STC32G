@@ -130,7 +130,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	static int count = 0;
 	static int enter_time = 0;
 	static uint8 enter_island_begin = 0, enter_island_finish = 0, leave_island_finish = 0, leave_island_begin = 0, out_island;
-	static uint8 enter_angle90_begin = 0, enter_angle90_finish = 0, leave_angle90_finish = 0, leave_angle90_begin = 0, out_angle90;
+	static uint8 enter_angle90_begin = 0, enter_angle90_finish = 0;
 	uint8 angle90_flag, cross_flag, soft_turn_flag;
 	int32 answer = 0, mid_answer = 0;
 	int32 diff1,diff2 ,sum1,sum2;
@@ -149,16 +149,33 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 			if(abs((int)(Data_Array[2] - Data_Array[3])) < 520) soft_turn_flag = 1;
 		}
 	}
-	
 	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] > 5000) cross_flag = 1;
 	
+	//enter_angle90_begin置1之后只有当确认离开直角才会清零
+	if(angle90_flag == 1){
+		if(enter_angle90_begin == 0) enter_angle90_begin = 1;
+		enter_time ++;
+	}else{		//电感检测不到直角信号
+		if(enter_angle90_begin == 1) enter_angle90_finish = 1;
+	}
+	
+	//如果enter_angle90_finish为1但是没有达到指定的次数，还是认为没有完成一次直角转弯
+	if(enter_angle90_finish == 1 && enter_time < E_T){
+		enter_angle90_finish = 0;
+		enter_time ++;
+		angle90_flag = 1;
+	}
+	
+	//如果到这里enter_angle90_finish还是为1，则说明确实执行了E_T次确实离开了直角
+	if(enter_angle90_finish == 1){
+		enter_angle90_finish = enter_angle90_begin = 0;
+		TargetSpeed = targetspeed_backup;
+		enter_time = 0;
+	}
+	
 	//纵向电感
-	if(angle90_flag == 1)enter_time++;
-	if(enter_time) angle90_flag = 1;
 	if(angle90_flag && !cross_flag && !soft_turn_flag){
-		//P34 = 1;
-		if(enter_time <= 0) enter_time = E_T;
-		else enter_time--;
+		P34 = 1;
 		
 		if(Data_Array[1] > Data_Array[2]){
 			diff2 = Data_Array[1]-Data_Array[2];
@@ -217,10 +234,10 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	}
 	
 //		if(leave_island_finish == 1 && enter_island_finish == 1) enter_island_finish = leave_island_finish = 0; //重置环岛标志
-	
-	//冲出赛道停车
+		//冲出赛道停车
 	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 200){
-		Stop_Car();
+		if(enter_angle90_begin == 1) TargetSpeed = targetspeed_backup - 300;	//仍处于直角转弯状态
+		else Stop_Car();
 	}else{
 		if(start_car_signal == 1) TargetSpeed = targetspeed_backup;
 	}

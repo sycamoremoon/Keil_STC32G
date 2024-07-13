@@ -39,7 +39,7 @@ int main(void)
 	P6_MODE_OUT_PP(GPIO_Pin_1);	//测试GET_ANGLE
 	P3_MODE_OUT_PP(GPIO_Pin_4);	//蜂鸣器
 	P34 = 0;
-	printf("start\n");
+
 	//初始化结束
 	/******************************************************************/
 	//主循环
@@ -47,9 +47,9 @@ int main(void)
 	{	
 		wireless_PID();
 //		printf("Speed:%ld,%ld\n",Left_Speed_State.actual, Right_Speed_State.actual);
-		printf("state:%ld,%ld,%ld,%ld,%ld\n",output_left,output_right,pid2_output,pid3_output_left,pid3_output_right);
-//		printf("Angle:%ld,%ld,%ld,%ld\n",PID_AngleZ.kp,PID_AngleZ.kd,AngleZ_state.output,AngleZ_state.actual);
-//		printf("Angle:%ld,%ld,%ld,%ld,%ld,%f\n",PID_AngleZ.kp,PID_AngleZ.ki,PID_AngleZ.kd,Angle_Z);
+		printf("state:%ld,%ld,%ld,",output_left,output_right,pid2_output);
+		printf("%ld,%ld\n",pid3_output_left,pid3_output_right);
+		printf("%ld,%ld\n",Left_Speed_State.actual,Right_Speed_State.actual);
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
