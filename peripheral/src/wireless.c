@@ -28,7 +28,7 @@
 #include "wireless.h"
 #include "control.h"
 uint8 start_car_signal = 0;
-uint8 data_buffer[32] = {0};		// 数据存储在data_buffer中
+uint8 data_buffer[128] = {0};		// 数据存储在data_buffer中
 uint8 pid_changed = 0;
 WIRELESS_TYPE_enum wireless_type = WIRELESS_SI24R1;
 
@@ -208,14 +208,14 @@ void PID_Adjust(void)
 		
 		
 		// 显示三组PID参数
-//		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d,%d\n\n",
-//		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,
+//		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d,%d\n\n",\
+//		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
 //		TargetSpeed,		turn_ratio,			vertical_value, E_T);
 		
 		pid_changed = 0;
 	}
 
-	memset(data_buffer, 0, 32);
+	memset(data_buffer, 0, 128);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
