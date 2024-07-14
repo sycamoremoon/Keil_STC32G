@@ -36,20 +36,21 @@ int main(void)
 	/******************************************************************/
 
 	/******************************************************************/
-	P6_MODE_OUT_PP(GPIO_Pin_1);	//²âÊÔGET_ANGLE
-	P3_MODE_OUT_PP(GPIO_Pin_4);	//·äÃùÆ÷
+	P6_MODE_OUT_PP(GPIO_Pin_1);	//æµ‹è¯•GET_ANGLE
+	P3_MODE_OUT_PP(GPIO_Pin_4);	//èœ‚é¸£å™¨
 	P34 = 0;
 
-	//³õÊ¼»¯½áÊø
+	//åˆå§‹åŒ–ç»“æŸ
 	/******************************************************************/
-	//Ö÷Ñ­»·
+	//ä¸»å¾ªç¯
 	while(1)
 	{	
 		wireless_PID();
-//		printf("Speed:%ld,%ld\n",Left_Speed_State.actual, Right_Speed_State.actual);
-		printf("state:%ld,%ld,%ld,",output_left,output_right,pid2_output);
-		printf("%ld,%ld\n",pid3_output_left,pid3_output_right);
-		printf("%ld,%ld\n",Left_Speed_State.actual,Right_Speed_State.actual);
+
+		if(start_get_distance % 20 == 0 && start_get_distance != 0){
+			distance = dl1b_get_distance();			// æ£€æµ‹è·ç¦»
+			start_get_distance = 0;
+		}	
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));

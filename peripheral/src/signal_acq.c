@@ -176,7 +176,6 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	//纵向电感
 	if(angle90_flag && !cross_flag && !soft_turn_flag){
 		P34 = 1;
-		
 		if(Data_Array[1] > Data_Array[2]){
 			diff2 = Data_Array[1]-Data_Array[2];
 			sum2 = Data_Array[1]+Data_Array[2];
@@ -191,7 +190,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}
 		answer += mid_answer;
 	}else{
-		//P34 = 0;
+		P34 = 0;
 	}
 	
 	//横向电感

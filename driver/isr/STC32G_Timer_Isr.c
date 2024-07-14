@@ -7,7 +7,7 @@
 /* --- Web: www.STCMCU.com --------------------------------------------*/
 /* --- Web: www.STCMCUDATA.com  ---------------------------------------*/
 /* --- QQ:  800003751 -------------------------------------------------*/
-/* Èç¹ûÒªÔÚ³ÌĞòÖĞÊ¹ÓÃ´Ë´úÂë,ÇëÔÚ³ÌĞòÖĞ×¢Ã÷Ê¹ÓÃÁËSTCµÄ×ÊÁÏ¼°³ÌĞò        */
+/* å¦‚æœè¦åœ¨ç¨‹åºä¸­ä½¿ç”¨æ­¤ä»£ç ,è¯·åœ¨ç¨‹åºä¸­æ³¨æ˜ä½¿ç”¨äº†STCçš„èµ„æ–™åŠç¨‹åº        */
 /*---------------------------------------------------------------------*/
 
 #include	"STC32G_Timer.h"
@@ -15,19 +15,19 @@
 #include 	"telemeter.h"
 #include	"control.h"
 uint8 cnt = 0;
-extern uint8 start_car_signal;	//·¢³µĞÅºÅ
+extern uint8 start_car_signal;	//å‘è½¦ä¿¡å·
 uint16 distance = 0;
 uint8 turn_out_start_flag = 0, turn_in_start_flag = 0, turn_finish_flag = 0;
 long keep_going = 0;
 //========================================================================
-// º¯Êı: Timer0_ISR_Handler
-// ÃèÊö: Timer0ÖĞ¶Ïº¯Êı.
-// ²ÎÊı: none.
-// ·µ»Ø: none.
-// °æ±¾: V1.0, 2020-09-23
+// å‡½æ•°: Timer0_ISR_Handler
+// æè¿°: Timer0ä¸­æ–­å‡½æ•°.
+// å‚æ•°: none.
+// è¿”å›: none.
+// ç‰ˆæœ¬: V1.0, 2020-09-23
 //========================================================================
 // 
-void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾ 
+void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//è¿›ä¸­æ–­æ—¶å·²ç»æ¸…é™¤æ ‡å¿— 
 {
 	output_left = pid3_output_left;
 	output_right = pid3_output_right;
@@ -36,45 +36,45 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
 	output_left = output_left - pid2_output - AngleZ_output;
 	output_right = output_right + pid2_output + AngleZ_output; 
 	}
-	Set_Motors(output_left,output_right);		// ¸üĞÂµç»úPWM
+	Set_Motors(output_left,output_right);		// æ›´æ–°ç”µæœºPWM
 	
-	/* ÍÓÂİÒÇ¿ØÖÆ»· */
+	/* é™€èºä»ªæ§åˆ¶ç¯ */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0 && turn_finish_flag == 0){
-		distance = dl1b_get_distance();			// ¼ì²â¾àÀë
-		if(distance < 800 && distance > 500){
+
+		start_get_distance++;
+		if(distance < 800 && distance > 700){
 			turn_out_start_flag = 1;
 			Angle_Z = 90;
 		}
 	}
 	if(turn_out_start_flag == 1 || turn_in_start_flag == 1){
 		Get_angle();
+//		printf("sa:%.2f\n",Angle_Z);
 	}
-	
-	if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// Æ«º½
+	if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// åèˆª
 	{
 		P34 = 0;
-		pid2_output = 0;							// adc»·¿ØÖÆÊä³öÖÃÁã
-//		TargetSpeed = targetspeed_backup - 300; 	// ½µËÙ
+		pid2_output = 0;							// adcç¯æ§åˆ¶è¾“å‡ºç½®é›¶
+//		TargetSpeed = targetspeed_backup - 300; 	// é™é€Ÿ
 		Speed_Ctrl_in(120);
 		AngleZ_output = AngleZ_state.output;
-		
-		if(Angle_Z > 115 && Angle_Z < 125){		// Æ«ÒÆ½Ç¶ÈÌõ¼şÅĞ¶Ï,³õÊ¼ÖµÎª90¡ã
+		if(Angle_Z > 115 && Angle_Z < 125){		// åç§»è§’åº¦æ¡ä»¶åˆ¤æ–­,åˆå§‹å€¼ä¸º90Â°
 			turn_in_start_flag = 1;
 			turn_out_start_flag = 0;			//turn_out finished
 			P34 = 1;
 		}
 	}
 	
-	if(turn_in_start_flag == 1)		// ·µº½
+	if(turn_in_start_flag == 1)		// è¿”èˆª
 	{
 		AngleZ_output = 0;
 		if(keep_going < 8000)
 			keep_going += Left_Speed_State.actual / 5;
 		else{
-//			TargetSpeed = targetspeed_backup;	// »Ö¸´Ô­ËÙ¶È
+//			TargetSpeed = targetspeed_backup;	// æ¢å¤åŸé€Ÿåº¦
 			Speed_Ctrl_in(60);
 			AngleZ_output = AngleZ_state.output;
-			if(Angle_Z > 55 && Angle_Z < 65){	// Æ«ÒÆ½Ç¶ÈÌõ¼şÅĞ¶Ï,³õÊ¼ÖµÎª90¡ã
+			if(Angle_Z > 55 && Angle_Z < 65){	// åç§»è§’åº¦æ¡ä»¶åˆ¤æ–­,åˆå§‹å€¼ä¸º90Â°
 				turn_in_start_flag = 0;			//turn in finished
 				turn_finish_flag = 1;			//finish all
 			}
@@ -85,16 +85,16 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
 		keep_going = 0;
 		AngleZ_output = 0;
 	}
-	
-	/* ADC¿ØÖÆ»· */
-	if(turn_out_start_flag == 0 && turn_in_start_flag == 0)	// ÖĞ»·pid adc´¦Àí£¬Ã¿Ò»Ğ¡¶ÎµÄÆ«ÒÆ£¬PID
-	{
-		// adc»ñÈ¡
-		// error_mid = pid(error_in) - adc»ñÈ¡Öµ   £¨×¢Òâ¿ÉÄÜ¼õ·´£©
-		// pid(error_mid)
-		// PIDÊä³öµÄÊÇÍâ»·µÄÊäÈë(ÏÂÒ»»·µÄÆÚÍû)
+	/* ADCæ§åˆ¶ç¯ */
 
-		// ¸üĞÂµç»úPWM = pid(error_mid)
+	if(turn_out_start_flag == 0 && turn_in_start_flag == 0)	// ä¸­ç¯pid adcå¤„ç†ï¼Œæ¯ä¸€å°æ®µçš„åç§»ï¼ŒPID
+	{
+		// adcè·å–
+		// error_mid = pid(error_in) - adcè·å–å€¼   ï¼ˆæ³¨æ„å¯èƒ½å‡åï¼‰
+		// pid(error_mid)
+		// PIDè¾“å‡ºçš„æ˜¯å¤–ç¯çš„è¾“å…¥(ä¸‹ä¸€ç¯çš„æœŸæœ›)
+
+		// æ›´æ–°ç”µæœºPWM = pid(error_mid)
 		P34 = 1;
 		Sample_All_Chanel();
 		Speed_Ctrl_mid(0);
@@ -104,14 +104,14 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
 	
 	
 
-	/* µç»úËÙ¶È¿ØÖÆ»· */
-	if(cnt % 5 == 0)	// Íâ»·pid ËÙ¶È»·£¬ÓÃPI
+	/* ç”µæœºé€Ÿåº¦æ§åˆ¶ç¯ */
+	if(cnt % 5 == 0)	// å¤–ç¯pid é€Ÿåº¦ç¯ï¼Œç”¨PI
 	{
 		cnt = 0;
-		// PIDÊäÈë£ºÖĞ»·µÄÁ½¸öÊä³öÊı¾İ
-		// error = ÖĞ»·µÄÊä³ö - Êµ¼ÊËÙ¶È
-		// ¸üĞÂµç»úPWM = pid(error)
-		// ÅÀÆÂÏÂÆÂºÍÊÊÓ¦µçÑ¹µÄ
+		// PIDè¾“å…¥ï¼šä¸­ç¯çš„ä¸¤ä¸ªè¾“å‡ºæ•°æ®
+		// error = ä¸­ç¯çš„è¾“å‡º - å®é™…é€Ÿåº¦
+		// æ›´æ–°ç”µæœºPWM = pid(error)
+		// çˆ¬å¡ä¸‹å¡å’Œé€‚åº”ç”µå‹çš„
 		Speed_Ctrl_out(TargetSpeed,TargetSpeed);
 //		printf("F: %d,%d\n",get_EncoderL(), get_EncoderR());
 //		printf("F: %ld,%ld\n",Left_Speed_State.actual ,Right_Speed_State.actual);
@@ -123,56 +123,56 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
 }
 
 //========================================================================
-// º¯Êı: Timer1_ISR_Handler
-// ÃèÊö: Timer1ÖĞ¶Ïº¯Êı.
-// ²ÎÊı: none.
-// ·µ»Ø: none.
-// °æ±¾: V1.0, 2020-09-23
+// å‡½æ•°: Timer1_ISR_Handler
+// æè¿°: Timer1ä¸­æ–­å‡½æ•°.
+// å‚æ•°: none.
+// è¿”å›: none.
+// ç‰ˆæœ¬: V1.0, 2020-09-23
 //========================================================================
-void Timer1_ISR_Handler (void) interrupt TMR1_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
+void Timer1_ISR_Handler (void) interrupt TMR1_VECTOR		//è¿›ä¸­æ–­æ—¶å·²ç»æ¸…é™¤æ ‡å¿—
 {
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÓÃ»§´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ ç”¨æˆ·ä»£ç 
 	P60 = ~P60;
 }
 
 //========================================================================
-// º¯Êı: Timer2_ISR_Handler
-// ÃèÊö: Timer2ÖĞ¶Ïº¯Êı.
-// ²ÎÊı: none.
-// ·µ»Ø: none.
-// °æ±¾: V1.0, 2020-09-23
+// å‡½æ•°: Timer2_ISR_Handler
+// æè¿°: Timer2ä¸­æ–­å‡½æ•°.
+// å‚æ•°: none.
+// è¿”å›: none.
+// ç‰ˆæœ¬: V1.0, 2020-09-23
 //========================================================================
-void Timer2_ISR_Handler (void) interrupt TMR2_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
+void Timer2_ISR_Handler (void) interrupt TMR2_VECTOR		//è¿›ä¸­æ–­æ—¶å·²ç»æ¸…é™¤æ ‡å¿—
 {
-	AUXINTIF &= ~0x01;	// ÇåÖĞ¶Ï±êÖ¾
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÓÃ»§´úÂë
+	AUXINTIF &= ~0x01;	// æ¸…ä¸­æ–­æ ‡å¿—
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ ç”¨æˆ·ä»£ç 
 	
 }
 
 //========================================================================
-// º¯Êı: Timer3_ISR_Handler
-// ÃèÊö: Timer3ÖĞ¶Ïº¯Êı.
-// ²ÎÊı: none.
-// ·µ»Ø: none.
-// °æ±¾: V1.0, 2020-09-23
+// å‡½æ•°: Timer3_ISR_Handler
+// æè¿°: Timer3ä¸­æ–­å‡½æ•°.
+// å‚æ•°: none.
+// è¿”å›: none.
+// ç‰ˆæœ¬: V1.0, 2020-09-23
 //========================================================================
-void Timer3_ISR_Handler (void) interrupt TMR3_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
+void Timer3_ISR_Handler (void) interrupt TMR3_VECTOR		//è¿›ä¸­æ–­æ—¶å·²ç»æ¸…é™¤æ ‡å¿—
 {
-	AUXINTIF &= ~0x02;	// ÇåÖĞ¶Ï±êÖ¾
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÓÃ»§´úÂë
+	AUXINTIF &= ~0x02;	// æ¸…ä¸­æ–­æ ‡å¿—
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ ç”¨æˆ·ä»£ç 
 
 }
 
 //========================================================================
-// º¯Êı: Timer4_ISR_Handler
-// ÃèÊö: Timer4ÖĞ¶Ïº¯Êı.
-// ²ÎÊı: none.
-// ·µ»Ø: none.
-// °æ±¾: V1.0, 2020-09-23
+// å‡½æ•°: Timer4_ISR_Handler
+// æè¿°: Timer4ä¸­æ–­å‡½æ•°.
+// å‚æ•°: none.
+// è¿”å›: none.
+// ç‰ˆæœ¬: V1.0, 2020-09-23
 //========================================================================
-void Timer4_ISR_Handler (void) interrupt TMR4_VECTOR		//½øÖĞ¶ÏÊ±ÒÑ¾­Çå³ı±êÖ¾
+void Timer4_ISR_Handler (void) interrupt TMR4_VECTOR		//è¿›ä¸­æ–­æ—¶å·²ç»æ¸…é™¤æ ‡å¿—
 {
-	AUXINTIF &= ~0x04;	// ÇåÖĞ¶Ï±êÖ¾
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÓÃ»§´úÂë
+	AUXINTIF &= ~0x04;	// æ¸…ä¸­æ–­æ ‡å¿—
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ ç”¨æˆ·ä»£ç 
 	
 }

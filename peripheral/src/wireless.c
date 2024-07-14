@@ -1,39 +1,39 @@
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2018,Öğ·É¿Æ¼¼
+ * Copyright (c) 2018,é€é£ç§‘æŠ€
  * All rights reserved.
- * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897
+ * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897
  *
- * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
- * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+ * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+ * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
  *
- * @file       		Öğ·É¿Æ¼¼ÎŞÏß×ª´®¿ÚÄ£¿é
- * @company	   		³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
- * @author     		Öğ·É¿Æ¼¼(QQ3184284598)
- * @version    		²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
+ * @file       		é€é£ç§‘æŠ€æ— çº¿è½¬ä¸²å£æ¨¡å—
+ * @company	   		æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+ * @author     		é€é£ç§‘æŠ€(QQ3184284598)
+ * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
  * @Software 		MDK FOR C251 V5.60
  * @Target core		STC32G12K128
  * @Taobao   		https://seekfree.taobao.com/
  * @date       		2019-03-27
  * @note		
-					½ÓÏß¶¨Òå£º
+					æ¥çº¿å®šä¹‰ï¼š
 					------------------------------------ 
-					ÎŞÏß×ª´®¿Ú      µ¥Æ¬»ú                        
-    				RX              ²é¿´SEEKFREE_WIRELESS.hÎÄ¼şÖĞµÄWIRELESS_UART_TXºê¶¨Òå
-    				TX              ²é¿´SEEKFREE_WIRELESS.hÎÄ¼şÖĞµÄWIRELESS_UART_RXºê¶¨Òå
-    				RTS             ²é¿´SEEKFREE_WIRELESS.hÎÄ¼şÖĞµÄRTS_PINºê¶¨Òå
-    				CMD             ²é¿´SEEKFREE_WIRELESS.hÎÄ¼şÖĞµÄCMD_PINºê¶¨Òå
+					æ— çº¿è½¬ä¸²å£      å•ç‰‡æœº                        
+    				RX              æŸ¥çœ‹SEEKFREE_WIRELESS.hæ–‡ä»¶ä¸­çš„WIRELESS_UART_TXå®å®šä¹‰
+    				TX              æŸ¥çœ‹SEEKFREE_WIRELESS.hæ–‡ä»¶ä¸­çš„WIRELESS_UART_RXå®å®šä¹‰
+    				RTS             æŸ¥çœ‹SEEKFREE_WIRELESS.hæ–‡ä»¶ä¸­çš„RTS_PINå®å®šä¹‰
+    				CMD             æŸ¥çœ‹SEEKFREE_WIRELESS.hæ–‡ä»¶ä¸­çš„CMD_PINå®å®šä¹‰
 					------------------------------------ 
  ********************************************************************************************************************/
 #include "wireless.h"
 #include "control.h"
 uint8 start_car_signal = 0;
-uint8 data_buffer[32] = {0};		// Êı¾İ´æ´¢ÔÚdata_bufferÖĞ
+uint8 data_buffer[32] = {0};		// æ•°æ®å­˜å‚¨åœ¨data_bufferä¸­
 uint8 pid_changed = 0;
 WIRELESS_TYPE_enum wireless_type = WIRELESS_SI24R1;
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ÎŞÏß×ª ´®¿ÚÄ£¿é³õÊ¼»¯
+//  @brief      æ— çº¿è½¬ ä¸²å£æ¨¡å—åˆå§‹åŒ–
 //  @param      NULL
 //  @return     void					
 //  @since      v1.0
@@ -44,71 +44,71 @@ void wireless_uart_init(void)
 {
     WIRELESS_RTS_PIN = 0;
     wireless_type = WIRELESS_SI24R1;
-	uart_init(WIRELESS_UART, WIRELESS_UART_RX_PIN, WIRELESS_UART_TX_PIN, WIRELESS_UART_BAUD, WIRELESS_TIMER_N);	//³õÊ¼»¯´®¿Ú    
+	uart_init(WIRELESS_UART, WIRELESS_UART_RX_PIN, WIRELESS_UART_TX_PIN, WIRELESS_UART_BAUD, WIRELESS_TIMER_N);	//åˆå§‹åŒ–ä¸²å£    
 }
 
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      Í¨¹ıÎŞÏß´®¿Ú½ÓÊÕµ½µÄ×Ö·û´®½âÎö³öÊı¾İ
+//  @brief      é€šè¿‡æ— çº¿ä¸²å£æ¥æ”¶åˆ°çš„å­—ç¬¦ä¸²è§£æå‡ºæ•°æ®
 //  @param      NULL
 //  @return     void					
 //  @since      v1.0
-//  Sample usage:	½ÓÊÕµ½ AP=13! Ôò ½âÎöµ½µÄÊı¾İÎª13
+//  Sample usage:	æ¥æ”¶åˆ° AP=13! åˆ™ è§£æåˆ°çš„æ•°æ®ä¸º13
 //  @note       
 //-------------------------------------------------------------------------------------------------------------------
 long get_data(void)
 {
-    int		data_len 	= 0;	// ¼ÇÂ¼Êı¾İÎ»Êı
-    uint8 	data_start	= 0;	// ¼ÇÂ¼Êı¾İÎ»¿ªÊ¼µÄµØ·½
-	uint8 	data_end	= 0;	// ¼ÇÂ¼Êı¾İÎ»½áÊøµÄµØ·½
-	uint8 	minus_Flag 	= 0; 	// ÅĞ¶Ï¸ºÊı±êÖ¾Î»
-	uint8 	data_Num 	= 0; 	// ¼ÇÂ¼Êı¾İÎ»Êı
-	long  	data_return	= 0;	// ½âÎöµÃµ½µÄÊı¾İ
+    int		data_len 	= 0;	// è®°å½•æ•°æ®ä½æ•°
+    uint8 	data_start	= 0;	// è®°å½•æ•°æ®ä½å¼€å§‹çš„åœ°æ–¹
+	uint8 	data_end	= 0;	// è®°å½•æ•°æ®ä½ç»“æŸçš„åœ°æ–¹
+	uint8 	minus_Flag 	= 0; 	// åˆ¤æ–­è´Ÿæ•°æ ‡å¿—ä½
+	uint8 	data_Num 	= 0; 	// è®°å½•æ•°æ®ä½æ•°
+	long  	data_return	= 0;	// è§£æå¾—åˆ°çš„æ•°æ®
 	uint8 	i = 0;
 	
-	data_len = strlen(data_buffer);	// »ñÈ¡data_bufferµÄ³¤¶È
+	data_len = strlen(data_buffer);	// è·å–data_bufferçš„é•¿åº¦
 
     if (data_len != 0) 
 	{
 		pid_changed = 1;
-		for (i = 0; i < data_len; i++)	// ²éÕÒ'='ºÍ'!'µÄÎ»ÖÃ
+		for (i = 0; i < data_len; i++)	// æŸ¥æ‰¾'='å’Œ'!'çš„ä½ç½®
 		{
 			if (data_buffer[i] == '=') 
 			{
-				data_start = i + 1;	//¶¨Î»µ½Êı¾İÆğÊ¼Î»
+				data_start = i + 1;	//å®šä½åˆ°æ•°æ®èµ·å§‹ä½
 			}
 			if (data_buffer[i] == '!')
 			{
-				data_end = i - 1;	// ¶¨Î»µ½Êı¾İ½áÊøÎ»
+				data_end = i - 1;	// å®šä½åˆ°æ•°æ®ç»“æŸä½
 				break;
 			}
 		}
 		
-		if (data_buffer[data_start] == '-') 	// Èç¹ûÊÇ¸ºÊı
+		if (data_buffer[data_start] == '-') 	// å¦‚æœæ˜¯è´Ÿæ•°
 		{
-			data_start += 1; 					// ºóÒÆÒ»Î»µ½Êı¾İÎ»
-			minus_Flag = 1; 					// ¸ºÊıflag = 1
+			data_start += 1; 					// åç§»ä¸€ä½åˆ°æ•°æ®ä½
+			minus_Flag = 1; 					// è´Ÿæ•°flag = 1
 		}
-		data_Num = data_end - data_start + 1;	// Êı¾İµÄÎ»Êı
+		data_Num = data_end - data_start + 1;	// æ•°æ®çš„ä½æ•°
 
-		if (data_Num == 1) // Êı¾İ¹²1Î»
+		if (data_Num == 1) // æ•°æ®å…±1ä½
 		{
-			data_return = data_buffer[data_start]-48;	//¼õÈ¥'0'µÄASCIIÂë48
+			data_return = data_buffer[data_start]-48;	//å‡å»'0'çš„ASCIIç 48
 		}
-		else if (data_Num == 2) // Êı¾İ¹²2Î»
+		else if (data_Num == 2) // æ•°æ®å…±2ä½
 		{
 			data_return = (data_buffer[data_start]-48)*10 + (data_buffer[data_end]-48);	
 		}
-		else if (data_Num == 3)	// Êı¾İ¹²3Î»
+		else if (data_Num == 3)	// æ•°æ®å…±3ä½
 		{
 			data_return = (data_buffer[data_start]-48)*100 + (data_buffer[data_start+1]-48)*10 + (data_buffer[data_end]-48);
 		}
-		else if (data_Num == 4)	// Êı¾İ¹²4Î»
+		else if (data_Num == 4)	// æ•°æ®å…±4ä½
 		{
 			data_return = (data_buffer[data_start]-48)*1000 + (data_buffer[data_start+1]-48)*100 + (data_buffer[data_start+2]-48)*10 + (data_buffer[data_end]-48);
 		}
 		
-		if (minus_Flag == 1)	data_return = -data_return;	// ÅĞ¶Ï¸ºÊı
+		if (minus_Flag == 1)	data_return = -data_return;	// åˆ¤æ–­è´Ÿæ•°
 	}
 	
 	return data_return;
@@ -116,11 +116,11 @@ long get_data(void)
 
 	
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ¸ù¾İ½âÎöµ½µÄÊı¾İdata_return£¬Ê¶±ğÒªµ÷ÕûµÄ²ÎÊı²¢ÓÃdata_return¸²¸Ç
+//  @brief      æ ¹æ®è§£æåˆ°çš„æ•°æ®data_returnï¼Œè¯†åˆ«è¦è°ƒæ•´çš„å‚æ•°å¹¶ç”¨data_returnè¦†ç›–
 //  @param      NULL
 //  @return     void					
 //  @since      v1.0
-//  Sample usage:	ÉÏÎ»»ú´«Êä¸ñÊ½£¬Àı£ºAP=58!£¬Ôò½«ADC_kp¸ü¸ÄÎª58
+//  Sample usage:	ä¸Šä½æœºä¼ è¾“æ ¼å¼ï¼Œä¾‹ï¼šAP=58!ï¼Œåˆ™å°†ADC_kpæ›´æ”¹ä¸º58
 //  @note       
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -207,10 +207,12 @@ void PID_Adjust(void)
 		}
 		
 		
-		// ÏÔÊ¾Èı×éPID²ÎÊı
-//		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d,%d\n\n",
-//		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,
-//		TargetSpeed,		turn_ratio,			vertical_value, E_T);
+		// æ˜¾ç¤ºä¸‰ç»„PIDå‚æ•°
+
+		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d\n\n",\
+		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
+		TargetSpeed,		turn_ratio,			E_T);
+
 		
 		pid_changed = 0;
 	}
@@ -219,7 +221,7 @@ void PID_Adjust(void)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      »ñÈ¡bufferÀïµÄÊı¾İ£¬²¢µ÷ÓÃPID_Adjust()¡£·ÅÈëÖ÷Ñ­»·ÖĞÊµÏÖÊµÊ±µ÷²Î
+//  @brief      è·å–bufferé‡Œçš„æ•°æ®ï¼Œå¹¶è°ƒç”¨PID_Adjust()ã€‚æ”¾å…¥ä¸»å¾ªç¯ä¸­å®ç°å®æ—¶è°ƒå‚
 //  @param      NULL
 //  @return     void					
 //  @since      v1.0
@@ -229,7 +231,7 @@ void PID_Adjust(void)
 void wireless_PID(void)
 {
 	uint8 i = 0;
-	if(COM4.RX_TimeOut > 0)		//³¬Ê±¼ÆÊı
+	if(COM4.RX_TimeOut > 0)		//è¶…æ—¶è®¡æ•°
 		{
 			if(--COM4.RX_TimeOut == 0)
 			{
@@ -237,8 +239,8 @@ void wireless_PID(void)
 				{
 					for(i=0; i<COM4.RX_Cnt; i++)	
 					{
-						data_buffer[i] = RX4_Buffer[i];		//ÊÕµ½µÄÊı¾İ´æ·Åµ½data_bufferÊı×éÖĞ
-						//TX4_write2buff(RX4_Buffer[i]);	//ÊÕµ½µÄÊı¾İÔ­Ñù·µ»Ø
+						data_buffer[i] = RX4_Buffer[i];		//æ”¶åˆ°çš„æ•°æ®å­˜æ”¾åˆ°data_bufferæ•°ç»„ä¸­
+						//TX4_write2buff(RX4_Buffer[i]);	//æ”¶åˆ°çš„æ•°æ®åŸæ ·è¿”å›
 					}
 				}
 				COM4.RX_Cnt = 0;
