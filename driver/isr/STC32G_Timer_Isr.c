@@ -47,22 +47,21 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	/* 陀螺仪控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0 && turn_finish_flag == 0){
 		start_get_distance++;
-		if(distance < 800 && distance > 500){
+		if(distance < 800 && distance > 700){
 			turn_out_start_flag = 1;
 			Angle_Z = 90;
 		}
 	}
 	if(turn_out_start_flag == 1 || turn_in_start_flag == 1){
 		Get_angle();
+//		printf("sa:%.2f\n",Angle_Z);
 	}
-	
 	if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// 偏航
 	{
 		pid2_output = 0;							// adc环控制输出置零
 //		TargetSpeed = targetspeed_backup - 300; 	// 降速
 		Speed_Ctrl_in(120);
 		AngleZ_output = AngleZ_state.output;
-		
 		if(Angle_Z > 115 && Angle_Z < 125){		// 偏移角度条件判断,初始值为90°
 			turn_in_start_flag = 1;
 			turn_out_start_flag = 0;			//turn_out finished
@@ -89,7 +88,6 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		keep_going = 0;
 		AngleZ_output = 0;
 	}
-//	
 //	/* ADC控制环 */
 	if(turn_out_start_flag == 0 && turn_in_start_flag == 0)	// 中环pid adc处理，每一小段的偏移，PID
 	{

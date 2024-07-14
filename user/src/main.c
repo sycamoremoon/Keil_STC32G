@@ -47,11 +47,12 @@ int main(void)
 	while(1)
 	{	
 		wireless_PID();
-		if(start_get_distance % 10 == 0){
+		if(start_get_distance % 20 == 0 && start_get_distance != 0){
 			distance = dl1b_get_distance();			// ºÏ≤‚æ‡¿Î
 			start_get_distance = 0;
-		}		
-		printf("state:%ld,%ld\n",output_left,output_right);
+		}	
+
+//		printf("state:%ld,%ld\n",output_left,output_right);
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
