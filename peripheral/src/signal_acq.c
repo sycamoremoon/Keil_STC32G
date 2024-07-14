@@ -138,15 +138,30 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	angle90_flag = 0;
 	cross_flag = 0;
 	soft_turn_flag = 0;
-	if(abs((int)(Data_Array[1] - Data_Array[2])) > 850) angle90_flag = 1;
-	if((MAXI(Data_Array[1], Data_Array[2])/MINI(Data_Array[1], Data_Array[2]) > 6) && (MINI(Data_Array[1], Data_Array[2]) > 80)) angle90_flag = 1;
+	
+	if(abs((int)(Data_Array[1] - Data_Array[2])) > 850 && abs((int)(Data_Array[0] - Data_Array[3])) < 1800) angle90_flag = 1;
+	if(MAXI(Data_Array[0],Data_Array[3]) < 1300 && MAXI(Data_Array[0],Data_Array[3]) > 1000){
+		if(MAXI(Data_Array[0],Data_Array[3]) > MINI(Data_Array[1],Data_Array[2])){
+			if(abs((int)(Data_Array[1] - Data_Array[2])) > 450) angle90_flag = 1;
+		}
+	}
+	if(MINI(Data_Array[1],Data_Array[2]) > 1600){
+		if(abs((int)(Data_Array[1] - Data_Array[2])) > 650) angle90_flag = 1;
+	}
+	if((MAXI(Data_Array[1], Data_Array[2])/MINI(Data_Array[1], Data_Array[2]) > 4) && (MINI(Data_Array[1], Data_Array[2]) > 200)) angle90_flag = 1;
 	//弯道不使用中间电感
 	if(angle90_flag){
 		if(Data_Array[1] > Data_Array[2]){
-			if(abs((int)(Data_Array[0] - Data_Array[1])) < 520) soft_turn_flag = 1;
+			if(Data_Array[1] < 1700){
+				if(abs((int)(Data_Array[0] - Data_Array[1])) < 480) soft_turn_flag = 1;
+				if(abs((int)(Data_Array[2] - Data_Array[3])) < 260 && abs((int)(Data_Array[2] - Data_Array[3])) > 80) soft_turn_flag = 1;
+			}
 		}
 		else{
-			if(abs((int)(Data_Array[2] - Data_Array[3])) < 520) soft_turn_flag = 1;
+			if(Data_Array[2] < 1300){
+				if(abs((int)(Data_Array[2] - Data_Array[3])) < 480) soft_turn_flag = 1;
+				if(abs((int)(Data_Array[0] - Data_Array[1])) < 260 && abs((int)(Data_Array[0] - Data_Array[1])) > 80) soft_turn_flag = 1;
+			}
 		}
 	}
 	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] > 5000) cross_flag = 1;
@@ -154,6 +169,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	//enter_angle90_begin置1之后只有当确认离开直角才会清零
 	if(angle90_flag == 1){
 		if(enter_angle90_begin == 0) enter_angle90_begin = 1;
+		if(targetspeed_backup >= 300) TargetSpeed = targetspeed_backup - 300;
 		enter_time ++;
 	}else{		//电感检测不到直角信号
 		if(enter_angle90_begin == 1) enter_angle90_finish = 1;
@@ -235,7 +251,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 //		if(leave_island_finish == 1 && enter_island_finish == 1) enter_island_finish = leave_island_finish = 0; //重置环岛标志
 		//冲出赛道停车
 	if(Data_Array[0]+Data_Array[1]+Data_Array[2]+Data_Array[3] < 200){
-		if(enter_angle90_begin == 1) TargetSpeed = targetspeed_backup - 300;	//仍处于直角转弯状态
+		if(enter_angle90_begin == 1){if(targetspeed_backup >= 300) TargetSpeed = targetspeed_backup - 300;}	//仍处于直角转弯状态
 		else Stop_Car();
 	}else{
 		if(start_car_signal == 1) TargetSpeed = targetspeed_backup;
