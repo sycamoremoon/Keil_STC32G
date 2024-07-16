@@ -17,6 +17,7 @@ extern uint16 All_Signal_Data[CHANNEL_NUM];
 extern int turn_ratio;
 extern int vertical_value;
 extern int E_T;
+extern uint8 gyro_en_flag;
 
 int32 Get_Regularized_Signal_Data(const uint16 * Data_Array);
 void Sample_All_Chanel();

@@ -2,6 +2,7 @@
 
 extern long TargetSpeed,targetspeed_backup;	//目标速度，备份目标速度
 extern uint8 start_car_signal;		//发车信号
+extern float Angle_Z;
 #define BUFFERLENGTH 10
 #define WEIGHTSUM 	70
 #define MAXI(a,b) (a > b ? a : b)
@@ -16,6 +17,7 @@ int turn_ratio= 222;
 int vertical_value=0;
 int E_T = 168;
 uint8 enter_island_begin = 0, enter_island_finish = 0, leave_island_finish = 0, leave_island_begin = 0;
+uint8 gyro_en_flag = 0;
 void Stop_Car();
 
 //#pragma userclass (near=CEVENT)	
@@ -198,7 +200,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 			diff2 = Data_Array[2]-Data_Array[1];
 			sum2 = Data_Array[1]+Data_Array[2];
 			mid_answer = (diff2*turn)/(sum2*sum2);
-			mid_answer = mid_answer * turn_ratio / 50;
+			mid_answer = mid_answer * turn_ratio / 70;		//70
 			mid_answer = - mid_answer;
 		}
 		answer += mid_answer;
@@ -225,20 +227,61 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}		
 	}
 	
-	// 入环检测
-	if(Data_Array[0] > 3200 && Data_Array[1] < 1200 && Data_Array[2] < 700 && enter_island_finish == 0){
+	// 入环检测，正向左偏
+	if(Data_Array[0] > 3200 && Data_Array[1] < 1200 && Data_Array[2] < 700 && enter_island_begin == 0 && enter_island_finish == 0){
 		enter_island_begin = 1;
+		Angle_Z = 0;
+		gyro_en_flag = 1;
 	}
-	if(Data_Array[3] > 3200 && Data_Array[2] < 1200 && Data_Array[1] < 700 && leave_island_finish == 0 && enter_island_finish == 1){
-		leave_island_begin = 1;
+	if(leave_island_begin == 0 && leave_island_finish == 0 && enter_island_finish == 1 )	//陀螺仪辅助正向出环
+	{
+		printf("Z:%.2f\n",Angle_Z);
+		if(abs((int)Angle_Z) > 300 )
+		{
+			leave_island_begin = 1;
+			gyro_en_flag = 0;
+			Angle_Z = 90;
+		}
+		if(Data_Array[3] > 2800 && Data_Array[2] < 1200 && Data_Array[1] < 700){
+			leave_island_begin = 1;
+			gyro_en_flag = 0;
+			Angle_Z = 90;
+		}
 	}
+	
+	// 入环检测，反向右偏
+//	if(Data_Array[3] > 3200 && Data_Array[2] < 1200 && Data_Array[1] < 700 && enter_island_begin == 0 && enter_island_finish == 0){
+//		enter_island_begin = 1;
+//		Angle_Z = 0;
+//		gyro_en_flag = 1;
+//	}
+//	if(leave_island_begin == 0 && leave_island_finish == 0 && enter_island_finish == 1 )	//陀螺仪辅助反向出环
+//	{
+//		printf("Z:%.2f\n",Angle_Z);
+//		if(abs((int)Angle_Z) > 300)
+//		{
+//			leave_island_begin = 1;
+//			gyro_en_flag = 0;
+//			Angle_Z = 90;
+//		}
+//		if(Data_Array[0] > 2800 && Data_Array[1] < 1200 && Data_Array[2] < 700){
+//			leave_island_begin = 1;
+//			gyro_en_flag = 0;
+//			Angle_Z = 90;
+//		}
+//	}
+	
+	
+	
 	if(enter_island_begin){
 
 		P34 = 1;
+		TargetSpeed = targetspeed_backup - 250;		// 850的速度进入环岛减250；800的速度减200
 		if(Data_Array[1] > Data_Array[2]) answer += 150;
 		else answer += -150;
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_island_finish == 0){
 			P34 = 0;
+			TargetSpeed = targetspeed_backup;
 			enter_island_finish = 1;
 			enter_island_begin = 0;
 		}
@@ -249,6 +292,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		else answer += -150;
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && leave_island_finish == 0 && enter_island_finish == 1){
 			P34 = 0;
+			TargetSpeed = targetspeed_backup;
 			leave_island_finish = 1;
 			leave_island_begin = 0;
 		}
