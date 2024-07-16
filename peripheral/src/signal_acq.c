@@ -234,16 +234,16 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		leave_island_begin = 1;
 	}
 	if(enter_island_begin){
-		if(Data_Array[1] > Data_Array[2]) answer += 150;
-		else answer += -150;
+		if(Data_Array[1] > Data_Array[2]) answer += 400;
+		else answer += -400;
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_island_finish == 0){
 			enter_island_finish = 1;
 			enter_island_begin = 0;
 		}
 	}
 	if(leave_island_begin){
-		if(Data_Array[1] > Data_Array[2]) answer += 150;
-		else answer += -150;
+		if(Data_Array[1] > Data_Array[2]) answer += 400;
+		else answer += -400;
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && leave_island_finish == 0 && enter_island_finish == 1){
 			leave_island_finish = 1;
 			leave_island_begin = 0;

@@ -22,7 +22,7 @@ long output_right = 0;
 long AngleZ_output = 0;
 
 long reset_1 = 0;
-long dis_far = 1200, dis_near = 800;
+long dis_near = 900;
 
 extern uint8 start_car_signal;	//·¢³µÐÅºÅ
 
