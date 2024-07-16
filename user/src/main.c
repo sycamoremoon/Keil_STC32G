@@ -57,7 +57,7 @@ int main(void)
 //		printf("distance:%d\n",distance);
 //		printf("state:%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld\n",Left_Speed_State.actual,Right_Speed_State.actual,output_left,output_right,pid3_output_left,pid3_output_right,pid2_output,adc_state.integral);
 		delay_ms(2);
-		printf("ADC:%d,%d,%d,%d,%d,%ld,%ld\n",distance,All_Signal_Data[0],All_Signal_Data[1],All_Signal_Data[2],All_Signal_Data[3],Get_Regularized_Signal_Data(All_Signal_Data),pid2_output);
+//		printf("ADC:%d,%d,%d,%d,%d,%ld,%ld\n",distance,All_Signal_Data[0],All_Signal_Data[1],All_Signal_Data[2],All_Signal_Data[3],Get_Regularized_Signal_Data(All_Signal_Data),pid2_output);
 
 
 //		printf("adc_state.actual:%ld\n",adc_state.actual);

@@ -17,7 +17,7 @@
 //========================================================================
 
 u8 WakeUpSource;
-
+extern uint8 start_car_signal;
 //========================================================================
 // 函数: INT0_ISR_Handler
 // 描述: INT0中断函数.
@@ -28,7 +28,9 @@ u8 WakeUpSource;
 void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	Stop_Car();
+	start_car_signal = 1;
+	adc_state.integral = 0;
+	targetspeed_backup = TargetSpeed = 820;
 }
 
 //========================================================================
@@ -41,9 +43,9 @@ void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 void INT1_ISR_Handler (void) interrupt INT1_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
-	TargetSpeed = 2600;
-	memset((void*)&Left_Speed_State,0,sizeof(PID_State));
-	memset((void*)&Right_Speed_State,0,sizeof(PID_State));
+	start_car_signal = 1;
+	adc_state.integral = 0;
+	targetspeed_backup = TargetSpeed = 800;
 }
 
 //========================================================================
@@ -57,7 +59,9 @@ void INT2_ISR_Handler (void) interrupt INT2_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
 //	P02 = ~P02;
-	WakeUpSource = 3;
+	start_car_signal = 1;
+	adc_state.integral = 0;
+	targetspeed_backup = TargetSpeed = 750;
 }
 
 //========================================================================

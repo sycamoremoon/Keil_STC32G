@@ -64,7 +64,6 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 		if(turn_out_start_flag == 1 && turn_in_start_flag == 0)		// 偏航
 		{
 			pid2_output = 0;							// adc环控制输出置零
-	//		TargetSpeed = targetspeed_backup - 300; 	// 降速
 			Speed_Ctrl_in(150);
 			AngleZ_output = AngleZ_state.output;
 			if(Angle_Z > 125 && Angle_Z < 140){		// 偏移角度条件判断,初始值为90°
@@ -81,10 +80,9 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 				keep_going += Left_Speed_State.actual / 5;
 			}	
 			else{
-	//			TargetSpeed = targetspeed_backup;	// 恢复原速度
-				Speed_Ctrl_in(60);
+				Speed_Ctrl_in(68);
 				AngleZ_output = AngleZ_state.output;
-				if(Angle_Z > 50 && Angle_Z < 67){	// 偏移角度条件判断,初始值为90°
+				if(Angle_Z > 60 && Angle_Z < 70){	// 偏移角度条件判断,初始值为90°
 					turn_in_start_flag = 0;			//turn in finished
 					turn_in_end_flag = 1;			//finish all
 					keep_going = 0;
@@ -94,7 +92,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 
 		if(turn_in_end_flag == 1)
 		{
-			if(keep_going < 6000)
+			if(keep_going < 6200)
 			{
 				AngleZ_output = 0;
 				keep_going += Left_Speed_State.actual / 5;
@@ -113,7 +111,6 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	{
 		keep_going = 0;
 		AngleZ_output = 0;
-		TargetSpeed = targetspeed_backup;
 		P34 = 0;
 	}
 
@@ -162,6 +159,11 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 //		distance = 5555;
 
 		P34 = 0;
+	}
+	
+	if(gyro_en_flag == 1)
+	{
+		Get_angle();
 	}
 }
 
