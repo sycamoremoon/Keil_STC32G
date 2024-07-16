@@ -18,6 +18,7 @@ int cnt = 0;
 extern uint8 start_car_signal;
 extern int start_get_distance;
 uint16 distance = 0;
+extern uint8 enter_island_begin, enter_island_finish, leave_island_finish, leave_island_begin;
 int turn_out_start_flag = 0, turn_in_start_flag = 0, turn_finish_flag = 0, turn_in_end_flag = 0;
 long keep_going = 0;
 //========================================================================
@@ -48,10 +49,10 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	if(turn_finish_flag == 0){
 		if(turn_out_start_flag == 0 && turn_in_start_flag == 0 && turn_in_end_flag == 0){
 			start_get_distance++;
-			if(distance > 500 && distance < dis_near ){		// 500-800
+			if(distance > 600 && distance < dis_near ){		// 600-900
 				turn_out_start_flag = 1;
 				Angle_Z = 90;
-				P34 = 1;
+//				P34 = 1;
 			}
 		}
 		
@@ -153,11 +154,12 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 	{
 		reset_1 = 0;
 		
-		turn_out_start_flag = 0;
-		turn_in_start_flag = 0;
-		turn_finish_flag = 0;
-		turn_in_end_flag = 0;
-		distance = 5555;
+		enter_island_begin = enter_island_finish = leave_island_finish = leave_island_begin = 0;
+//		turn_out_start_flag = 0;
+//		turn_in_start_flag = 0;
+//		turn_finish_flag = 0;
+//		turn_in_end_flag = 0;
+//		distance = 5555;
 
 		P34 = 0;
 	}
