@@ -15,7 +15,7 @@ uint16 Weight[BUFFERLENGTH] = {1,1,2,2,3,3,4,4,10,40};
 int turn_ratio= 222;
 int vertical_value=0;
 int E_T = 168;
-
+uint8 enter_island_begin = 0, enter_island_finish = 0, leave_island_finish = 0, leave_island_begin = 0;
 void Stop_Car();
 
 //#pragma userclass (near=CEVENT)	
@@ -129,7 +129,6 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	static int32 strai=453000, turn =968411;
 	static int count = 0;
 	static int enter_time = 0;
-	static uint8 enter_island_begin = 0, enter_island_finish = 0, leave_island_finish = 0, leave_island_begin = 0, out_island;
 	static uint8 enter_angle90_begin = 0, enter_angle90_finish = 0;
 	uint8 angle90_flag, cross_flag, soft_turn_flag;
 	int32 answer = 0, mid_answer = 0;
@@ -227,24 +226,38 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	}
 	
 	// 入环检测
-	if(Data_Array[0] > 3500 && enter_island_finish == 0){
+	if(Data_Array[0] > 3200 && Data_Array[1] < 1200 && Data_Array[2] < 700 && enter_island_finish == 0){
 		enter_island_begin = 1;
 	}
-	if(Data_Array[3] > 3500 && leave_island_finish == 0 && enter_island_finish == 1){
+	if(Data_Array[3] > 3200 && Data_Array[2] < 1200 && Data_Array[1] < 700 && leave_island_finish == 0 && enter_island_finish == 1){
 		leave_island_begin = 1;
 	}
 	if(enter_island_begin){
+<<<<<<< HEAD
 		if(Data_Array[1] > Data_Array[2]) answer += 400;
 		else answer += -400;
+=======
+		P34 = 1;
+		if(Data_Array[1] > Data_Array[2]) answer += 150;
+		else answer += -150;
+>>>>>>> 8289558fed9e2afa8cb59c3e1de44b61a63a443c
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_island_finish == 0){
+			P34 = 0;
 			enter_island_finish = 1;
 			enter_island_begin = 0;
 		}
 	}
 	if(leave_island_begin){
+<<<<<<< HEAD
 		if(Data_Array[1] > Data_Array[2]) answer += 400;
 		else answer += -400;
+=======
+		P34 = 1;
+		if(Data_Array[1] > Data_Array[2]) answer += 150;
+		else answer += -150;
+>>>>>>> 8289558fed9e2afa8cb59c3e1de44b61a63a443c
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && leave_island_finish == 0 && enter_island_finish == 1){
+			P34 = 0;
 			leave_island_finish = 1;
 			leave_island_begin = 0;
 		}
