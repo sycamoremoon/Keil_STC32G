@@ -1,9 +1,9 @@
 #include "control.h"
 
 PID_Calibration		PID_AngleZ 		= {-20,0,-450};		// 内环陀螺仪的PID参数，用PD
-PID_Calibration 	PID_adc 		= {-580,-7,-300};	// 中环adc的PID参数 20
-PID_Calibration 	PID_out_left 	= {500,2000,0};	// 外环左速度的PID参数hong{290,195,57};{380,160,1000}
-PID_Calibration		PID_out_right 	= {500,2000,0};	// 外环右速度的PID参数lv  {290,195,57};
+PID_Calibration 	PID_adc 		= {-600,-7,-400};	// 中环adc的PID参数 20
+PID_Calibration 	PID_out_left 	= {700,2000,0};	// 外环左速度的PID参数hong{290,195,57};{380,160,1000}
+PID_Calibration		PID_out_right 	= {700,2000,0};	// 外环右速度的PID参数lv  {290,195,57};
 
 PID_State	AngleZ_state		= {0};				//accy状态参数
 PID_State 	adc_state 			= {0};				//adc状态参数
@@ -20,6 +20,9 @@ long pid3_output_right = 0;
 long output_left = 0;
 long output_right = 0;
 long AngleZ_output = 0;
+
+long reset_1 = 0;
+long dis_far = 1200, dis_near = 800;
 
 extern uint8 start_car_signal;	//发车信号
 
@@ -104,13 +107,15 @@ void Set_Motors(long left, long right)
 
 void Stop_Car(void)		// 小车停止
 {
-	if(TargetSpeed >= 50){
-		if(TargetSpeed > 0) TargetSpeed = 0;
-		else TargetSpeed = TargetSpeed - 100;
+	if(TargetSpeed >= 200){
+		TargetSpeed = TargetSpeed - 200;
+	}
+	else
+	{
 		memset((void*)&Left_Speed_State,0,sizeof(PID_State));
 		memset((void*)&Right_Speed_State,0,sizeof(PID_State));
 		adc_state.integral = 0;
-	}else{
+		TargetSpeed = 0;
 		start_car_signal = 0;
 	}
 }
