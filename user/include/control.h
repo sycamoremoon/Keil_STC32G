@@ -24,7 +24,7 @@ extern long targetspeed_backup; 	//备份目标速度
 
 extern long pid1_output, pid2_output, pid3_output_left, pid3_output_right, output_left, output_right, AngleZ_output;
 extern long reset_1;
-extern long dis_far, dis_near;
+extern long dis_near;
 void Update_Motors(PID_State * left_state,PID_State * right_state,PID_State * gyro_state);
 void Set_Motors(long left, long right);
 void Speed_Ctrl_in(long AngleZ_target);

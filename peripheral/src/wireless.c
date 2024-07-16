@@ -208,18 +208,14 @@ void PID_Adjust(void)
 		{
 			reset_1 = data_return;
 		}
-		else if (data_buffer[0] == 'D' && data_buffer[1] == 'F') 
-		{
-			dis_far = data_return;
-		}
 		else if (data_buffer[0] == 'D' && data_buffer[1] == 'N') 
 		{
 			dis_near = data_return;
 		}
 		
 		// 显示三组PID参数
-		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d\n\n",\
-		dis_far, 		dis_near, 		PID_adc.kd,\
+		printf("ADC:%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d\n\n",\
+		dis_near, 		PID_adc.kd,\
 		TargetSpeed,		turn_ratio,			E_T);
 		
 		pid_changed = 0;

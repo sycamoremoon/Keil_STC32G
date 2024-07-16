@@ -233,6 +233,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		leave_island_begin = 1;
 	}
 	if(enter_island_begin){
+
 		P34 = 1;
 		if(Data_Array[1] > Data_Array[2]) answer += 150;
 		else answer += -150;
