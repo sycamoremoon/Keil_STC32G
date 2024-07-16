@@ -13,6 +13,7 @@
 	CEVENT_EXPORT(0,NULL,NULL);
 #pragma userclass (near=default)
 extern uint16 distance;
+extern long keep_going;
 int start_get_distance = 0;
 int main(void)
 {	
@@ -47,12 +48,16 @@ int main(void)
 	while(1)
 	{	
 		wireless_PID();
-//		if(start_get_distance % 20 == 0 && start_get_distance != 0){
-//			distance = dl1b_get_distance();			// ºÏ≤‚æ‡¿Î
-//			start_get_distance = 0;
-//		}	
-
+		
+		if(start_get_distance % 10 == 0 && start_get_distance != 0){
+			distance = dl1b_get_distance();			// ºÏ≤‚æ‡¿Î
+			start_get_distance = 0;
+		}
+		printf("distance:%d\n",distance);
 //		printf("state:%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld\n",Left_Speed_State.actual,Right_Speed_State.actual,output_left,output_right,pid3_output_left,pid3_output_right,pid2_output,adc_state.integral);
+		delay_ms(2);
+
+//		printf("ADC:%d,%d,%d,%d,%ld,%ld\n",All_Signal_Data[0],All_Signal_Data[1],All_Signal_Data[2],All_Signal_Data[3],Get_Regularized_Signal_Data(All_Signal_Data),pid2_output);
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
 //		Screen_ShowInt(0,0,BLACK,WHITE,Get_DMA_ADC_Result(0));
@@ -60,8 +65,7 @@ int main(void)
 //		Screen_ShowInt(0,32,BLACK,WHITE,Get_DMA_ADC_Result(2));
 //		Screen_ShowInt(0,48,BLACK,WHITE,Get_DMA_ADC_Result(3));
 //		Sample_All_Chanel();
-		printf("ADC:%d,%d,%d,%d,%ld,%ld\n",All_Signal_Data[0],All_Signal_Data[1],All_Signal_Data[2],All_Signal_Data[3],Get_Regularized_Signal_Data(All_Signal_Data),pid2_output);
-		delay_ms(5);
+
 
 //		Screen_ShowInt(0,64,BLACK,WHITE,Get_Regularized_Signal_Data(All_Signal_Data));
 //		printf("%d\n",Get_Regularized_Signal_Data(All_Signal_Data));

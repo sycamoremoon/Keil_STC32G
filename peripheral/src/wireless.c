@@ -65,7 +65,6 @@ long get_data(void)
 	uint8 	data_Num 	= 0; 	// 记录数据位数
 	long  	data_return	= 0;	// 解析得到的数据
 	uint8 	i = 0;
-	
 	data_len = strlen(data_buffer);	// 获取data_buffer的长度
 
     if (data_len != 0) 
@@ -177,8 +176,8 @@ void PID_Adjust(void)
 		{
 			start_car_signal = 1;
 			adc_state.integral = 0;
-			if(data_return == 0) Stop_Car();
 			targetspeed_backup = TargetSpeed = data_return;
+			if(data_return == 0) Stop_Car();
 		}else if (data_buffer[0] == 'T' && data_buffer[1] == 'R') 
 		{
 			turn_ratio = data_return;
@@ -205,11 +204,22 @@ void PID_Adjust(void)
 		{
 			PID_AngleZ.kd = data_return;
 		}
-		
+		else if (data_buffer[0] == 'R' && data_buffer[1] == 'E') 
+		{
+			reset_1 = data_return;
+		}
+		else if (data_buffer[0] == 'D' && data_buffer[1] == 'F') 
+		{
+			dis_far = data_return;
+		}
+		else if (data_buffer[0] == 'D' && data_buffer[1] == 'N') 
+		{
+			dis_near = data_return;
+		}
 		
 		// 显示三组PID参数
 		printf("ADC:%ld,%ld,%ld\nSpeed:%ld\nTurn:%d\nVert:%d\n\n",\
-		PID_adc.kp, 		PID_adc.ki, 		PID_adc.kd,\
+		dis_far, 		dis_near, 		PID_adc.kd,\
 		TargetSpeed,		turn_ratio,			E_T);
 		
 		pid_changed = 0;

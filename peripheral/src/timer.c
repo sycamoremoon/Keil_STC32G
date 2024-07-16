@@ -245,5 +245,5 @@ void pit_timer_ms(TIMN_enum tim_n,uint16 time_ms)
 void timer_init(void)
 {
 	pit_timer_ms(TIM_0,2);
-	// pit_timer_ms(TIM_1,10);
+	pit_timer_ms(TIM_1,25);
 }

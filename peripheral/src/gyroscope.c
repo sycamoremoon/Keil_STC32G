@@ -77,6 +77,8 @@ uint8 icm20602_init (void)
 			while(1)
 			{
 				beeing();
+				delay_ms(100);
+				beeing();
 				delay_ms(200);
 			}
             return_state = 1;
