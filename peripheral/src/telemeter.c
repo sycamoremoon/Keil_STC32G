@@ -111,6 +111,7 @@ uint16 dl1b_get_distance (void)
         {
             dl1b_distance_mm = 6666;
             dl1b_finsh_flag = 0;
+			dl1b_init();
         }
     }
 	return dl1b_distance_mm;
