@@ -92,7 +92,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 
 		if(turn_in_end_flag == 1)
 		{
-			if(keep_going < 6200)
+			if(keep_going < 7000)
 			{
 				AngleZ_output = 0;
 				keep_going += Left_Speed_State.actual / 5;
@@ -177,7 +177,7 @@ void Timer0_ISR_Handler (void) interrupt TMR0_VECTOR		//进中断时已经清除标志
 void Timer1_ISR_Handler (void) interrupt TMR1_VECTOR		//进中断时已经清除标志
 {
 	static count = 0;
-	//中断20ms一次，每隔8s清除一次环岛标志
+	//中断20ms一次，每隔6s清除一次环岛标志
 	if(count ++ > 300){
 		count = 0;
 		enter_island_begin = enter_island_finish = leave_island_finish = leave_island_begin = 0;

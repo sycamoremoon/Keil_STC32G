@@ -7,7 +7,6 @@ extern float Angle_Z;
 #define WEIGHTSUM 	70
 #define MAXI(a,b) (a > b ? a : b)
 #define MINI(a,b) (a > b ? b : a)
-
 uint8 xdata DmaAdBuffer[CHANNEL_NUM][2*CONVERT_TIMES+4];
 uint16 ADC_DataBuffer[CHANNEL_NUM][BUFFERLENGTH] = {0};
 static uint16 ADC_counter[CHANNEL_NUM] = {0};
@@ -190,7 +189,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	
 	//纵向电感
 	if(angle90_flag && !cross_flag && !soft_turn_flag){
-//		P34 = 1;
+		P34 = 1;
 		if(Data_Array[1] > Data_Array[2]){
 			diff2 = Data_Array[1]-Data_Array[2];
 			sum2 = Data_Array[1]+Data_Array[2];
@@ -205,7 +204,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}
 		answer += mid_answer;
 	}else{
-//		P34 = 0;
+		P34 = 0;
 	}
 	
 	//横向电感
@@ -228,7 +227,8 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	}
 	
 	// 入环检测，正向左偏
-	if(Data_Array[0] > 3200 && Data_Array[1] < 1200 && Data_Array[2] < 700 && enter_island_begin == 0 && enter_island_finish == 0){
+	if(Data_Array[0] > 2600 && Data_Array[1] < 1000 && Data_Array[2] < 600 && enter_island_begin == 0 && enter_island_finish == 0){
+//	if(Data_Array[0] > 2800 && Data_Array[1] < 1100 && Data_Array[2] < 700 && enter_island_begin == 0 && enter_island_finish == 0){
 		enter_island_begin = 1;
 		Angle_Z = 0;
 		gyro_en_flag = 1;
@@ -242,7 +242,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 			gyro_en_flag = 0;
 			Angle_Z = 90;
 		}
-		if(Data_Array[3] > 2800 && Data_Array[2] < 1200 && Data_Array[1] < 700){
+		if(Data_Array[3] > 2700 && Data_Array[2] < 1200 && Data_Array[1] < 700){
 			leave_island_begin = 1;
 			gyro_en_flag = 0;
 			Angle_Z = 90;
