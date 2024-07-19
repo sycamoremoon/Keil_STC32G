@@ -30,7 +30,7 @@ void INT0_ISR_Handler (void) interrupt INT0_VECTOR		//进中断时已经清除标志
 	// TODO: 在此处添加用户代码
 	start_car_signal = 1;
 	adc_state.integral = 0;
-	targetspeed_backup = TargetSpeed = 820;
+	targetspeed_backup = TargetSpeed = 800;
 }
 
 //========================================================================
@@ -45,7 +45,7 @@ void INT1_ISR_Handler (void) interrupt INT1_VECTOR		//进中断时已经清除标志
 	// TODO: 在此处添加用户代码
 	start_car_signal = 1;
 	adc_state.integral = 0;
-	targetspeed_backup = TargetSpeed = 800;
+	targetspeed_backup = TargetSpeed = 780;
 }
 
 //========================================================================
@@ -59,9 +59,6 @@ void INT2_ISR_Handler (void) interrupt INT2_VECTOR		//进中断时已经清除标志
 {
 	// TODO: 在此处添加用户代码
 //	P02 = ~P02;
-	start_car_signal = 1;
-	adc_state.integral = 0;
-	targetspeed_backup = TargetSpeed = 750;
 }
 
 //========================================================================

@@ -2,6 +2,7 @@
 
 extern long TargetSpeed,targetspeed_backup;	//目标速度，备份目标速度
 extern uint8 start_car_signal;		//发车信号
+extern int turn_finish_flag;
 extern float Angle_Z;
 #define BUFFERLENGTH 10
 #define WEIGHTSUM 	70
@@ -204,7 +205,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 		}
 		answer += mid_answer;
 	}else{
-		P34 = 0;
+		if(turn_finish_flag == 1) P34 = 0;
 	}
 	
 	//横向电感
@@ -235,7 +236,6 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	}
 	if(leave_island_begin == 0 && leave_island_finish == 0 && enter_island_finish == 1 )	//陀螺仪辅助正向出环
 	{
-//		printf("Z:%.2f\n",Angle_Z);
 		if(abs((int)Angle_Z) > 300 )
 		{
 			leave_island_begin = 1;
@@ -276,7 +276,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	if(enter_island_begin){
 
 		P34 = 1;
-		TargetSpeed = targetspeed_backup - 250;		// 850的速度进入环岛减250；800的速度减200
+		TargetSpeed = targetspeed_backup - 200;		// 850的速度进入环岛减250；800的速度减200
 		if(Data_Array[1] > Data_Array[2]) answer += 150;
 		else answer += -150;
 		if(Data_Array[0] < 1500 && Data_Array[3] < 1500 && enter_island_finish == 0){

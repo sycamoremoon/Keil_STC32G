@@ -18,6 +18,7 @@ extern uint8 enter_island_begin, enter_island_finish, leave_island_finish, leave
 int start_get_distance = 0;
 int main(void)
 {	
+	int distance_valid_count = 0;
 	/******************************************************************/
 	ceventInit();
 	ceventPost(0);
@@ -42,6 +43,7 @@ int main(void)
 	P6_MODE_OUT_PP(GPIO_Pin_1);	//²âÊÔGET_ANGLE
 	P3_MODE_OUT_PP(GPIO_Pin_4);	//·äÃùÆ÷
 	P34 = 0;
+	P61 = 0;
 
 	//³õÊ¼»¯½áÊø
 	/******************************************************************/
@@ -53,12 +55,19 @@ int main(void)
 		if(start_get_distance % 10 == 0 && start_get_distance != 0){
 			distance = dl1b_get_distance();			// ¼ì²â¾àÀë
 			start_get_distance = 0;
+			if(distance > 1100 && distance < 1300){
+				if(distance_valid_count++ > 25) P61 = 1;
+			}
+			else{
+				distance_valid_count = 0;
+				P61 = 0;
+			}
 		}
 //		printf("distance:%d\n",distance);
 //		printf("state:%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld\n",Left_Speed_State.actual,Right_Speed_State.actual,output_left,output_right,pid3_output_left,pid3_output_right,pid2_output,adc_state.integral);
 
-		printf("ADC:%d,%d,%d,%d,%d,%ld,%ld\n",distance,All_Signal_Data[0],All_Signal_Data[1],All_Signal_Data[2],All_Signal_Data[3],Get_Regularized_Signal_Data(All_Signal_Data),pid2_output);
-		delay_ms(2);
+//		printf("ADC:%d,%d,%d,%d,%d\n",distance,All_Signal_Data[0],All_Signal_Data[1],All_Signal_Data[2],All_Signal_Data[3]);
+//		delay_ms(2);
 
 //		printf("adc_state.actual:%ld\n",adc_state.actual);
 //		Set_Motors(10000,10000);
