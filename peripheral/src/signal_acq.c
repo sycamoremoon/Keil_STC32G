@@ -235,7 +235,7 @@ int32 Get_Regularized_Signal_Data(const uint16 * Data_Array)
 	}
 	if(leave_island_begin == 0 && leave_island_finish == 0 && enter_island_finish == 1 )	//陀螺仪辅助正向出环
 	{
-		printf("Z:%.2f\n",Angle_Z);
+//		printf("Z:%.2f\n",Angle_Z);
 		if(abs((int)Angle_Z) > 300 )
 		{
 			leave_island_begin = 1;
